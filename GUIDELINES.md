@@ -68,6 +68,38 @@ Before finishing a work item, verify that:
 - The committed files match the intended change.
 - Validation results and remaining untracked files are understood.
 
+## Confirmed project facts and assumptions
+
+The following facts were confirmed on 14 October 2026:
+
+- PP1 is on 22 October 2026.
+- The full assessment duration is 40 minutes: 10 minutes presentation,
+  10 minutes demonstration, 15 minutes viva, and 5 minutes marking.
+- Presentation and demonstration time are group-level allocations.
+- A live demonstration is required; no backup recording is currently required.
+- Every member presents their own component.
+- No official slide template or slide count is currently confirmed.
+- C1, C2, C3, and C4 have no implementation yet.
+- Inter-component JSON schemas and implementations have not been finalized.
+- Component datasets or materials may exist individually, but are not officially
+  integrated or used yet.
+
+The following must remain explicit assumptions until confirmed by the group or
+supervisor:
+
+- Final implementation technologies and deployment approach.
+- NLI model or deterministic factual-verification choice.
+- Mastery and uncertainty thresholds.
+- Bloom-ceiling calculation.
+- Rewrite retry and unresolved-claim policy.
+- Evaluation concepts, learner profiles, and corpus size.
+- Ethics approval requirements.
+- Additional PP1 submissions.
+- Final shared JSON and REST contracts.
+
+When information is unknown, use a mock or versioned fixture, document the
+assumption, and avoid claiming that an integration or result is real.
+
 ## Research method
 
 Use Design Science Research as the overall methodology:

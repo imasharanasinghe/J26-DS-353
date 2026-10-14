@@ -63,3 +63,10 @@ This log records the work completed for Component 4 and the associated project a
 ### 16:13:11 +05:30
 - Confirmed that the group sprint-board requirements had already been transcribed into [PLAN.md](./PLAN.md) and [GUIDELINES.md](./GUIDELINES.md).
 - Removed the redundant sprint-board HTML file and its broken markdown links while preserving the captured PP1–PP3 requirements.
+
+### 17:11:37 +05:30
+- Clarified PP1 logistics: 22 October 2026; 40-minute assessment consisting of 10-minute group presentation, 10-minute group demonstration, 15-minute viva, and 5-minute marking.
+- Confirmed that a live demonstration is required, no backup recording is currently required, every member presents their own component, and no official slide template or slide count is confirmed.
+- Confirmed that C1, C2, C3, and C4 currently have no implementation and that shared JSON schemas and interfaces are not finalized.
+- Recorded that component-specific datasets or materials may exist individually but are not officially integrated or used.
+- Recorded unresolved external decisions in [PLAN.md](./PLAN.md) and [GUIDELINES.md](./GUIDELINES.md) instead of making unsupported assumptions.

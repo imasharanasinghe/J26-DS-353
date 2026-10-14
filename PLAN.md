@@ -20,6 +20,48 @@ relevant knowledge-graph context are available.
 - Untracked upstream proposal and sprint-board files are reference inputs and
   are not included in the C4 documentation commits unless explicitly requested.
 
+### Confirmed PP1 logistics
+
+- Official PP1 date: **22 October 2026**.
+- Assessment duration: **40 minutes**.
+- Presentation: **10 minutes for the entire group**.
+- Demonstration: **10 minutes for the entire group**.
+- Viva session: **15 minutes**.
+- Marking: **5 minutes**.
+- A live demonstration is required.
+- No backup recording is currently required.
+- Every member must present their own component.
+- No official slide template or slide count has been confirmed.
+
+### Confirmed project state
+
+- C1 currently has no implementation.
+- C2 currently has no implementation.
+- C3 currently has no implementation.
+- C4 currently has no implementation.
+- No inter-component JSON schemas or implementations have been finalized.
+- Component-specific datasets or materials may exist with individual members,
+  but none are officially integrated or being used by the project at present.
+
+### External decisions still requiring confirmation
+
+Do not silently treat these as finalized until the group or supervisor confirms
+them:
+
+- PP1 submission requirements beyond the live presentation, demonstration,
+  viva, and marking session.
+- The final implementation stack and deployment approach.
+- The factual-verification implementation choice and NLI model, if any.
+- Mastery and uncertainty thresholds.
+- Bloom-ceiling calculation.
+- Maximum rewrite attempts and unresolved-claim handling.
+- C4 evaluation concepts, learner profiles, and corpus size.
+- Ethics/Institutional Research Board requirements for the learner study.
+- Exact shared JSON schemas and REST interface details.
+
+Until these are confirmed, use versioned mock fixtures and label all
+assumptions as pilot decisions.
+
 ### Individual C4 responsibility
 
 - Define explanation faithfulness as both factual entailment and
