@@ -293,6 +293,9 @@ maintained or improved clarity and comprehension.
 - [LOG.md](./LOG.md) records completed work chronologically with date and time.
 - This file records planned, completed, and outstanding work.
 - Check an item only after implementation or verification evidence exists.
+- [RESEARCH_GUIDELINES.md](./RESEARCH_GUIDELINES.md) records the frozen
+  methodological definitions, evaluation safeguards, PP1 priorities, and
+  reproducibility rules that guide this plan.
 - Every work change must update [LOG.md](./LOG.md) and this plan where relevant.
 - Every work change must be committed to the `c4` branch with a descriptive
   commit message and the required Copilot co-author trailer.

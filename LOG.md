@@ -34,3 +34,8 @@ This log records the work completed for Component 4 and the associated project a
 - Identified omitted Component 4 responsibilities and planning details, including confidence tiers, KG citations, exact schemas and requirements, privacy and efficiency controls, manual annotation and agreement, controlled violation cases, ablations, open-model generalization, learner-study approval, statistical analysis, documentation, and shared integration boundaries.
 - Replaced [PLAN.md](./PLAN.md) with a complete C4 work plan aligned with the proposal documents and PP1 marking criteria.
 - Documented the rule that every future work change must update the log and relevant plan items, then be committed to branch `c4`.
+
+### 15:59:37 +05:30
+- Created [RESEARCH_GUIDELINES.md](./RESEARCH_GUIDELINES.md).
+- Documented the recommended research method, operational claim labels, Bloom-ceiling and mastery-threshold decisions, retry policy, ground-truth safeguards, experimental matrix, natural versus injected evaluation, metrics, statistical analysis, learner-study controls, PP1 priorities, demonstration requirements, reproducibility rules, and research contribution statement.
+- Linked the research guidelines from [PLAN.md](./PLAN.md) so future contributors can follow the same methodological decisions.
