@@ -331,6 +331,31 @@ For the progress presentation, prioritize a working technical proof of concept:
 Do not allow the open-weight generator comparison, advanced optimization, or
 learner recruitment to delay the PP1 prototype.
 
+The group sprint board in [pp1-sprint-board.html](./pp1-sprint-board.html)
+sets an approximate 60% PP1 progress target and a 22–27 October 2026
+presentation window. The board's C4 PP1 evidence is therefore:
+
+- A generation prompt that explicitly receives the verified path from C3.
+- An explicit decision between an NLI model and rule-based graph-edge
+  mapping, with rationale.
+- A KG entailment checker that flags unsupported claims.
+- A Bloom-ceiling prototype.
+- A sentence-level targeted rewrite loop.
+- Preliminary faithfulness results on 20–30 explanations.
+
+The board's PP2 and PP3 C4 follow-up evidence is:
+
+- Tune entailment-checker thresholds.
+- Evaluate the Bloom-level classifier.
+- Complete the full faithfulness evaluation.
+- Compare the system with and without the rewrite loop.
+- Include explanation-clarity questions in the learner study.
+- Complete the individual C4 report chapter and novelty-defence preparation.
+
+Shared sprint-board work remains shared: JSON hand-off schemas, mock Neo4j
+graph, REST endpoint stubs, weekly hand-off checks, end-to-end demonstration,
+unified slides, backup recording, and supervisor dry run.
+
 ## Required PP1 demonstration
 
 Show one complete execution:

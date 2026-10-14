@@ -43,3 +43,9 @@ This log records the work completed for Component 4 and the associated project a
 ### 16:01:28 +05:30
 - Updated the renamed [GUIDELINES.md](./GUIDELINES.md) references in [PLAN.md](./PLAN.md) and [LOG.md](./LOG.md).
 - Added the project work-management process to [GUIDELINES.md](./GUIDELINES.md), covering the roles of `LOG.md` and `PLAN.md`, the required change sequence, validation, branch usage, and commit requirements.
+
+### 16:03:50 +05:30
+- Read [pp1-sprint-board.html](./pp1-sprint-board.html), the group leader's shared PP1–PP3 sprint board.
+- Compared the shared C4 sprint tasks with [PLAN.md](./PLAN.md) and [GUIDELINES.md](./GUIDELINES.md).
+- Confirmed that the overall C4 plan is aligned and added the board's concrete requirements: C3-path prompt, NLI/rule-mapping decision, 20–30 explanation PP1 sample, sentence-level rewriting, PP2 threshold and Bloom-classifier evaluation, rewrite-loop ablation, learner clarity questions, report chapter, and novelty-defence preparation.
+- Recorded the shared team tasks that C4 must support: schema agreement, mock Neo4j graph, REST stubs, hand-off checks, end-to-end demo, unified slides, backup recording, and supervisor dry run.

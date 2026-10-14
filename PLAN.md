@@ -185,6 +185,10 @@ PP1 is worth 15% and evaluates proof of concept as well as the research gap,
 technology application, design, implementation progress, best practices,
 requirements, risks, communication, and commercialization.
 
+The group sprint board in [pp1-sprint-board.html](./pp1-sprint-board.html)
+sets the PP1 target at approximately 60% component progress and places the
+PP1 presentation window at 22–27 October 2026. Its C4 tasks are included below.
+
 The minimum convincing C4 demonstration is:
 
 1. Input a verified-path step, learner profile, Bloom ceiling, and graph
@@ -216,6 +220,31 @@ The minimum convincing C4 demonstration is:
 - [ ] Risks and mitigations explained
 - [ ] Commercial/user value explained
 - [ ] Completed, delayed, and next tasks stated honestly
+
+### C4 sprint-board commitments
+
+These commitments align the detailed C4 plan with the group leader's sprint
+board:
+
+| Sprint-board task | C4 plan location | Required evidence |
+|---|---|---|
+| Explanation generator prompt taking C3's path | Milestone 3 | Prompt and one structured input/output example |
+| Choose NLI model or rule-based edge mapping | Milestone 4 | Decision record, rationale, and initial comparison or configuration |
+| KG entailment checker flags unsupported claims | Milestone 4 | Claim-level supported/contradicted/unsupported output |
+| Bloom-ceiling check prototype | Milestone 5 | At least one appropriate and one mismatch case |
+| Sentence-level rewrite loop | Milestone 6 | Only the violating sentence/claim changes, followed by re-verification |
+| Preliminary faithfulness on 20–30 explanations | Milestone 7 | Corpus count, initial metrics, and limitations |
+| Tune entailment-checker thresholds | Milestone 7 | Threshold selection and sensitivity results |
+| Evaluate Bloom-level classifier | Milestone 7 | Classifier evaluation against manual labels |
+| Full faithfulness evaluation | Milestone 7 | Final technical evaluation report |
+| Ablation with versus without rewrite loop | Milestone 7 | Rewrite-loop ablation results |
+| Explanation-clarity questions in user study | Milestone 8 | Approved instrument and collected clarity responses |
+| C4 report chapter and novelty defence | Milestone 9 | Individual report section and viva Q&A preparation |
+
+The sprint board's shared tasks also apply to C4: agree the JSON hand-off
+schemas, use the shared mock Neo4j graph, use REST endpoint stubs, check each
+handoff weekly, contribute to the end-to-end mock demo, prepare unified slides,
+rehearse, record a backup demonstration, and complete the supervisor dry run.
 
 ## Evaluation definitions
 
