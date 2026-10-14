@@ -7,6 +7,19 @@ Explanations** component (WBS 1.5: Explanation and Interface). Its individual
 responsibility starts when the verified learning path, learner state, and
 relevant knowledge-graph context are available.
 
+## Current status
+
+- Documentation foundation: **complete for the current proposal and PP1
+  sprint-board scope**.
+- Research method and evaluation safeguards: documented in
+  [GUIDELINES.md](./GUIDELINES.md).
+- Work tracking and commit process: documented in
+  [GUIDELINES.md](./GUIDELINES.md) and recorded in [LOG.md](./LOG.md).
+- C4 implementation: **next priority**; no implementation evidence should be
+  claimed until a runnable prototype and test output exist.
+- Untracked upstream proposal and sprint-board files are reference inputs and
+  are not included in the C4 documentation commits unless explicitly requested.
+
 ### Individual C4 responsibility
 
 - Define explanation faithfulness as both factual entailment and
@@ -245,6 +258,93 @@ The sprint board's shared tasks also apply to C4: agree the JSON hand-off
 schemas, use the shared mock Neo4j graph, use REST endpoint stubs, check each
 handoff weekly, contribute to the end-to-end mock demo, prepare unified slides,
 rehearse, record a backup demonstration, and complete the supervisor dry run.
+
+## Immediate seven-day execution plan
+
+This is the highest-priority plan for the week before PP1. Complete the
+smallest end-to-end path first; defer optional sophistication until the
+demonstration works.
+
+### Day 1 — Freeze the contract and fixtures
+
+- [ ] Create the C4 implementation structure.
+- [ ] Freeze the input JSON schema for C1 evidence, C2 learner state, and C3
+  verified path.
+- [ ] Freeze the output JSON schema for claims, statuses, violations,
+  confidence, rewrites, evidence, and the final report.
+- [ ] Create mock inputs for one target concept and one learner profile.
+- [ ] Add a simple valid path and a path-oriented explanation target.
+
+### Day 2 — Generate and decompose
+
+- [ ] Implement a replaceable explanation-generator interface.
+- [ ] Use a deterministic fixture generator if an API is unavailable.
+- [ ] Implement atomic-claim decomposition with stable claim IDs.
+- [ ] Add schema validation and a readable intermediate result.
+
+### Day 3 — Implement factual verification
+
+- [ ] Implement graph-evidence lookup over the mock KG fixture.
+- [ ] Implement the initial NLI/rule-based mapping decision.
+- [ ] Support `ENTAILED`, `CONTRADICTED`, and `UNSUPPORTED`.
+- [ ] Demonstrate at least one supported and one unsupported/contradicted claim.
+
+### Day 4 — Implement cognitive verification
+
+- [ ] Implement the Bloom-ceiling rule using documented pilot thresholds.
+- [ ] Implement prerequisite mastery checks.
+- [ ] Support `APPROPRIATE`, `BLOOM_MISMATCH`,
+  `UNMASTERED_PREREQUISITE`, and `INCONCLUSIVE`.
+- [ ] Demonstrate a factually correct but cognitively inappropriate claim.
+
+### Day 5 — Implement repair and reporting
+
+- [ ] Rewrite only violating claims or sentences.
+- [ ] Re-run factual and cognitive verification after each rewrite.
+- [ ] Enforce the retry limit and unresolved-claim policy.
+- [ ] Produce the final explanation and faithfulness report.
+- [ ] Add focused tests for each violation type and the no-violation case.
+
+### Day 6 — Produce initial evidence
+
+- [ ] Run the preliminary corpus of 20–30 explanations or clearly document
+  why a smaller pilot was necessary.
+- [ ] Record claim counts, violation counts, rewrite success, and unresolved
+  cases.
+- [ ] Record latency and LLM-call counts if an external model is used.
+- [ ] Capture reproducible terminal output or screenshots for the demo.
+- [ ] Compare at least an unverified baseline with the repaired pipeline.
+
+### Day 7 — Presentation readiness
+
+- [ ] Prepare the C4 problem and research-gap slide.
+- [ ] Prepare the C4 architecture and data-flow slide.
+- [ ] Prepare the before/after claim-verification demonstration.
+- [ ] Prepare technology and design-justification slides.
+- [ ] Prepare implementation progress, risks, and next-work slides.
+- [ ] Prepare the commercialization/value slide.
+- [ ] Rehearse the demo and record a backup.
+- [ ] Complete the supervisor dry run.
+
+### Definition of PP1 readiness
+
+C4 is ready to demonstrate when one command or one documented execution can
+show:
+
+```text
+structured inputs
+  -> explanation
+  -> atomic claims
+  -> factual + cognitive statuses
+  -> typed violations
+  -> targeted rewrite
+  -> re-verification
+  -> final explanation + faithfulness report
+```
+
+If the full external integrations are unavailable, present the mock fixtures
+honestly as an interface-compatible proof of concept and label real
+integration as pending.
 
 ## Evaluation definitions
 
