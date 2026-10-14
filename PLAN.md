@@ -293,7 +293,7 @@ maintained or improved clarity and comprehension.
 - [LOG.md](./LOG.md) records completed work chronologically with date and time.
 - This file records planned, completed, and outstanding work.
 - Check an item only after implementation or verification evidence exists.
-- [RESEARCH_GUIDELINES.md](./RESEARCH_GUIDELINES.md) records the frozen
+- [GUIDELINES.md](./GUIDELINES.md) records the frozen
   methodological definitions, evaluation safeguards, PP1 priorities, and
   reproducibility rules that guide this plan.
 - Every work change must update [LOG.md](./LOG.md) and this plan where relevant.

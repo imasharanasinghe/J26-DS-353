@@ -5,6 +5,69 @@ guide Component 4 implementation, evaluation, documentation, and presentation.
 It is intended to be understandable by every project member and by future
 contributors working in any development environment.
 
+## Project work-management process
+
+All project work must follow the documentation and version-control process
+below.
+
+### `LOG.md` — completed work record
+
+[LOG.md](./LOG.md) is the chronological record of work that has already been
+completed. After every work session or meaningful change, add an entry with:
+
+- Date
+- Time and timezone
+- What was changed, reviewed, implemented, tested, or decided
+- Any relevant files, results, limitations, or follow-up items
+
+Do not use `LOG.md` for future intentions. Record intentions in
+[PLAN.md](./PLAN.md).
+
+### `PLAN.md` — current work plan
+
+[PLAN.md](./PLAN.md) records the planned scope, milestones, responsibilities,
+dependencies, checklists, risks, and outstanding work. Update it when a task
+is completed, reprioritized, split into subtasks, blocked, or newly identified.
+Keep the plan consistent with the actual C4 proposal and the latest team
+integration decisions.
+
+### Required change sequence
+
+For every project change, follow this sequence:
+
+1. Make the requested implementation, documentation, configuration, or
+   research change.
+2. Update [LOG.md](./LOG.md) with the current date, time, timezone, and a
+   precise description of the completed change.
+3. Update [PLAN.md](./PLAN.md) when the change affects scope, milestones,
+   status, dependencies, risks, checklists, or next steps.
+4. Review the diff and run the smallest relevant validation.
+5. Commit all related changes to the `c4` branch.
+
+The documentation updates and the work they describe should be committed
+together so that the repository history remains understandable.
+
+### Commit requirements
+
+- Use a concise, descriptive commit message.
+- Commit only related changes; do not include unrelated work from another
+  contributor.
+- Never commit secrets, credentials, personal data, or restricted datasets.
+- Include this trailer in every commit unless the user explicitly instructs
+  otherwise:
+
+```text
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
+```
+
+Before finishing a work item, verify that:
+
+- The current branch is `c4`.
+- `LOG.md` describes the work.
+- `PLAN.md` reflects any relevant plan change.
+- The committed files match the intended change.
+- Validation results and remaining untracked files are understood.
+
 ## Research method
 
 Use Design Science Research as the overall methodology:
