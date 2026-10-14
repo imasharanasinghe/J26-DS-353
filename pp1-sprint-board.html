@@ -1,0 +1,391 @@
+<title>Research Sprint Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f4f6f8; --surface:#ffffff; --ink:#15223a; --muted:#5b6679; --line:#dde2e9; --soft:#eef1f5;
+  --shared:#56627a; --c1:#6b4fa0; --c2:#1d7a76; --c3:#b3781a; --c4:#3d7a3a; --pres:#15223a;
+  --done:#2f7d4f; --stretch:#8a93a3; --warn:#b45309;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0f1622; --surface:#172131; --ink:#e6ebf2; --muted:#9aa5b8; --line:#28344a; --soft:#1d293b;
+    --shared:#98a3b8; --c1:#a58ae0; --c2:#4fc0b8; --c3:#e3a84a; --c4:#7dc27a; --pres:#e6ebf2;
+    --done:#5fc28a; --stretch:#77819a; --warn:#f59e0b;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0f1622; --surface:#172131; --ink:#e6ebf2; --muted:#9aa5b8; --line:#28344a; --soft:#1d293b;
+  --shared:#98a3b8; --c1:#a58ae0; --c2:#4fc0b8; --c3:#e3a84a; --c4:#7dc27a; --pres:#e6ebf2;
+  --done:#5fc28a; --stretch:#77819a; --warn:#f59e0b;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:28px 56px;display:flex;flex-direction:column;gap:28px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:28px;font-weight:700;margin:4px 0 6px;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--muted);max-width:64ch;margin:0}
+.sync{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:6px}
+
+/* phase summary */
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ph{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.ph[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.ph:focus-visible{outline:2px solid var(--c2);outline-offset:2px}
+.ph .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ph .name{font-weight:600;font-size:16px}
+.ph .tgt{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.ph .when{font-size:12.5px;color:var(--muted)}
+.ph .when .as{color:var(--warn);font-family:var(--mono);font-size:11px;margin-left:4px}
+.ph .n{font-family:var(--mono);font-size:22px;font-weight:500;font-variant-numeric:tabular-nums}
+.ph .n small{font-size:12px;color:var(--muted);font-weight:400;margin-left:6px}
+.meter{height:6px;background:var(--soft);border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--c,var(--done));width:0;transition:width .3s}
+@media (max-width:720px){.phases{grid-template-columns:1fr}}
+
+section h2{font-size:15px;font-weight:600;margin:0 0 10px;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+section h2 span{font-weight:400;font-size:12px;color:var(--muted)}
+
+/* Gantt (weekly) */
+.gantt-scroll{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.gantt{display:grid;font-size:12px}
+.gh{font-family:var(--mono);font-size:10px;color:var(--muted);padding:8px 0 4px 4px;border-bottom:1px solid var(--line);white-space:nowrap;font-variant-numeric:tabular-nums}
+.gh.month{color:var(--ink);font-weight:500;border-left:1px solid var(--line)}
+.glabel{padding:9px 12px;border-bottom:1px solid var(--line);font-weight:500;display:flex;align-items:center;gap:8px;white-space:nowrap;position:sticky;left:0;background:var(--surface);z-index:3}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.gcell{border-bottom:1px solid var(--line)}
+.gcell.mstart{border-left:1px solid var(--line)}
+.bar{margin:6px 1px;border-radius:4px;padding:3px 7px;font-size:11px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:1;align-self:center}
+.bar.light{opacity:.55}
+.bar.ms{color:var(--bg)}
+.todayline{border-left:2px solid var(--ink);opacity:.55;pointer-events:none;z-index:2}
+
+/* Board */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.filters button{font:500 12px var(--sans);padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.filters button:focus-visible,.task input:focus-visible{outline:2px solid var(--c2);outline-offset:2px}
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;align-items:start}
+.col{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.col-head{padding:14px 16px 12px;border-top:4px solid var(--c);display:flex;flex-direction:column;gap:8px}
+.col-head .t{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.col-head h3{margin:0;font-size:15px;font-weight:600}
+.col-head .pct{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+.col-head .who{font-size:12px;color:var(--muted)}
+.col-head .meter i{background:var(--c)}
+.grp{border-top:1px solid var(--line)}
+.grp-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 16px 2px}
+.task{display:flex;gap:10px;align-items:flex-start;padding:7px 16px;cursor:pointer}
+.task:hover{background:var(--soft)}
+.task input{margin:3px 0 0;width:16px;height:16px;accent-color:var(--done);flex:none;cursor:pointer}
+.task .txt{flex:1}
+.task.done .txt{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:0 5px;border-radius:3px;margin-left:6px;vertical-align:1px;border:1px solid var(--line);color:var(--muted)}
+.tag.key{border-color:var(--c3);color:var(--c3)}
+.tag.stretch{border-style:dashed}
+.tag.ph{border-color:var(--ink);color:var(--ink)}
+.col-foot{padding:10px 16px 14px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
+.col-foot b{font-weight:600;color:var(--ink)}
+@media (max-width:520px){h1{font-size:23px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Final-year research · PP1 → PP2 → PP3</div>
+      <h1>Research Sprint Board</h1>
+      <p class="sub">Every component's to-do list for all three progress presentations. Pick a presentation to see its list; ticks are shared with everyone who opens this page. PP2 and PP3 dates are assumed until confirmed.</p>
+    </div>
+    <div class="sync" id="sync">Loading shared progress…</div>
+  </header>
+
+  <div class="phases" id="phases"></div>
+
+  <section>
+    <h2>Year timeline <span>Weekly · Sep 2026 – May 2027 · dark bars = presentation windows</span></h2>
+    <div class="gantt-scroll"><div class="gantt" id="gantt"></div></div>
+  </section>
+
+  <section>
+    <h2 id="listTitle">To-do lists <span>Key = the evidence the panel looks for · Stretch = drop first if time runs out</span></h2>
+    <div class="filters" id="filters"></div>
+    <div class="board" id="board"></div>
+  </section>
+</div>
+
+<script>
+/* ---------- dates (PP2 and PP3 are assumed: edit here) ---------- */
+const D = (y,m,d)=>new Date(y,m-1,d);
+const PHASES = {
+  pp1:{name:"PP1", target:"60%", start:D(2026,9,28), win:[D(2026,10,22),D(2026,10,27)], assumed:false},
+  pp2:{name:"PP2", target:"90%", start:D(2026,10,28), win:[D(2027,2,15),D(2027,2,19)], assumed:true},
+  pp3:{name:"PP3 · Final", target:"100%", start:D(2027,2,22), win:[D(2027,5,10),D(2027,5,14)], assumed:true}
+};
+const GROUPS = {
+  pp1:{W1:"Week 1 · 28 Sep – 4 Oct", W2:"Week 2 · 5 – 11 Oct", W3:"Week 3 · 12 – 18 Oct", P:"Prep · 19 – 21 Oct"},
+  pp2:{B:"Complete the build · Nov", E:"Full evaluation · Dec – Jan", P:"Prep · early Feb"},
+  pp3:{U:"User study · Mar", R:"Report and paper · Apr", P:"Final prep · early May"}
+};
+
+/* ---------- tasks: [id, phase, group, text, flag] ---------- */
+const COMPONENTS = [
+ {id:"shared", name:"Shared · whole team", short:"Shared", who:"All four members", color:"--shared", tasks:[
+  ["s1","pp1","W1","Agree JSON schemas for C1 → C2 → C3 → C4 hand-offs"],
+  ["s2","pp1","W1","Build mock KG (20–30 DSA concepts) in Neo4j so C2–C4 can start"],
+  ["s3","pp1","W1","Set up shared repo and REST endpoint stubs"],
+  ["s4","pp1","W2","Weekly sync: check each hand-off against the schema"],
+  ["s5","pp1","W3","End-to-end demo on one target concept (mocks allowed)","key"],
+  ["s6","pp1","P","Build PP1 slides with unified system framing"],
+  ["s7","pp1","P","Rehearse demo and record a backup screen video"],
+  ["s8","pp1","P","Dry run with Prof. Nuwan"],
+  ["s9","pp2","B","Write down PP1 panel feedback and an action for each item"],
+  ["s10","pp2","B","Replace all mocks with real services behind the REST API"],
+  ["s11","pp2","B","Submit ethics clearance for the user study"],
+  ["s12","pp2","E","Integration tests for every hand-off"],
+  ["s13","pp2","E","Integrated demo driven by an LMS-style API request","key"],
+  ["s14","pp2","E","Draft research paper outline and pick a venue"],
+  ["s15","pp2","P","Build PP2 slides and rehearse integrated demo"],
+  ["s16","pp3","U","Recruit user-study volunteers"],
+  ["s17","pp3","U","Run the user study","key"],
+  ["s18","pp3","U","Test on a Courseweb-style LMS sandbox"],
+  ["s19","pp3","R","Analyse user-study results"],
+  ["s20","pp3","R","Submit research paper"],
+  ["s21","pp3","R","Write group report: commercialization, budget, system chapter"],
+  ["s22","pp3","P","Final demo and backup recording"],
+  ["s23","pp3","P","Viva Q&A preparation for the whole team"]
+ ]},
+ {id:"c1", name:"C1 · Knowledge Graph", short:"C1", who:"KG construction", color:"--c1", tasks:[
+  ["c1a","pp1","W1","Finalise schema with all 4 typed edge types"],
+  ["c1b","pp1","W1","Extract the DSA subset of MOOCCubeX"],
+  ["c1c","pp1","W1","Write annotation guidelines for the gold corpus"],
+  ["c1d","pp1","W2","Run the extraction pipeline on the DSA subset"],
+  ["c1e","pp1","W2","Load graph into Neo4j and share the query endpoint"],
+  ["c1f","pp1","W2","Annotate ~60% of the gold corpus"],
+  ["c1g","pp1","W3","Preliminary precision / recall / F1 per edge type","key"],
+  ["c1h","pp1","W3","Replace mock KG with the real KG in the demo"],
+  ["c1i","pp2","B","Finish annotating the full gold corpus"],
+  ["c1j","pp2","B","Second annotator on a shared sample"],
+  ["c1k","pp2","E","Inter-annotator agreement (Cohen's κ)"],
+  ["c1l","pp2","E","Error analysis and extraction fixes"],
+  ["c1m","pp2","E","Final P / R / F1 per edge type","key"],
+  ["c1n","pp2","E","Freeze KG v1 for the other stages"],
+  ["c1o","pp3","R","Write individual report chapter"],
+  ["c1p","pp3","R","Document the gold corpus and schema for release"],
+  ["c1q","pp3","P","Prepare novelty defence and viva answers"]
+ ]},
+ {id:"c2", name:"C2 · GNN Student Model", short:"C2", who:"Mastery + uncertainty", color:"--c2", tasks:[
+  ["c2a","pp1","W1","Map learner logs to KG concepts"],
+  ["c2b","pp1","W1","Create train / validation / test splits"],
+  ["c2c","pp1","W2","Train GNN; output mastery per concept"],
+  ["c2d","pp1","W2","Add uncertainty output (calibration can wait)"],
+  ["c2e","pp1","W2","Train one baseline (BKT or DKT)"],
+  ["c2f","pp1","W3","Preliminary AUC: GNN vs baseline","key"],
+  ["c2g","pp1","W3","Serve mastery + uncertainty JSON to C3"],
+  ["c2h","pp2","B","Calibrate uncertainty"],
+  ["c2i","pp2","B","Cold-start priors from the knowledge graph"],
+  ["c2j","pp2","E","ECE and reliability diagram","key"],
+  ["c2k","pp2","E","Cold-start ablation: with vs without graph priors"],
+  ["c2l","pp2","E","Final AUC against both BKT and DKT"],
+  ["c2m","pp3","R","Write individual report chapter"],
+  ["c2n","pp3","R","Sensitivity checks on GNN settings"],
+  ["c2o","pp3","P","Prepare novelty defence and viva answers"]
+ ]},
+ {id:"c3", name:"C3 · Path Generation", short:"C3", who:"Chirath · proposer + typed critic", color:"--c3", tasks:[
+  ["c3a","pp1","W1","L1 frontier / admissible set from the KG"],
+  ["c3b","pp1","W1","L3 LLM proposer generating K drafts"],
+  ["c3c","pp1","W1","Define typed violation classes (e.g. MissingPrerequisite)"],
+  ["c3d","pp1","W2","L4 critic: prerequisites-first rule"],
+  ["c3e","pp1","W2","L4 critic: ZPD difficulty, no cycles / reachability"],
+  ["c3f","pp1","W2","L4 critic: uncertainty probing, misconception remediation"],
+  ["c3g","pp1","W2","L5 single-step repair loop (max 3 iterations)"],
+  ["c3h","pp1","W2","L7 topological-sort fallback"],
+  ["c3i","pp1","W3","L8 verified path JSON out to C4"],
+  ["c3j","pp1","W3","Ablation: proposer-only vs proposer + critic, 30–50 targets","key"],
+  ["c3k","pp1","W3","RL offline dataset from MOOCCubeX (state, action, reward)"],
+  ["c3l","pp1","W3","Start L2 IQL training","stretch"],
+  ["c3m","pp2","B","L2 offline IQL policy trained"],
+  ["c3n","pp2","B","L2 policy biases the proposer prompt"],
+  ["c3o","pp2","B","L6 reranking among verified candidates only"],
+  ["c3p","pp2","E","Full ablation: proposer / + critic / + RL / topo-sort baseline","key"],
+  ["c3q","pp2","E","Metrics: violation rate, repair rounds, fallback rate, latency"],
+  ["c3r","pp2","E","Error analysis of paths that needed the fallback"],
+  ["c3s","pp2","E","Sensitivity: K drafts and the repair cap"],
+  ["c3t","pp3","U","Path-quality questions in the user study"],
+  ["c3u","pp3","R","Write individual report chapter"],
+  ["c3v","pp3","R","Related-work comparison (IB-GRPO, MC-CPO, LLM-Modulo…)"],
+  ["c3w","pp3","P","Prepare novelty defence and viva answers"]
+ ]},
+ {id:"c4", name:"C4 · Explanation Faithfulness", short:"C4", who:"Bloom-aware explanations", color:"--c4", tasks:[
+  ["c4a","pp1","W1","Explanation generator prompt that takes C3's path"],
+  ["c4b","pp1","W1","Choose NLI model or rule-based edge mapping"],
+  ["c4c","pp1","W2","KG entailment checker flags unsupported claims"],
+  ["c4d","pp1","W2","Bloom-ceiling check prototype"],
+  ["c4e","pp1","W2","Sentence-level rewrite loop"],
+  ["c4f","pp1","W3","Preliminary faithfulness on 20–30 explanations","key"],
+  ["c4g","pp2","B","Tune the entailment checker thresholds"],
+  ["c4h","pp2","B","Evaluate the Bloom-level classifier"],
+  ["c4i","pp2","E","Full faithfulness evaluation","key"],
+  ["c4j","pp2","E","Ablation: with vs without the rewrite loop"],
+  ["c4k","pp3","U","Explanation-clarity questions in the user study"],
+  ["c4l","pp3","R","Write individual report chapter"],
+  ["c4m","pp3","P","Prepare novelty defence and viva answers"]
+ ]}
+];
+
+/* ---------- Gantt rows: [phase, startDate, endDate, label] ---------- */
+const GANTT = [
+  {label:"Shared", color:"--shared", bars:[[D(2026,9,28),D(2026,10,21),"Schemas · demo"],[D(2026,10,28),D(2027,2,12),"Integration · ethics · paper outline"],[D(2027,2,22),D(2027,5,7),"User study · paper · report"]]},
+  {label:"C1 · KG", color:"--c1", bars:[[D(2026,9,28),D(2026,10,21),"Build + first F1"],[D(2026,10,28),D(2027,2,12),"Gold corpus · κ · final F1"],[D(2027,2,22),D(2027,5,7),"Report"]]},
+  {label:"C2 · GNN", color:"--c2", bars:[[D(2026,9,28),D(2026,10,21),"GNN + AUC"],[D(2026,10,28),D(2027,2,12),"Calibration · cold-start"],[D(2027,2,22),D(2027,5,7),"Report"]]},
+  {label:"C3 · Path", color:"--c3", bars:[[D(2026,9,28),D(2026,10,21),"Critic loop + ablation"],[D(2026,10,28),D(2027,2,12),"IQL · reranking · full ablation"],[D(2027,2,22),D(2027,5,7),"User study · report"]]},
+  {label:"C4 · Explain", color:"--c4", bars:[[D(2026,9,28),D(2026,10,21),"Checker + first result"],[D(2026,10,28),D(2027,2,12),"Full faithfulness eval"],[D(2027,2,22),D(2027,5,7),"User study · report"]]},
+  {label:"Presentations", color:"--pres", ms:true, bars:[[PHASES.pp1.win[0],PHASES.pp1.win[1],"PP1"],[PHASES.pp2.win[0],PHASES.pp2.win[1],"PP2"],[PHASES.pp3.win[0],PHASES.pp3.win[1],"PP3"]]}
+];
+
+let status = {}, db = null, phase = "pp1", filter = "all";
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const cssv = v => `var(${v})`;
+const fmt = d => d.toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+const today = ()=>{const t=new Date(); t.setHours(0,0,0,0); return t;};
+const core = (ph, comp) => (comp?[comp]:COMPONENTS).flatMap(c=>c.tasks.filter(t=>t[1]===ph && t[4]!=="stretch"));
+const pct = list => { const d = list.filter(t=>status[t[0]]).length; return {d, n:list.length, p:list.length?Math.round(d/list.length*100):0}; };
+
+function currentPhase(){
+  const t = today();
+  if(t <= PHASES.pp1.win[1]) return "pp1";
+  if(t <= PHASES.pp2.win[1]) return "pp2";
+  return "pp3";
+}
+
+function renderPhases(){
+  const t = today();
+  document.getElementById("phases").innerHTML = Object.entries(PHASES).map(([k,p])=>{
+    const r = pct(core(k));
+    const days = Math.round((p.win[0]-t)/86400000);
+    const dl = days>0 ? `${days} days to go` : (t<=p.win[1] ? "This week" : "Done");
+    return `<button type="button" class="ph" id="ph-${k}" data-k="${k}" aria-pressed="${phase===k}">
+      <div class="row"><span class="name">${p.name}</span><span class="tgt">target ${p.target}</span></div>
+      <div class="when">${fmt(p.win[0])} – ${fmt(p.win[1])} ${p.win[1].getFullYear()}${p.assumed?'<span class="as">assumed</span>':""} · ${dl}</div>
+      <div class="n">${r.p}%<small>${r.d}/${r.n} tasks</small></div>
+      <div class="meter"><i style="width:${r.p}%"></i></div>
+    </button>`;
+  }).join("");
+}
+
+function buildGantt(){
+  const g = document.getElementById("gantt");
+  const start = D(2026,9,28), weeks = 33; // to mid May 2027
+  const wk = d => Math.floor((d - start)/(7*86400000));
+  g.style.gridTemplateColumns = `130px repeat(${weeks}, minmax(26px,1fr))`;
+  g.style.minWidth = (130 + weeks*26) + "px";
+  let html = `<div class="gh" style="position:sticky;left:0;background:var(--surface);z-index:3"></div>`;
+  let lastM = -1;
+  for(let w=0; w<weeks; w++){
+    const dt = new Date(start); dt.setDate(dt.getDate()+w*7);
+    const m = dt.getMonth(), isM = m!==lastM; lastM = m;
+    html += `<div class="gh ${isM?"month":""}">${isM?dt.toLocaleDateString("en-GB",{month:"short"}):""}</div>`;
+  }
+  GANTT.forEach((r,ri)=>{
+    const row = ri+2;
+    html += `<div class="glabel" style="grid-row:${row};grid-column:1"><span class="dot" style="background:${cssv(r.color)}"></span>${esc(r.label)}</div>`;
+    let lm=-1;
+    for(let w=0; w<weeks; w++){
+      const dt = new Date(start); dt.setDate(dt.getDate()+w*7);
+      const ms = dt.getMonth()!==lm; lm = dt.getMonth();
+      html += `<div class="gcell ${ms?"mstart":""}" style="grid-row:${row};grid-column:${w+2}"></div>`;
+    }
+    r.bars.forEach(([a,b,t],bi)=>{
+      const s = Math.max(0,wk(a)), e = Math.min(weeks-1,wk(b));
+      const ph = ["pp1","pp2","pp3"][bi];
+      html += `<div class="bar ${r.ms?"ms":""} ${!r.ms && ph!==phase?"light":""}" title="${esc(t)}" style="grid-row:${row};grid-column:${s+2}/${e+3};background:${cssv(r.color)}">${esc(t)}</div>`;
+    });
+  });
+  const tw = wk(today());
+  if(tw>=0 && tw<weeks) html += `<div class="todayline" style="grid-column:${tw+2};grid-row:1/${GANTT.length+2}" title="This week"></div>`;
+  g.innerHTML = html;
+}
+
+function buildFilters(){
+  const f = document.getElementById("filters");
+  const opts = [["all","All components"],...COMPONENTS.map(c=>[c.id,c.short])];
+  f.innerHTML = opts.map(([id,l])=>`<button type="button" id="f-${id}" data-f="${id}" aria-pressed="${filter===id}">${esc(l)}</button>`).join("");
+}
+
+function render(){
+  renderPhases();
+  const P = PHASES[phase];
+  document.getElementById("listTitle").firstChild.textContent = `${P.name} to-do lists · target ${P.target} `;
+  document.getElementById("board").innerHTML = COMPONENTS.filter(c=>filter==="all"||c.id===filter).map(c=>{
+    const r = pct(core(phase,c));
+    const groups = Object.entries(GROUPS[phase]).map(([g,label])=>{
+      const ts = c.tasks.filter(t=>t[1]===phase && t[2]===g);
+      if(!ts.length) return "";
+      return `<div class="grp"><div class="grp-label">${label}</div>${ts.map(([id,,,txt,flag])=>`
+        <label class="task ${status[id]?"done":""}" for="t-${id}">
+          <input type="checkbox" id="t-${id}" data-id="${id}" ${status[id]?"checked":""}>
+          <span class="txt">${esc(txt)}${flag==="key"?'<span class="tag key">Key</span>':""}${flag==="stretch"?'<span class="tag stretch">Stretch</span>':""}</span>
+        </label>`).join("")}</div>`;
+    }).join("");
+    const all = pct(core("pp1",c).concat(core("pp2",c),core("pp3",c)));
+    return `<div class="col" style="--c:${cssv(c.color)}">
+      <div class="col-head">
+        <div class="t"><h3>${esc(c.name)}</h3><span class="pct">${r.d}/${r.n} · ${r.p}%</span></div>
+        <div class="who">${esc(c.who)}</div>
+        <div class="meter"><i style="width:${r.p}%"></i></div>
+      </div>
+      ${groups || '<div class="grp"><div class="grp-label">No tasks in this phase</div></div>'}
+      <div class="col-foot"><b>Whole year:</b> ${all.d}/${all.n} tasks done (${all.p}%)</div>
+    </div>`;
+  }).join("");
+}
+
+document.getElementById("phases").addEventListener("click", e=>{
+  const b = e.target.closest(".ph"); if(!b) return;
+  phase = b.dataset.k; save(); buildGantt(); render();
+});
+document.getElementById("filters").addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  filter = b.dataset.f; save(); buildFilters(); render();
+});
+document.getElementById("board").addEventListener("change", async e=>{
+  const cb = e.target; if(!cb.matches("input[type=checkbox]")) return;
+  const id = cb.dataset.id, val = cb.checked;
+  status = {...status, [id]:val}; render();
+  if(db){
+    try{ await db.doc("status/"+id).set({done:val, at:new Date().toISOString()}); }
+    catch(err){
+      document.getElementById("sync").textContent = err && err.code==="invalid_argument"
+        ? "You can view this board but not change it. Ask the owner for Contributor access."
+        : "Couldn't save that tick. Check your connection and try again.";
+    }
+  } else {
+    try{ localStorage.setItem("pp-status", JSON.stringify(status)); }catch(_){}
+  }
+});
+function save(){ try{ localStorage.setItem("pp-view", JSON.stringify({phase,filter})); }catch(_){} }
+
+(async function start(){
+  phase = currentPhase();
+  try{ const v = JSON.parse(localStorage.getItem("pp-view")||"null"); if(v){ if(PHASES[v.phase]) phase=v.phase; if(v.filter) filter=v.filter; } }catch(_){}
+  buildGantt(); buildFilters(); render();
+  const sync = document.getElementById("sync");
+  try{ db = window.claude && await window.claude.use("db"); }catch(_){ db = null; }
+  if(!db){
+    try{ status = JSON.parse(localStorage.getItem("pp-status")||"{}"); }catch(_){}
+    sync.textContent = "Ticks are saved in this browser only.";
+    render(); return;
+  }
+  db.collection("status").onSnapshot(snap=>{
+    const s = {};
+    snap.docs.forEach(d=>{ const v=d.data(); if(v && v.done) s[d.id]=true; });
+    status = s; render();
+    sync.textContent = "Ticks are shared live with the team.";
+  }, ()=>{ sync.textContent = "Live sync stopped. Reload the page to reconnect."; });
+})();
+</script>
