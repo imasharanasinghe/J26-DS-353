@@ -70,3 +70,8 @@ This log records the work completed for Component 4 and the associated project a
 - Confirmed that C1, C2, C3, and C4 currently have no implementation and that shared JSON schemas and interfaces are not finalized.
 - Recorded that component-specific datasets or materials may exist individually but are not officially integrated or used.
 - Recorded unresolved external decisions in [PLAN.md](./PLAN.md) and [GUIDELINES.md](./GUIDELINES.md) instead of making unsupported assumptions.
+
+### 18:56:29 +05:30
+- Confirmed the user's priority: focus on the research project's implementation, integration, reproducibility, and evaluation rather than PP1, viva, or presentation preparation.
+- Updated [PLAN.md](./PLAN.md) and [GUIDELINES.md](./GUIDELINES.md) so assessment preparation is user-managed and does not drive technical research decisions.
+- Reframed the immediate execution plan around the C4 implementation, testing, integration, and research evidence.

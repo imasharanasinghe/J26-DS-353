@@ -234,15 +234,24 @@ Return a structured response containing:
 - Complete dissertation sections, final system demonstration, and viva/
   presentation material.
 
-## PP1 priority and demonstration
+## Research implementation priority
 
-PP1 is worth 15% and evaluates proof of concept as well as the research gap,
-technology application, design, implementation progress, best practices,
-requirements, risks, communication, and commercialization.
+The primary objective of this plan is to deliver a correct, reproducible,
+evaluated research implementation. Presentation, demonstration, viva, and
+other assessment preparation are managed separately by the user and must not
+drive architecture, research-method, implementation, or evaluation decisions.
 
-The group leader's sprint board set the PP1 target at approximately 60%
-component progress and placed the PP1 presentation window at 22–27 October
-2026. Its C4 tasks are included below and have been transcribed into this plan.
+The research implementation must be developed against stable interfaces,
+explicit assumptions, meaningful baselines, reproducible fixtures, and
+evidence-based evaluation. Assessment deadlines may affect scheduling, but
+they do not replace the research deliverables.
+
+## Demonstration support
+
+Demonstration material may be created when useful for validating the
+implementation, but demonstration and presentation preparation are not
+individual C4 research objectives. The C4 implementation should remain useful
+even when no presentation is planned.
 
 The minimum convincing C4 demonstration is:
 
@@ -256,10 +265,10 @@ The minimum convincing C4 demonstration is:
 7. Re-verify the revised content.
 8. Show the final explanation and faithfulness report.
 
-### PP1 evidence checklist
+### Research implementation checklist
 
-- [ ] Problem and research gap explained
-- [ ] C4 architecture and responsibility boundary shown
+- [ ] Research problem and contribution operationalized
+- [ ] C4 architecture and responsibility boundary implemented
 - [ ] Versioned input/output schema shown
 - [ ] Working end-to-end proof-of-concept pipeline
 - [ ] Successful supported-claim case
@@ -269,17 +278,16 @@ The minimum convincing C4 demonstration is:
 - [ ] Typed violation report shown
 - [ ] Targeted rewrite and re-verification shown
 - [ ] Confidence tier and KG grounding shown
-- [ ] Initial test/evaluation results shown
-- [ ] Technology choices justified
-- [ ] Functional and non-functional requirements summarized
-- [ ] Risks and mitigations explained
-- [ ] Commercial/user value explained
-- [ ] Completed, delayed, and next tasks stated honestly
+- [ ] Reproducible test and evaluation results generated
+- [ ] Technology choices justified by research and engineering evidence
+- [ ] Functional and non-functional requirements tested
+- [ ] Risks and mitigations tracked
+- [ ] Limitations and remaining work documented
 
-### C4 sprint-board commitments
+### C4 implementation commitments
 
-These commitments align the detailed C4 plan with the group leader's sprint
-board:
+These commitments align the detailed C4 plan with the group's implementation
+direction:
 
 | Sprint-board task | C4 plan location | Required evidence |
 |---|---|---|
@@ -288,24 +296,24 @@ board:
 | KG entailment checker flags unsupported claims | Milestone 4 | Claim-level supported/contradicted/unsupported output |
 | Bloom-ceiling check prototype | Milestone 5 | At least one appropriate and one mismatch case |
 | Sentence-level rewrite loop | Milestone 6 | Only the violating sentence/claim changes, followed by re-verification |
-| Preliminary faithfulness on 20–30 explanations | Milestone 7 | Corpus count, initial metrics, and limitations |
+| Preliminary faithfulness evaluation | Milestone 7 | Corpus count, metrics, and limitations |
 | Tune entailment-checker thresholds | Milestone 7 | Threshold selection and sensitivity results |
 | Evaluate Bloom-level classifier | Milestone 7 | Classifier evaluation against manual labels |
 | Full faithfulness evaluation | Milestone 7 | Final technical evaluation report |
 | Ablation with versus without rewrite loop | Milestone 7 | Rewrite-loop ablation results |
 | Explanation-clarity questions in user study | Milestone 8 | Approved instrument and collected clarity responses |
-| C4 report chapter and novelty defence | Milestone 9 | Individual report section and viva Q&A preparation |
+| C4 research documentation | Milestone 9 | Reproducible implementation and evaluation documentation |
 
-The sprint board's shared tasks also apply to C4: agree the JSON hand-off
-schemas, use the shared mock Neo4j graph, use REST endpoint stubs, check each
-handoff weekly, contribute to the end-to-end mock demo, prepare unified slides,
-rehearse, record a backup demonstration, and complete the supervisor dry run.
+Shared engineering tasks still apply to C4 where they support the research:
+agree JSON hand-off schemas, use compatible graph fixtures, implement REST
+interfaces where required, check hand-offs, and perform end-to-end testing.
+Presentation slides, rehearsal, recordings, and supervisor dry runs are
+outside this implementation plan.
 
-## Immediate seven-day execution plan
+## Immediate implementation execution plan
 
-This is the highest-priority plan for the week before PP1. Complete the
-smallest end-to-end path first; defer optional sophistication until the
-demonstration works.
+Complete the smallest end-to-end research path first; defer optional
+sophistication until the core implementation and evaluation work.
 
 ### Day 1 — Freeze the contract and fixtures
 
@@ -357,18 +365,14 @@ demonstration works.
 - [ ] Capture reproducible terminal output or screenshots for the demo.
 - [ ] Compare at least an unverified baseline with the repaired pipeline.
 
-### Day 7 — Presentation readiness
+### Final implementation review
 
-- [ ] Prepare the C4 problem and research-gap slide.
-- [ ] Prepare the C4 architecture and data-flow slide.
-- [ ] Prepare the before/after claim-verification demonstration.
-- [ ] Prepare technology and design-justification slides.
-- [ ] Prepare implementation progress, risks, and next-work slides.
-- [ ] Prepare the commercialization/value slide.
-- [ ] Rehearse the demo and record a backup.
-- [ ] Complete the supervisor dry run.
+- [ ] Re-run the complete pipeline from clean fixtures.
+- [ ] Verify schemas, tests, metrics, logs, and error handling.
+- [ ] Record assumptions, limitations, and unresolved integration dependencies.
+- [ ] Confirm that results are reproducible by another contributor.
 
-### Definition of PP1 readiness
+### Definition of implementation readiness
 
 C4 is ready to demonstrate when one command or one documented execution can
 show:
@@ -384,9 +388,10 @@ structured inputs
   -> final explanation + faithfulness report
 ```
 
-If the full external integrations are unavailable, present the mock fixtures
-honestly as an interface-compatible proof of concept and label real
-integration as pending.
+If the full external integrations are unavailable, use mock fixtures honestly
+as interface-compatible development inputs and label real integration as
+pending. Do not present mock results as evidence of completed upstream
+components.
 
 ## Evaluation definitions
 

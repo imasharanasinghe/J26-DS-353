@@ -344,9 +344,9 @@ Collect:
 Report participant count, study design, limitations, clarity results,
 comprehension results, statistical comparisons, and practical interpretation.
 
-## PP1 implementation priority
+## Research implementation priority
 
-For the progress presentation, prioritize a working technical proof of concept:
+Prioritize the working research implementation, integration, and evaluation:
 
 1. Freeze the input and output schemas.
 2. Create mock C1, C2, and C3 fixtures.
@@ -360,12 +360,10 @@ For the progress presentation, prioritize a working technical proof of concept:
 10. Capture initial results and implementation evidence.
 11. Prepare slides, demonstration flow, and likely Q&A answers.
 
-Do not allow the open-weight generator comparison, advanced optimization, or
-learner recruitment to delay the PP1 prototype.
+Do not allow optional sophistication to delay the core implementation,
+integration, testing, or evaluation.
 
-The group leader's sprint board set an approximate 60% PP1 progress target and
-a 22–27 October 2026 presentation window. The board's C4 PP1 evidence,
-transcribed into this document, is therefore:
+The group leader's sprint-board implementation tasks are:
 
 - A generation prompt that explicitly receives the verified path from C3.
 - An explicit decision between an NLI model and rule-based graph-edge
@@ -373,20 +371,23 @@ transcribed into this document, is therefore:
 - A KG entailment checker that flags unsupported claims.
 - A Bloom-ceiling prototype.
 - A sentence-level targeted rewrite loop.
-- Preliminary faithfulness results on 20–30 explanations.
+- Preliminary faithfulness evaluation with documented corpus size and
+  limitations.
 
-The board's PP2 and PP3 C4 follow-up evidence is:
+Later C4 implementation work includes:
 
 - Tune entailment-checker thresholds.
 - Evaluate the Bloom-level classifier.
 - Complete the full faithfulness evaluation.
 - Compare the system with and without the rewrite loop.
 - Include explanation-clarity questions in the learner study.
-- Complete the individual C4 report chapter and novelty-defence preparation.
+- Complete the individual C4 research documentation.
 
 Shared sprint-board work remains shared: JSON hand-off schemas, mock Neo4j
 graph, REST endpoint stubs, weekly hand-off checks, end-to-end demonstration,
-unified slides, backup recording, and supervisor dry run.
+and integration testing. Presentation slides, rehearsal, recordings, and
+supervisor dry runs are user-managed and are not technical research
+requirements.
 
 ## Required PP1 demonstration
 
