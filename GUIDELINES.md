@@ -331,9 +331,9 @@ For the progress presentation, prioritize a working technical proof of concept:
 Do not allow the open-weight generator comparison, advanced optimization, or
 learner recruitment to delay the PP1 prototype.
 
-The group sprint board in [pp1-sprint-board.html](./pp1-sprint-board.html)
-sets an approximate 60% PP1 progress target and a 22–27 October 2026
-presentation window. The board's C4 PP1 evidence is therefore:
+The group leader's sprint board set an approximate 60% PP1 progress target and
+a 22–27 October 2026 presentation window. The board's C4 PP1 evidence,
+transcribed into this document, is therefore:
 
 - A generation prompt that explicitly receives the verified path from C3.
 - An explicit decision between an NLI model and rule-based graph-edge

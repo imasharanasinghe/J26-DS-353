@@ -198,9 +198,9 @@ PP1 is worth 15% and evaluates proof of concept as well as the research gap,
 technology application, design, implementation progress, best practices,
 requirements, risks, communication, and commercialization.
 
-The group sprint board in [pp1-sprint-board.html](./pp1-sprint-board.html)
-sets the PP1 target at approximately 60% component progress and places the
-PP1 presentation window at 22–27 October 2026. Its C4 tasks are included below.
+The group leader's sprint board set the PP1 target at approximately 60%
+component progress and placed the PP1 presentation window at 22–27 October
+2026. Its C4 tasks are included below and have been transcribed into this plan.
 
 The minimum convincing C4 demonstration is:
 

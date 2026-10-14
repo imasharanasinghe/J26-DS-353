@@ -45,7 +45,7 @@ This log records the work completed for Component 4 and the associated project a
 - Added the project work-management process to [GUIDELINES.md](./GUIDELINES.md), covering the roles of `LOG.md` and `PLAN.md`, the required change sequence, validation, branch usage, and commit requirements.
 
 ### 16:03:50 +05:30
-- Read [pp1-sprint-board.html](./pp1-sprint-board.html), the group leader's shared PP1–PP3 sprint board.
+- Read the group leader's shared PP1–PP3 sprint board HTML file.
 - Compared the shared C4 sprint tasks with [PLAN.md](./PLAN.md) and [GUIDELINES.md](./GUIDELINES.md).
 - Confirmed that the overall C4 plan is aligned and added the board's concrete requirements: C3-path prompt, NLI/rule-mapping decision, 20–30 explanation PP1 sample, sentence-level rewriting, PP2 threshold and Bloom-classifier evaluation, rewrite-loop ablation, learner clarity questions, report chapter, and novelty-defence preparation.
 - Recorded the shared team tasks that C4 must support: schema agreement, mock Neo4j graph, REST stubs, hand-off checks, end-to-end demo, unified slides, backup recording, and supervisor dry run.
@@ -57,5 +57,9 @@ This log records the work completed for Component 4 and the associated project a
 - Defined daily deliverables for schemas and fixtures, claim decomposition, factual verification, cognitive verification, targeted repair, preliminary evaluation, and presentation readiness.
 
 ### 16:11:05 +05:30
-- Staged and committed all remaining reference documents: [C1.md](./C1.md), [C2.md](./C2.md), [C3.md](./C3.md), [C4.md](./C4.md), [PP1MARKS.md](./PP1MARKS.md), and [pp1-sprint-board.html](./pp1-sprint-board.html).
+- Staged and committed all remaining reference documents: [C1.md](./C1.md), [C2.md](./C2.md), [C3.md](./C3.md), [C4.md](./C4.md), and [PP1MARKS.md](./PP1MARKS.md), together with the group leader's sprint-board HTML file.
 - Pushed branch `c4` to the GitHub remote and configured it to track `origin/c4`.
+
+### 16:13:11 +05:30
+- Confirmed that the group sprint-board requirements had already been transcribed into [PLAN.md](./PLAN.md) and [GUIDELINES.md](./GUIDELINES.md).
+- Removed the redundant sprint-board HTML file and its broken markdown links while preserving the captured PP1–PP3 requirements.
