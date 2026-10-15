@@ -70,3 +70,12 @@ This log records the work completed for Component 4 and the associated project a
 - Confirmed that C1, C2, C3, and C4 currently have no implementation and that shared JSON schemas and interfaces are not finalized.
 - Recorded that component-specific datasets or materials may exist individually but are not officially integrated or used.
 - Recorded unresolved external decisions in [PLAN.md](./PLAN.md) and [GUIDELINES.md](./GUIDELINES.md) instead of making unsupported assumptions.
+
+### 20:46:47 +05:30
+- Inspected the C3 working folder at `/Users/reshi/Downloads/c3-path-planner` without copying or modifying it.
+- Read its README, hand-off interface documentation, schemas, pipeline, learner and knowledge-graph loaders, fixtures, tests, and demo output.
+- Confirmed the C3-to-C4 path contract and reused only that documented contract in new C4 fixtures.
+- Created the independent C4 pilot package under `c4/`, including models, deterministic verification pipeline, C3-compatible fixtures, demo script, README, and focused tests.
+- Implemented verified-path gating, atomic claim decomposition, factual status checks, cognitive prerequisite/Bloom checks, typed violations, bounded targeted rewriting, re-verification, unresolved-claim reporting, and initial/final claim records.
+- Installed the missing pytest runner for validation; 4 focused C4 tests passed, Python compilation passed, and the demo produced valid JSON.
+- Recorded that the current deterministic checker and Bloom heuristic are pilot baselines, not final research-grade NLI or calibrated models.

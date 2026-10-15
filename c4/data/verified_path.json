@@ -1,0 +1,52 @@
+{
+  "learner_id": "L02_intermediate",
+  "target": "heap",
+  "verified": true,
+  "source": "repaired",
+  "path": [
+    {
+      "step": 1,
+      "kind": "probe",
+      "id": "recursion",
+      "name": "Recursion",
+      "difficulty": 2,
+      "prerequisites": ["functions"]
+    },
+    {
+      "step": 2,
+      "kind": "remediate",
+      "id": "recursion_no_base_case",
+      "affects": "recursion",
+      "description": "Writes recursive functions without a stopping case."
+    },
+    {
+      "step": 3,
+      "kind": "learn",
+      "id": "tree",
+      "name": "Trees",
+      "difficulty": 3,
+      "prerequisites": ["linked_list", "recursion"]
+    },
+    {
+      "step": 4,
+      "kind": "learn",
+      "id": "binary_tree",
+      "name": "Binary Trees",
+      "difficulty": 3,
+      "prerequisites": ["tree"]
+    },
+    {
+      "step": 5,
+      "kind": "learn",
+      "id": "heap",
+      "name": "Heaps",
+      "difficulty": 4,
+      "prerequisites": ["binary_tree", "arrays"]
+    }
+  ],
+  "summary": "probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree -> heap",
+  "drafts_considered": 3,
+  "repair_rounds": [1, 1, 3],
+  "violations_found": [],
+  "remaining_violations": []
+}

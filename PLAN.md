@@ -15,8 +15,13 @@ relevant knowledge-graph context are available.
   [GUIDELINES.md](./GUIDELINES.md).
 - Work tracking and commit process: documented in
   [GUIDELINES.md](./GUIDELINES.md) and recorded in [LOG.md](./LOG.md).
-- C4 implementation: **next priority**; no implementation evidence should be
-  claimed until a runnable prototype and test output exist.
+- C4 implementation: **runnable pilot prototype complete**; the current
+  implementation uses deterministic local verification and interface-compatible
+  fixtures derived from the documented C3 hand-off.
+- C4 pilot validation: **4 focused tests pass**, Python compilation passes, and
+  the demo produces valid JSON output.
+- C4 research-grade NLI evaluation, real upstream integration, and final
+  threshold calibration remain outstanding.
 - Untracked upstream proposal and sprint-board files are reference inputs and
   are not included in the C4 documentation commits unless explicitly requested.
 
@@ -142,6 +147,9 @@ Return a structured response containing:
   cognitive demand.
 - Create controlled mock graph, learner profiles, and verified-path fixtures.
 
+Implementation note: the initial fixtures now exist under `c4/data/` and use
+the C3 `PlanResult.to_json` path shape without copying the C3 working folder.
+
 ### Milestone 2 — Faithfulness criteria
 
 - Define supported/entailed, contradicted, and unsupported factual labels.
@@ -162,6 +170,9 @@ Return a structured response containing:
   decomposition.
 - Preserve claim IDs, source context, and provenance across all stages.
 
+Pilot status: deterministic explanation input and atomic sentence claim IDs are
+implemented. External LLM generation remains a replaceable integration point.
+
 ### Milestone 4 — Factual verification
 
 - Retrieve the smallest relevant C1 subgraph for each claim.
@@ -171,6 +182,9 @@ Return a structured response containing:
 - Attach the evidence used for each decision.
 - Make insufficient evidence explicit; do not silently accept it.
 
+Pilot status: exact normalized evidence matching is implemented as a baseline.
+It is not yet the final NLI-based verifier.
+
 ### Milestone 5 — Cognitive verification
 
 - Process C2 mastery and uncertainty data.
@@ -179,6 +193,10 @@ Return a structured response containing:
 - Detect unmastered-prerequisite dependencies.
 - Distinguish factual validity from cognitive appropriateness.
 - Record the rule and evidence behind every cognitive decision.
+
+Pilot status: prerequisite mastery and a documented pilot Bloom-ceiling
+heuristic are implemented. Thresholds and Bloom classification require
+evaluation and later calibration.
 
 ### Milestone 6 — Violation handling and targeted repair
 
@@ -190,6 +208,9 @@ Return a structured response containing:
   presenting them as verified.
 - Calculate rewrite success and detect newly introduced violations.
 - Generate the final explanation, citations, and faithfulness report.
+
+Pilot status: bounded targeted replacement, re-verification, unresolved-claim
+reporting, and initial/final claim records are implemented.
 
 ### Milestone 7 — Technical evaluation
 

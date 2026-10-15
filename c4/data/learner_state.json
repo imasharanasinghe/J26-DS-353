@@ -1,0 +1,18 @@
+{
+  "learner_id": "L02_intermediate",
+  "mastery": {
+    "arrays": 0.9,
+    "linked_list": 0.78,
+    "recursion": 0.75,
+    "tree": 0.4,
+    "binary_tree": 0.0
+  },
+  "uncertainty": {
+    "arrays": 0.05,
+    "linked_list": 0.12,
+    "recursion": 0.32,
+    "tree": 0.3,
+    "binary_tree": 0.5
+  },
+  "misconceptions": ["recursion_no_base_case"]
+}

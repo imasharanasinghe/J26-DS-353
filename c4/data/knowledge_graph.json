@@ -1,0 +1,32 @@
+{
+  "_note": "C1-compatible pilot fixture; facts and Bloom metadata are temporary C4 test data.",
+  "concepts": {
+    "tree": {
+      "name": "Trees",
+      "difficulty": 3,
+      "bloom_level": 1,
+      "prerequisites": ["linked_list", "recursion"],
+      "facts": ["Trees are hierarchical data structures."]
+    },
+    "binary_tree": {
+      "name": "Binary Trees",
+      "difficulty": 3,
+      "bloom_level": 1,
+      "prerequisites": ["tree"],
+      "facts": ["A binary tree has at most two children per node."]
+    },
+    "heap": {
+      "name": "Heaps",
+      "difficulty": 4,
+      "bloom_level": 2,
+      "prerequisites": ["binary_tree", "arrays"],
+      "facts": ["A heap is a complete binary tree."]
+    }
+  },
+  "misconceptions": {
+    "heap_is_sorted": {
+      "affects": "heap",
+      "description": "Thinks that a heap array is fully sorted."
+    }
+  }
+}
