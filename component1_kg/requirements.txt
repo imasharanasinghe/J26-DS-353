@@ -1,0 +1,6 @@
+openai
+neo4j
+python-dotenv
+pandas
+pydantic
+spacy

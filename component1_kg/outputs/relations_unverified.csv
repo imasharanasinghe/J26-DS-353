@@ -1,0 +1,37 @@
+relation_type,concept_a,concept_b,bloom_level,confidence,source_text,chunk_id,category,video_id
+common-misconception-of,heap,stack,,high,known misconception pair: heap / stack,1_0,course introduction,1
+common-misconception-of,heap,stacks,,high,known misconception pair: heap / stacks,1_0,course introduction,1
+prerequisite-of,priority queue,radix sort,,medium,"priority queues. Then we'll consider classic algorithms for sorting, putting thi",1_0,course introduction,1
+common-misconception-of,priority queue,stack,,high,known misconception pair: priority queue / stack,1_0,course introduction,1
+common-misconception-of,priority queue,stacks,,high,known misconception pair: priority queue / stacks,1_0,course introduction,1
+prerequisite-of,queue,radix sort,,medium,"queues, bags and priority queues. Then we'll consider classic algorithms for sor",1_0,course introduction,1
+common-misconception-of,queue,stack,,high,known misconception pair: queue / stack,1_0,course introduction,1
+common-misconception-of,queue,stacks,,high,known misconception pair: queue / stacks,1_0,course introduction,1
+prerequisite-of,queues,radix sort,,medium,"queues, bags and priority queues. Then we'll consider classic algorithms for sor",1_0,course introduction,1
+common-misconception-of,queues,stack,,high,known misconception pair: queues / stack,1_0,course introduction,1
+common-misconception-of,queues,stacks,,high,known misconception pair: queues / stacks,1_0,course introduction,1
+common-misconception-of,binary search tree,graph,,high,known misconception pair: binary search tree / graph,1_1,course introduction,1
+common-misconception-of,graph,minimum spanning tree,,high,known misconception pair: graph / minimum spanning tree,1_1,course introduction,1
+prerequisite-of,priority queue,radix sort,,medium,"priority queues. Then we'll consider classic algorithms for sorting, putting thi",1_1,course introduction,1
+prerequisite-of,queue,radix sort,,medium,"queues, bags and priority queues. Then we'll consider classic algorithms for sor",1_1,course introduction,1
+prerequisite-of,queues,radix sort,,medium,"queues, bags and priority queues. Then we'll consider classic algorithms for sor",1_1,course introduction,1
+bloom-level,array,arrays,apply,medium,"now how to program, and know the basics of loops, arrays, functions. They have some exposure to object oriented programming and re",1_7,course introduction,1
+bloom-level,array,recursion,apply,medium,"some exposure to object oriented programming and recursion. We use the Java language, but we don't dwell on details of Java, we m",1_7,course introduction,1
+bloom-level,arrays,recursion,apply,medium,"some exposure to object oriented programming and recursion. We use the Java language, but we don't dwell on details of Java, we m",1_7,course introduction,1
+bloom-level,array,arrays,apply,medium,"and know the basics of loops, arrays, functions. They have some exposure to object oriented programming and re",1_8,course introduction,1
+bloom-level,array,recursion,apply,medium,"some exposure to object oriented programming and recursion. We use the Java language, but we don't dwell on details of Java, we m",1_8,course introduction,1
+bloom-level,arrays,recursion,apply,medium,"some exposure to object oriented programming and recursion. We use the Java language, but we don't dwell on details of Java, we m",1_8,course introduction,1
+prerequisite-of,array,bst,,medium,"ow, the connections, well, we need, a few abstract properties that these connections have",2_5,union find,2
+prerequisite-of,array,symbol table,,medium,"array then, and then quickly access information relevant to each object. And it",2_5,union find,2
+prerequisite-of,array,union find,,medium,"array then, and then quickly access information relevant to each object. And it",2_5,union find,2
+bloom-level,bst,symbol table,remember,medium,"zero through N - one is to find application of a symbol table or a searching algorithm, which is one of the things that we'll be",2_5,union find,2
+bloom-level,bst,union find,remember,medium,"presses a lot of details that are not relevant to union find. In fact, to make this mapping from an object name to the integer zer",2_5,union find,2
+bloom-level,symbol table,union find,remember,medium,"presses a lot of details that are not relevant to union find. In fact, to make this mapping from an object name to the integer zer",2_5,union find,2
+prerequisite-of,array,trie,,medium,"array, with each entry, equal to its index. And so all that says is that all the",3_2,union find,3
+prerequisite-of,array,trie,,medium,array. That's our ID array. That's the data structure that's going to support th,3_5,union find,3
+prerequisite-of,array,trie,,medium,"array. As we saw when doing the implementation, both the initialized and union o",3_6,union find,3
+prerequisite-of,array,pointer,,medium,"array. And finally, seven and three. So seven's root is one, three's root is eig",4_4,union find,4
+prerequisite-of,array,pointers,,medium,"array. And finally, seven and three. So seven's root is one, three's root is eig",4_4,union find,4
+common-misconception-of,graph,minimum spanning tree,,high,known misconception pair: graph / minimum spanning tree,6_0,union find,6
+bloom-level,array,graph,apply,medium,the algorithms and underlying science related to graphics and movies and geometric models of all sort. So this is a actually an i,8_1,analysis of algorithms,8
+bloom-level,divide and conquer,prim,create,medium,"which we'll talk about in a couple of weeks, is a prime example of that. And then if you have double four loops like our two sum a",10_3,analysis of algorithms,10
