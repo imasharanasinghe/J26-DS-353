@@ -1,95 +1,77 @@
-# J26-DS-353
-# Pedagogy-Typed Knowledge Graphs for Verified Personalized Learning Path Generation
+# C3 – Path Planner (typed-violation critic)
 
-> A Neuro-Symbolic Middleware for Knowledge-Graph-Grounded Personalized Learning Paths with Pedagogy-Aware Verification of LLM Reasoning
+Plans a learning path for one student and one target topic, and **guarantees the path
+follows five teaching rules** before it is sent to C4.
 
----
+> The AI suggests. The checker decides. Nothing reaches the student unless the checker approves it.
 
-## Project Overview
+## Quick start
 
-Most online learning platforms give every student the same fixed content sequence. LLM-based tutors personalise fluently — but hallucinate facts, skip prerequisites, and provide no way to verify their output.
-
-This research builds a **middleware framework** that combines the best of both worlds. At its core is one shared **pedagogy-typed knowledge graph** — a map of a subject where every connection carries a teaching-specific meaning. This one graph powers four downstream components: knowledge graph construction, student modelling, learning path generation, and explanation generation.
-
-> **One map. Three jobs. Zero disconnected tools.**
-
----
-
-## System Architecture
-
-```
-Raw Course Material (MOOC Transcripts)
-            │
-            ▼
-┌─────────────────────────────┐
-│  Component 1 — Build Map    │  ← Member A (IT23189744)
-│  LLM Extractor + Verifier   │
-│  → Neo4j Knowledge Graph    │
-└────────────┬────────────────┘
-             │  Pedagogy-Typed KG
-    ┌────────┼────────┬─────────────┐
-    ▼        ▼        ▼             ▼
-┌───────┐  Shared  ┌──────────┐  ┌──────────┐
-│  C2   │  Graph   │   C3     │  │   C4     │
-│Student│ ───────► │  Path    │─►│ Explain  │
-│ Model │          │Generator │  │ Verifier │
-└───────┘          └──────────┘  └──────────┘
-            │
-            ▼
-      REST API Middleware
-            │
-            ▼
-   LMS / MOOC / Training Platform
+```bash
+pip install pytest                      # only needed for tests
+python -m pytest -q                     # 36 tests, all should pass
+python scripts/run_demo.py --learner L02_intermediate --target heap
+python scripts/run_ablation.py          # the PP1 comparison table (mock)
 ```
 
----
+No API key is needed for the above: it uses the **mock proposer**, which makes typical LLM
+mistakes on purpose so the checker has something to catch. **Mock numbers are for testing
+only. Do not present them.**
 
-## Team — J26-DS-353
+## Run with a real LLM (your real PP1 numbers)
 
-| Member | ID | Component | Role |
-|---|---|---|---|
-| Ranasinghe R.A.I.K | IT23189744 | Component 1 | Pedagogy-Aware KG Construction |
-| Sawandi D.E.P | IT23229716 | Component 2 | GNN Student Modelling |
-| Chamuditha H.V.C | IT23288744 | Component 3 | Neuro-Symbolic Path Generation |
-| Amarasinghe S.A.R.U | IT23216778 | Component 4 | Bloom-Aware Explanation Faithfulness |
+```bash
+pip install anthropic          # or: pip install openai
+export ANTHROPIC_API_KEY=...   # or OPENAI_API_KEY=... and C3_LLM_PROVIDER=openai
+python scripts/run_demo.py --proposer llm --learner L03_strong_unsure --target dijkstra
+python scripts/run_ablation.py --proposer llm
+```
 
-**Supervisor:** Prof. Nuwan Kodagoda  
-**Co-Supervisor:** Mr. Jeewaka Perera  
-**Research Group:** CoEAI — Centre of Excellence for AI  
-**Specialisation:** Data Science (DS)
+Optional: `C3_LLM_MODEL` picks the model. The ablation makes about 60 draft calls plus repair calls.
 
----
+## The pipeline (file by file)
 
-## The Four Components
+| Layer | What it does | File |
+|---|---|---|
+| L0 | Read the topic map (C1) and the learner state (C2) | `c3/kg.py`, `c3/learner.py` |
+| L1 | What's still needed, what can start now, what to probe | `c3/frontier.py` |
+| L2 | Ordering hint for the proposer (RL later) | `c3/rl/policy.py` |
+| L3 | LLM writes K draft paths | `c3/proposer.py`, `c3/prompts.py` |
+| L4 | Checker: 5 typed rules | `c3/critic.py` |
+| L5 | Fix only the named steps, max 3 rounds | `c3/proposer.py` (`repair`), `c3/edits.py` |
+| L6 | Pick the best **verified** path (RL later) | `c3/rl/reranker.py` |
+| L7 | Safety net: topological sort | `c3/fallback.py` |
+| L8 | JSON for C4 | `PlanResult.to_json` in `c3/pipeline.py` |
 
-### Component 1 — Pedagogy-Aware Knowledge Graph Construction
-Reads raw course material and constructs a typed knowledge graph using an LLM extractor and a symbolic rule-based verifier. Introduces four first-class teaching edge types absent from standard ontologies.
+## The five rules and their exact error names
 
-### Component 2 — Uncertainty-Aware GNN Student Modelling
-Models each learner's mastery and calibrated uncertainty per concept using the KG as a structural prior. Solves the cold-start problem via prerequisite propagation.
+| Rule | Error types |
+|---|---|
+| R1 Prerequisites first | `MissingPrerequisite(heap, needs=binary_tree)` |
+| R2 Not too hard, not already known | `TooHard(c, difficulty, level)`, `AlreadyKnown(c)` |
+| R3 Clean structure | `UnknownStep`, `DuplicateStep`, `OffPath`, `TargetMissing`, `TargetNotLast` |
+| R4 Probe before trusting an unsure topic | `MissingProbe(recursion, before=tree)` |
+| R5 Fix wrong beliefs first | `UnremediatedMisconception(heap_is_sorted, before=heap)` |
 
-### Component 3 — Neuro-Symbolic Learning Path Generation
-LLM proposes a path → symbolic critic checks it against the KG → typed violations returned → only the broken step is fixed. Topological-sort fallback guarantees a safe path always.
+All thresholds live in `c3/config.py`.
 
-### Component 4 — Bloom-Level-Aware Explanation Faithfulness
-Checks every claim in an LLM-generated explanation against: (1) factual entailment from the KG and (2) cognitive appropriateness against the learner's Bloom ceiling.
+## The ablation set-ups
 
----
+| Set-up | Meaning |
+|---|---|
+| A proposer only | Trust the LLM's first draft (what most LLM tutors do) |
+| B + critic + repair | C3 without the safety net |
+| C full C3 | B + topological-sort fallback |
+| D topological sort only | Rule-based baseline, no LLM |
 
-## Key References
+Key number for PP1: **violation rate A vs B**. The fallback rate in C shows how often repair was not enough.
 
-1. Chu et al., "LLM Agents for Education," arXiv:2503.11733, 2025.
-2. "Personalized Learning Path Recommendation Based on KGs: A Survey," Electronics, vol. 15, 2026.
-3. "EDUKG: A Heterogeneous Sustainable K-12 Educational KG," 2022.
-4. Nakagawa et al., "Graph-based Knowledge Tracing," IEEE/WIC/ACM, 2019.
-5. Yang et al., "GIKT," ECML-PKDD, 2020.
+## Swapping mocks for the real thing
 
----
+- **C1 ready:** export the graph in the shape of `data/mock_kg.json` and pass `--kg path.json`.
+  Run the tests: `test_kg_has_no_zpd_dead_ends` warns about concepts no valid path can reach.
+- **C2 ready:** export learners like `data/mock_learners.json` and pass `--learners path.json`.
+- **RL (PP2):** train IQL on `c3/rl/dataset.py` output, then replace `HeuristicPolicy`
+  and `HeuristicReranker`. Keep the rule: RL only chooses among verified paths.
 
-## License
-
-IT4010 Final Year Research Project — SLIIT, Sri Lanka Institute of Information Technology.
-
----
-
-*Built by Group J26-DS-353 · CoEAI · SLIIT · 2026*
+See `docs/interfaces.md` for the exact JSON contracts.
