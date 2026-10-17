@@ -1,0 +1,170 @@
+{
+ "_note": "Offline copy of the Neo4j test graph (same 4 C1 edge types). difficulty = cognitive load 1-5; bloom_rank 1=Remember..6=Create; weights >=0.7 are 'prerequisites', below are 'weak_prerequisites'.",
+ "concepts": {
+  "variables": {
+   "name": "Variables",
+   "difficulty": 1,
+   "bloom": "Remember",
+   "bloom_rank": 1,
+   "prerequisites": [],
+   "weak_prerequisites": []
+  },
+  "loops": {
+   "name": "Loops",
+   "difficulty": 1,
+   "bloom": "Understand",
+   "bloom_rank": 2,
+   "prerequisites": [
+    "variables"
+   ],
+   "weak_prerequisites": []
+  },
+  "arrays": {
+   "name": "Arrays",
+   "difficulty": 1,
+   "bloom": "Understand",
+   "bloom_rank": 2,
+   "prerequisites": [
+    "variables"
+   ],
+   "weak_prerequisites": []
+  },
+  "functions": {
+   "name": "Functions",
+   "difficulty": 2,
+   "bloom": "Apply",
+   "bloom_rank": 3,
+   "prerequisites": [
+    "loops",
+    "variables"
+   ],
+   "weak_prerequisites": []
+  },
+  "big_o": {
+   "name": "Big-O",
+   "difficulty": 2,
+   "bloom": "Understand",
+   "bloom_rank": 2,
+   "prerequisites": [
+    "arrays",
+    "loops"
+   ],
+   "weak_prerequisites": []
+  },
+  "recursion": {
+   "name": "Recursion",
+   "difficulty": 3,
+   "bloom": "Apply",
+   "bloom_rank": 3,
+   "prerequisites": [
+    "functions"
+   ],
+   "weak_prerequisites": []
+  },
+  "linked_list": {
+   "name": "Linked Lists",
+   "difficulty": 2,
+   "bloom": "Understand",
+   "bloom_rank": 2,
+   "prerequisites": [
+    "arrays"
+   ],
+   "weak_prerequisites": []
+  },
+  "stack": {
+   "name": "Stacks",
+   "difficulty": 2,
+   "bloom": "Apply",
+   "bloom_rank": 3,
+   "prerequisites": [
+    "arrays"
+   ],
+   "weak_prerequisites": [
+    "linked_list"
+   ]
+  },
+  "queue": {
+   "name": "Queues",
+   "difficulty": 2,
+   "bloom": "Apply",
+   "bloom_rank": 3,
+   "prerequisites": [
+    "arrays"
+   ],
+   "weak_prerequisites": []
+  },
+  "tree": {
+   "name": "Trees",
+   "difficulty": 3,
+   "bloom": "Understand",
+   "bloom_rank": 2,
+   "prerequisites": [
+    "linked_list",
+    "recursion"
+   ],
+   "weak_prerequisites": []
+  },
+  "binary_tree": {
+   "name": "Binary Trees",
+   "difficulty": 3,
+   "bloom": "Apply",
+   "bloom_rank": 3,
+   "prerequisites": [
+    "tree"
+   ],
+   "weak_prerequisites": []
+  },
+  "bst": {
+   "name": "Binary Search Trees",
+   "difficulty": 3,
+   "bloom": "Apply",
+   "bloom_rank": 3,
+   "prerequisites": [
+    "binary_tree"
+   ],
+   "weak_prerequisites": []
+  },
+  "heap": {
+   "name": "Heaps",
+   "difficulty": 4,
+   "bloom": "Apply",
+   "bloom_rank": 3,
+   "prerequisites": [
+    "arrays",
+    "binary_tree"
+   ],
+   "weak_prerequisites": [
+    "big_o"
+   ]
+  },
+  "priority_queue": {
+   "name": "Priority Queues",
+   "difficulty": 4,
+   "bloom": "Analyze",
+   "bloom_rank": 4,
+   "prerequisites": [
+    "heap",
+    "queue"
+   ],
+   "weak_prerequisites": []
+  }
+ },
+ "misconceptions": {
+  "stack_is_fifo": {
+   "affects": "stack",
+   "description": "Thinks a stack removes the first item added (FIFO) instead of the last."
+  },
+  "recursion_no_base_case": {
+   "affects": "recursion",
+   "description": "Writes recursion without a stopping case."
+  },
+  "heap_is_sorted": {
+   "affects": "heap",
+   "description": "Thinks a heap array is fully sorted."
+  },
+  "bst_any_binary_tree": {
+   "affects": "bst",
+   "description": "Thinks every binary tree is a BST."
+  }
+ }
+}
