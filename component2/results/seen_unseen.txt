@@ -1,0 +1,14 @@
+test targets: 9900 | on never-attempted skills: 5051 (51%) | on attempted skills: 4849
+seed 0 ...
+seed 1 ...
+seed 2 ...
+
+=== GRAPH vs NO GRAPH, by whether the learner had attempted the target skill (mean/std over seeds) ===
+                                    AUC_mean  AUC_std  ECE_mean  ECE_std  Brier_mean  Brier_std
+group                  model                                                                   
+attempted skills       GNN (graph)    0.7411   0.0011    0.0201   0.0047      0.1944     0.0003
+                       No graph       0.7366   0.0003    0.0194   0.0022      0.1959     0.0003
+never-attempted skills GNN (graph)    0.7107   0.0038    0.0200   0.0065      0.2019     0.0008
+                       No graph       0.7087   0.0032    0.0211   0.0046      0.2025     0.0008
+AUC gain from the graph on never-attempted skills: +0.0019 (per seed: +0.0060, +0.0030, -0.0032)
+AUC gain from the graph on attempted skills: +0.0045 (per seed: +0.0046, +0.0055, +0.0034)

@@ -1,0 +1,5 @@
+venv/
+*.csv
+*.pkl
+*.pt
+__pycache__/

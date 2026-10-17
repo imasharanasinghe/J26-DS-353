@@ -1,0 +1,107 @@
+learners 1868 (train 1307/val 280/test 281), skills 149
+graph: PROXY (data-derived) | edges 332
+features: v2 | seed: 2
+samples 4593 978 990
+  [GNN] epoch 00 train 0.6544 val 0.6346
+  [GNN] epoch 01 train 0.6287 val 0.6104
+  [GNN] epoch 02 train 0.6085 val 0.6026
+  [GNN] epoch 03 train 0.6013 val 0.5991
+  [GNN] epoch 04 train 0.5952 val 0.5972
+  [GNN] epoch 05 train 0.5919 val 0.5949
+  [GNN] epoch 06 train 0.5902 val 0.5936
+  [GNN] epoch 07 train 0.5907 val 0.5925
+  [GNN] epoch 08 train 0.5895 val 0.5915
+  [GNN] epoch 09 train 0.5869 val 0.5922
+  [GNN] epoch 10 train 0.5847 val 0.5939
+  [GNN] epoch 11 train 0.5849 val 0.5916
+  [GNN] epoch 12 train 0.5844 val 0.5913
+  [GNN] epoch 13 train 0.5846 val 0.5925
+  [GNN] epoch 14 train 0.5822 val 0.5922
+  [GNN] epoch 15 train 0.5824 val 0.5902
+  [GNN] epoch 16 train 0.5819 val 0.5917
+  [GNN] epoch 17 train 0.5828 val 0.5902
+  [GNN] epoch 18 train 0.5810 val 0.5917
+  [GNN] epoch 19 train 0.5807 val 0.5907
+  [GNN] epoch 20 train 0.5808 val 0.5910
+  [GNN] epoch 21 train 0.5798 val 0.5908
+  [noGraph] epoch 00 train 0.6674 val 0.6473
+  [noGraph] epoch 01 train 0.6441 val 0.6313
+  [noGraph] epoch 02 train 0.6288 val 0.6202
+  [noGraph] epoch 03 train 0.6202 val 0.6153
+  [noGraph] epoch 04 train 0.6141 val 0.6105
+  [noGraph] epoch 05 train 0.6110 val 0.6074
+  [noGraph] epoch 06 train 0.6073 val 0.6060
+  [noGraph] epoch 07 train 0.6039 val 0.6029
+  [noGraph] epoch 08 train 0.5998 val 0.6019
+  [noGraph] epoch 09 train 0.5987 val 0.5991
+  [noGraph] epoch 10 train 0.5965 val 0.6005
+  [noGraph] epoch 11 train 0.5961 val 0.5967
+  [noGraph] epoch 12 train 0.5955 val 0.5963
+  [noGraph] epoch 13 train 0.5916 val 0.5959
+  [noGraph] epoch 14 train 0.5913 val 0.5955
+  [noGraph] epoch 15 train 0.5925 val 0.5938
+  [noGraph] epoch 16 train 0.5897 val 0.5943
+  [noGraph] epoch 17 train 0.5893 val 0.5962
+  [noGraph] epoch 18 train 0.5891 val 0.5930
+  [noGraph] epoch 19 train 0.5877 val 0.5961
+  [noGraph] epoch 20 train 0.5877 val 0.5933
+  [noGraph] epoch 21 train 0.5859 val 0.5925
+  [noGraph] epoch 22 train 0.5871 val 0.5923
+  [noGraph] epoch 23 train 0.5862 val 0.5919
+  [noGraph] epoch 24 train 0.5856 val 0.5915
+  [noGraph] epoch 25 train 0.5851 val 0.5916
+  [noGraph] epoch 26 train 0.5861 val 0.5910
+  [noGraph] epoch 27 train 0.5853 val 0.5913
+  [noGraph] epoch 28 train 0.5851 val 0.5906
+  [noGraph] epoch 29 train 0.5838 val 0.5921
+  [noGraph] epoch 30 train 0.5820 val 0.5899
+  [noGraph] epoch 31 train 0.5831 val 0.5923
+  [noGraph] epoch 32 train 0.5835 val 0.5926
+  [noGraph] epoch 33 train 0.5836 val 0.5904
+  [noGraph] epoch 34 train 0.5837 val 0.5904
+  [noGraph] epoch 35 train 0.5827 val 0.5893
+  [noGraph] epoch 36 train 0.5818 val 0.5900
+  [noGraph] epoch 37 train 0.5827 val 0.5906
+  [noGraph] epoch 38 train 0.5826 val 0.5905
+  [noGraph] epoch 39 train 0.5817 val 0.5912
+  [noGraph] epoch 40 train 0.5811 val 0.5895
+  [noGraph] epoch 41 train 0.5810 val 0.5903
+  [DKT] epoch 00 train 0.6311 val 0.5993
+  [DKT] epoch 01 train 0.5796 val 0.5725
+  [DKT] epoch 02 train 0.5620 val 0.5633
+  [DKT] epoch 03 train 0.5528 val 0.5594
+  [DKT] epoch 04 train 0.5477 val 0.5576
+  [DKT] epoch 05 train 0.5430 val 0.5562
+  [DKT] epoch 06 train 0.5385 val 0.5537
+  [DKT] epoch 07 train 0.5351 val 0.5526
+  [DKT] epoch 08 train 0.5335 val 0.5520
+  [DKT] epoch 09 train 0.5301 val 0.5514
+  [DKT] epoch 10 train 0.5267 val 0.5511
+  [DKT] epoch 11 train 0.5237 val 0.5516
+  [DKT] epoch 12 train 0.5222 val 0.5513
+  [DKT] epoch 13 train 0.5181 val 0.5525
+  [DKT] epoch 14 train 0.5169 val 0.5531
+  [DKT] epoch 15 train 0.5137 val 0.5532
+
+=== TEST RESULTS ===
+                       model    AUC    ECE  Brier
+                Global mean 0.5154 0.0010 0.2335
+         Per-skill accuracy 0.6124 0.1273 0.2379
+                 DKT (LSTM) 0.7247 0.0387 0.2003
+   MC-Dropout NN (no graph) 0.7234 0.0190 0.1991
+                  GNN (raw) 0.7277 0.0270 0.1984
+GNN + temp scaling (T=0.90) 0.7277 0.0143 0.1979
+
+=== COLD-START (by # past interactions) ===
+k= 5: GNN AUC 0.741 | per-skill AUC 0.613 | DKT AUC 0.744 | ECE 0.027 | mean uncertainty 0.040
+k=10: GNN AUC 0.734 | per-skill AUC 0.583 | DKT AUC 0.724 | ECE 0.032 | mean uncertainty 0.040
+k=20: GNN AUC 0.712 | per-skill AUC 0.616 | DKT AUC 0.697 | ECE 0.023 | mean uncertainty 0.041
+k=40: GNN AUC 0.716 | per-skill AUC 0.667 | DKT AUC 0.741 | ECE 0.024 | mean uncertainty 0.040
+
+=== DOES UNCERTAINTY MEAN ANYTHING? (quartiles of std) ===
+Q1: mean std 0.026  AUC 0.641  mean|p-y| 0.415  ECE 0.024
+Q2: mean std 0.034  AUC 0.690  mean|p-y| 0.372  ECE 0.019
+Q3: mean std 0.042  AUC 0.759  mean|p-y| 0.372  ECE 0.036
+Q4: mean std 0.058  AUC 0.709  mean|p-y| 0.428  ECE 0.037
+
+saved outputs with tag v2_s2

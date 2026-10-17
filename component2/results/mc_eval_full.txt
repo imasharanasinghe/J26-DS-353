@@ -1,0 +1,91 @@
+learners 1868 | skills 149 | graph PROXY edges 332 | samples 4593/978/990
+
+--- dropout 0.1 | seed 0 ---
+    trained 19 epochs, best val loss 0.5903
+    done in 55s | AUC det 0.7255 -> MC 0.7254 | errAUROC std 0.559 MI 0.496 prob-only 0.648
+
+--- dropout 0.1 | seed 1 ---
+    trained 23 epochs, best val loss 0.5901
+    done in 66s | AUC det 0.7280 -> MC 0.7282 | errAUROC std 0.558 MI 0.502 prob-only 0.647
+
+--- dropout 0.1 | seed 2 ---
+    trained 15 epochs, best val loss 0.5902
+    done in 42s | AUC det 0.7239 -> MC 0.7239 | errAUROC std 0.568 MI 0.510 prob-only 0.648
+
+--- dropout 0.25 | seed 0 ---
+    trained 23 epochs, best val loss 0.5904
+    done in 61s | AUC det 0.7263 -> MC 0.7263 | errAUROC std 0.529 MI 0.463 prob-only 0.649
+
+--- dropout 0.25 | seed 1 ---
+    trained 23 epochs, best val loss 0.5906
+    done in 62s | AUC det 0.7263 -> MC 0.7265 | errAUROC std 0.532 MI 0.479 prob-only 0.640
+
+--- dropout 0.25 | seed 2 ---
+    trained 22 epochs, best val loss 0.5902
+    done in 66s | AUC det 0.7275 -> MC 0.7273 | errAUROC std 0.514 MI 0.465 prob-only 0.651
+
+--- dropout 0.4 | seed 0 ---
+    trained 23 epochs, best val loss 0.5907
+    done in 64s | AUC det 0.7249 -> MC 0.7249 | errAUROC std 0.503 MI 0.442 prob-only 0.653
+
+--- dropout 0.4 | seed 1 ---
+    trained 29 epochs, best val loss 0.5913
+    done in 74s | AUC det 0.7232 -> MC 0.7230 | errAUROC std 0.497 MI 0.442 prob-only 0.641
+
+--- dropout 0.4 | seed 2 ---
+    trained 32 epochs, best val loss 0.5886
+    done in 83s | AUC det 0.7245 -> MC 0.7252 | errAUROC std 0.519 MI 0.455 prob-only 0.648
+
+--- dropout 0.5 | seed 0 ---
+    trained 23 epochs, best val loss 0.5920
+    done in 62s | AUC det 0.7234 -> MC 0.7237 | errAUROC std 0.488 MI 0.432 prob-only 0.652
+
+--- dropout 0.5 | seed 1 ---
+    trained 29 epochs, best val loss 0.5928
+    done in 77s | AUC det 0.7218 -> MC 0.7223 | errAUROC std 0.494 MI 0.441 prob-only 0.644
+
+--- dropout 0.5 | seed 2 ---
+    trained 32 epochs, best val loss 0.5903
+    done in 85s | AUC det 0.7227 -> MC 0.7233 | errAUROC std 0.509 MI 0.449 prob-only 0.648
+
+=== 1. MC DROPOUT vs SINGLE DETERMINISTIC PASS (mean/std over seeds; rows = dropout rate) ===
+         AUC_det_mean  AUC_det_std  AUC_mc_mean  AUC_mc_std  ECE_det_mean  ECE_det_std  ECE_mc_mean  ECE_mc_std  Brier_det_mean  Brier_det_std  Brier_mc_mean  Brier_mc_std
+dropout                                                                                                                                                                    
+0.10           0.7258       0.0021       0.7258      0.0022        0.0112       0.0015       0.0115      0.0010          0.1981         0.0005         0.1981        0.0005
+0.25           0.7267       0.0007       0.7267      0.0005        0.0194       0.0053       0.0188      0.0050          0.1982         0.0002         0.1982        0.0002
+0.40           0.7242       0.0009       0.7243      0.0012        0.0178       0.0025       0.0182      0.0017          0.1988         0.0003         0.1987        0.0004
+0.50           0.7226       0.0008       0.7231      0.0007        0.0187       0.0044       0.0181      0.0033          0.1993         0.0004         0.1992        0.0002
+
+=== 2. ERROR DETECTION AUROC (0.5 = useless) (mean/std over seeds; rows = dropout rate) ===
+         errAUROC_mc_std_mean  errAUROC_mc_std_std  errAUROC_mc_logit_std_mean  errAUROC_mc_logit_std_std  errAUROC_mc_MI_mean  errAUROC_mc_MI_std  errAUROC_prob_only_mean  errAUROC_prob_only_std  errAUROC_rand_mean  errAUROC_rand_std
+dropout                                                                                                                                                                                                                                   
+0.10                   0.5619               0.0056                      0.4447                     0.0056               0.5025              0.0070                   0.6478                  0.0005              0.4978             0.0022
+0.25                   0.5250               0.0100                      0.4267                     0.0073               0.4689              0.0088                   0.6469                  0.0057              0.4977             0.0021
+0.40                   0.5062               0.0116                      0.4095                     0.0047               0.4463              0.0073                   0.6473                  0.0057              0.4982             0.0038
+0.50                   0.4971               0.0108                      0.4074                     0.0068               0.4407              0.0084                   0.6483                  0.0040              0.4975             0.0037
+
+=== 3. WITHIN-PROBABILITY-BAND AUROC (>0.5 = info BEYOND the probability) (mean/std over seeds; rows = dropout rate) ===
+         band_mc_std_mean  band_mc_std_std  band_mc_logit_std_mean  band_mc_logit_std_std  band_mc_MI_mean  band_mc_MI_std  band_prob_only_mean  band_prob_only_std
+dropout                                                                                                                                                            
+0.10               0.5240           0.0058                  0.4904                 0.0100           0.5081          0.0082               0.5532              0.0027
+0.25               0.5193           0.0005                  0.4868                 0.0046           0.5014          0.0021               0.5534              0.0057
+0.40               0.5065           0.0111                  0.4769                 0.0094           0.4885          0.0120               0.5549              0.0030
+0.50               0.5025           0.0112                  0.4753                 0.0053           0.4856          0.0091               0.5625              0.0018
+
+=== 4. BRIER KEEPING THE 60% MOST CONFIDENT (lower = better) (mean/std over seeds; rows = dropout rate) ===
+         Brier@60_mc_std_mean  Brier@60_mc_std_std  Brier@60_mc_logit_std_mean  Brier@60_mc_logit_std_std  Brier@60_mc_MI_mean  Brier@60_mc_MI_std  Brier@60_prob_only_mean  Brier@60_prob_only_std  Brier@60_rand_mean  Brier@60_rand_std
+dropout                                                                                                                                                                                                                                   
+0.10                   0.1851               0.0015                      0.2102                     0.0019               0.1962              0.0030                   0.1707                  0.0011              0.1978             0.0005
+0.25                   0.1917               0.0025                      0.2167                     0.0012               0.2046              0.0029                   0.1706                  0.0003              0.1978             0.0004
+0.40                   0.1962               0.0026                      0.2208                     0.0016               0.2123              0.0022                   0.1713                  0.0008              0.1985             0.0006
+0.50                   0.1981               0.0021                      0.2217                     0.0014               0.2134              0.0023                   0.1719                  0.0004              0.1988             0.0004
+
+=== 5. COLD-START CHECK: uncertainty should be HIGHER with 5 past answers than with 40 (mean/std over seeds; rows = dropout rate) ===
+         mc_std_k5_mean  mc_std_k5_std  mc_std_k40_mean  mc_std_k40_std  mc_MI_k5_mean  mc_MI_k5_std  mc_MI_k40_mean  mc_MI_k40_std
+dropout                                                                                                                            
+0.10             0.0318         0.0007           0.0316          0.0001         0.0027        0.0001          0.0026         0.0000
+0.25             0.0424         0.0024           0.0421          0.0023         0.0050        0.0006          0.0048         0.0006
+0.40             0.0511         0.0023           0.0503          0.0019         0.0073        0.0005          0.0069         0.0004
+0.50             0.0569         0.0026           0.0553          0.0020         0.0091        0.0007          0.0083         0.0005
+
+saved mc_eval_runs_p0.1_0.25_0.4_0.5.csv, mc_risk_coverage_p0.1_0.25_0.4_0.5.png, mc_reliability_p0.1_0.25_0.4_0.5.png
