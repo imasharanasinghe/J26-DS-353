@@ -33,7 +33,20 @@ and re-verifies them.
 ## Run tests
 
 python3 scripts/run_c4_demo.py --generated
+```
+
+If Ollama is installed locally, download Qwen3 and run the LLM-backed demo:
+
 ```bash
+ollama serve
+ollama pull qwen3:4b
+python3 scripts/run_c4_demo.py --ollama --model qwen3:4b --pretty
+```
+
+The Ollama generator sends the verified path, learner mastery, prerequisites,
+and graph facts to the local model. C4 then verifies and re-verifies the
+returned explanation. No API key or paid model is required. If Ollama is not
+available, use `--generated` for the deterministic offline generator.bash
 python3 -m pytest -q tests/test_c4.py
 ```
 
@@ -58,3 +71,7 @@ The template generator is deliberately not presented as a personalized LLM.
 It is an offline stand-in for the future LLM generation boundary, allowing the
 verification pipeline to be tested while the upstream components and model
 choice remain incomplete.
+
+The Ollama/Qwen3 path is an optional local demonstration integration. Its
+output is still treated as untrusted generated text and must pass the same C4
+verification pipeline.
