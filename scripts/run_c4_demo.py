@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from c4 import C4Pipeline, TemplateExplanationGenerator
+from c4 import C4Pipeline, OllamaExplanationGenerator, TemplateExplanationGenerator
 from c4.adapters import load_c2_learner, load_json, validate_c3_path
 
 
@@ -21,6 +21,10 @@ def main() -> None:
     parser.add_argument("--learner", help="Learner id when using a collection file")
     parser.add_argument("--generated", action="store_true",
                         help="Generate the input explanation from the C3 path and learner")
+    parser.add_argument("--ollama", action="store_true",
+                        help="Generate the input explanation with local Ollama")
+    parser.add_argument("--model", default="qwen3:4b",
+                        help="Ollama model name")
     parser.add_argument("--scenario", choices=("default", "valid", "factual", "cognitive"),
                         default="default")
     parser.add_argument("--pretty", action="store_true",
@@ -44,7 +48,11 @@ def main() -> None:
         explanation = "A heap is a fully sorted array."
     elif args.scenario == "cognitive":
         explanation = "A heap is a complete binary tree."
-    if args.generated:
+    if args.ollama:
+        explanation = OllamaExplanationGenerator(model=args.model).generate(
+            path, learner, pipeline.kg
+        )
+    elif args.generated:
         explanation = TemplateExplanationGenerator().generate(path, learner, pipeline.kg)
     result = pipeline.run(path, learner, explanation)
     if args.pretty:
