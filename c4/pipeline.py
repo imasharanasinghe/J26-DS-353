@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from .adapters import validate_c3_path
 from .models import Claim, CognitiveStatus, FactualStatus, VerifiedClaim
 
 
@@ -66,6 +67,7 @@ class C4Pipeline:
         learner_state: dict[str, Any],
         explanation: str,
     ) -> C4Result:
+        validate_c3_path(c3_path)
         if not c3_path.get("verified", False):
             raise ValueError("C4 accepts only verified paths from C3")
 
