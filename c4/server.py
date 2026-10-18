@@ -25,6 +25,8 @@ from typing import Any
 from .service import Workbench
 
 WEB_DIR = Path(__file__).resolve().parent / "web"
+mimetypes.add_type("font/ttf", ".ttf")
+mimetypes.add_type("font/woff2", ".woff2")
 MAX_BODY_BYTES = 64 * 1024
 OLLAMA_TAGS = "http://localhost:11434/api/tags"
 

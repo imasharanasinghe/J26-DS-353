@@ -26,3 +26,9 @@ def test_page_references_only_local_assets() -> None:
     html = (WEB / "index.html").read_text(encoding="utf-8")
     sources = re.findall(r'(?:src|href)="([^"]+)"', html)
     assert all(not item.startswith(("http://", "https://", "//")) for item in sources)
+
+
+def test_font_licence_ships_with_the_font_files() -> None:
+    fonts = WEB / "fonts"
+    assert (fonts / "JosefinSans.ttf").is_file() and (fonts / "JosefinSans-Italic.ttf").is_file()
+    assert "SIL Open Font License" in (fonts / "OFL.txt").read_text(encoding="utf-8")

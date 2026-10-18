@@ -1,4 +1,13 @@
 /* C4 workbench - quiet editorial theme: white paper, ink text, hairline rules. */
+/* Josefin Sans (SIL OFL 1.1, see fonts/OFL.txt), self-hosted so the demo works offline. */
+@font-face {
+  font-family: "Josefin Sans"; font-style: normal; font-weight: 100 700; font-display: swap;
+  src: url("fonts/JosefinSans.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Josefin Sans"; font-style: italic; font-weight: 100 700; font-display: swap;
+  src: url("fonts/JosefinSans-Italic.ttf") format("truetype");
+}
 :root {
   --paper: #ffffff; --wash: #f7f6f3; --ink: #161616; --muted: #6a6a66; --faint: #9a9a94;
   --rule: #e4e3de; --rule-strong: #161616;

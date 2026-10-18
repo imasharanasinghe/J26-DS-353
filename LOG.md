@@ -219,3 +219,7 @@ This log records the work completed for Component 4 and the associated project a
 
 ### 2026-10-19 05:25:00 +05:30
 - UI redesign, commit 2 (metrics and polish): changed the metric strip to a three-column ruled grid so the before/after rates fit, and formatted percentages without trailing noise (33.3%, 100%). Checked the Verification and Evaluation tabs in headless-Chrome screenshots under the new white theme; the tables, bars, and caveat banner render as intended. No change to results, API, or tests (60 pass).
+
+### 2026-10-19 05:45:00 +05:30
+- Font change, commit 1 (assets): vendored Josefin Sans (variable roman and italic TrueType, about 250 KB, with its SIL Open Font License text) under `c4/web/fonts/` and declared it with `@font-face` in `styles.css`. It is self-hosted instead of loaded from Google Fonts so the live demo works offline and no request leaves the machine; the page still references only local assets.
+- The server now sends `font/ttf` for font files. Added tests for serving the font and for the licence shipping with it. The font is not applied yet; that is the next commit.
