@@ -1,0 +1,5 @@
+setup,cases,fault_rate_%,95%_CI,mean_faults,R1,R2,R3,R4,R5,repair_rounds,fallback_%,steps,score
+A_proposer_only,36,58.3,42.2-72.9,0.75,3,22,0,2,0,,0.0,5.1,-1.396
+B_critic_repair,36,0.0,0.0-9.6,0,0,0,0,0,0,0.6,0.0,4.6,-1.008
+C_full_C3,36,0.0,0.0-9.6,0,0,0,0,0,0,0.6,0.0,4.6,-1.008
+D_topo_only,36,0.0,0.0-9.6,0,0,0,0,0,0,,0.0,4.4,-0.846

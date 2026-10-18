@@ -1,0 +1,145 @@
+setup,learner,target,violations,violation_types,source,repair_rounds_mean,steps,score,path
+A_proposer_only,L01_beginner,heap,1,AlreadyKnown,unverified,,8,-2.6525,variables -> arrays -> linked_list -> functions -> recursion -> tree -> binary_tree -> heap
+B_critic_repair,L01_beginner,heap,0,,repaired,1.33,7,-2.3286,arrays -> linked_list -> functions -> recursion -> tree -> binary_tree -> heap
+C_full_C3,L01_beginner,heap,0,,repaired,1.33,7,-2.3286,arrays -> linked_list -> functions -> recursion -> tree -> binary_tree -> heap
+D_topo_only,L01_beginner,heap,0,,topo,,7,-2.3286,arrays -> functions -> linked_list -> recursion -> tree -> binary_tree -> heap
+A_proposer_only,L01_beginner,priority_queue,1,MissingPrerequisite,unverified,,6,-2.1167,arrays -> linked_list -> queue -> binary_tree -> heap -> priority_queue
+B_critic_repair,L01_beginner,priority_queue,0,,repaired,1.67,9,-5.3444,arrays -> functions -> linked_list -> recursion -> tree -> binary_tree -> heap -> queue -> priority_queue
+C_full_C3,L01_beginner,priority_queue,0,,repaired,1.67,9,-5.3444,arrays -> functions -> linked_list -> recursion -> tree -> binary_tree -> heap -> queue -> priority_queue
+D_topo_only,L01_beginner,priority_queue,0,,topo,,9,-2.7444,arrays -> functions -> linked_list -> queue -> recursion -> tree -> binary_tree -> heap -> priority_queue
+A_proposer_only,L01_beginner,bst,2,AlreadyKnown,unverified,,9,-2.4201,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree -> binary_tree -> bst
+B_critic_repair,L01_beginner,bst,0,,repaired,1,7,-1.8286,arrays -> functions -> linked_list -> recursion -> tree -> binary_tree -> bst
+C_full_C3,L01_beginner,bst,0,,repaired,1,7,-1.8286,arrays -> functions -> linked_list -> recursion -> tree -> binary_tree -> bst
+D_topo_only,L01_beginner,bst,0,,topo,,7,-1.8286,arrays -> functions -> linked_list -> recursion -> tree -> binary_tree -> bst
+A_proposer_only,L01_beginner,binary_tree,2,AlreadyKnown,unverified,,8,-2.2322,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree -> binary_tree
+B_critic_repair,L01_beginner,binary_tree,0,,repaired,1,6,-1.6167,arrays -> functions -> linked_list -> recursion -> tree -> binary_tree
+C_full_C3,L01_beginner,binary_tree,0,,repaired,1,6,-1.6167,arrays -> functions -> linked_list -> recursion -> tree -> binary_tree
+D_topo_only,L01_beginner,binary_tree,0,,topo,,6,-1.6167,arrays -> functions -> linked_list -> recursion -> tree -> binary_tree
+A_proposer_only,L01_beginner,tree,2,AlreadyKnown,unverified,,7,-2.0467,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree
+B_critic_repair,L01_beginner,tree,0,,repaired,1,5,-1.4,arrays -> functions -> linked_list -> recursion -> tree
+C_full_C3,L01_beginner,tree,0,,repaired,1,5,-1.4,arrays -> functions -> linked_list -> recursion -> tree
+D_topo_only,L01_beginner,tree,0,,topo,,5,-1.4,arrays -> functions -> linked_list -> recursion -> tree
+A_proposer_only,L01_beginner,stack,1,AlreadyKnown,unverified,,3,-0.74,variables -> arrays -> stack
+B_critic_repair,L01_beginner,stack,0,,repaired,0.67,2,-0.15,arrays -> stack
+C_full_C3,L01_beginner,stack,0,,repaired,0.67,2,-0.15,arrays -> stack
+D_topo_only,L01_beginner,stack,0,,topo,,2,-0.15,arrays -> stack
+A_proposer_only,L01_beginner,queue,1,AlreadyKnown,unverified,,3,-0.74,variables -> arrays -> queue
+B_critic_repair,L01_beginner,queue,0,,repaired,0.67,2,-0.15,arrays -> queue
+C_full_C3,L01_beginner,queue,0,,repaired,0.67,2,-0.15,arrays -> queue
+D_topo_only,L01_beginner,queue,0,,topo,,2,-0.15,arrays -> queue
+A_proposer_only,L01_beginner,recursion,2,AlreadyKnown,unverified,,4,-1.5644,variables -> loops -> functions -> recursion
+B_critic_repair,L01_beginner,recursion,0,,repaired,1,2,-0.15,functions -> recursion
+C_full_C3,L01_beginner,recursion,0,,repaired,1,2,-0.15,functions -> recursion
+D_topo_only,L01_beginner,recursion,0,,topo,,2,-0.15,functions -> recursion
+A_proposer_only,L02_intermediate,heap,1,AlreadyKnown,unverified,,7,-2.3748,probe:recursion -> remediate:recursion_no_base_case -> recursion -> linked_list -> tree -> binary_tree -> heap
+B_critic_repair,L02_intermediate,heap,0,,repaired,1,6,-1.2625,probe:recursion -> remediate:recursion_no_base_case -> recursion -> tree -> binary_tree -> heap
+C_full_C3,L02_intermediate,heap,0,,repaired,1,6,-1.2625,probe:recursion -> remediate:recursion_no_base_case -> recursion -> tree -> binary_tree -> heap
+D_topo_only,L02_intermediate,heap,0,,topo,,5,-0.8333,probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree -> heap
+A_proposer_only,L02_intermediate,priority_queue,0,,unverified,,7,-1.275,probe:queue -> probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree -> heap -> priority_queue
+B_critic_repair,L02_intermediate,priority_queue,0,,draft,0,7,-1.275,probe:queue -> probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree -> heap -> priority_queue
+C_full_C3,L02_intermediate,priority_queue,0,,draft,0,7,-1.275,probe:queue -> probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree -> heap -> priority_queue
+D_topo_only,L02_intermediate,priority_queue,0,,topo,,7,-1.275,probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree -> heap -> probe:queue -> priority_queue
+A_proposer_only,L02_intermediate,bst,0,,unverified,,5,-0.3333,probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree -> bst
+B_critic_repair,L02_intermediate,bst,0,,draft,0.33,5,-0.3333,probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree -> bst
+C_full_C3,L02_intermediate,bst,0,,draft,0.33,5,-0.3333,probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree -> bst
+D_topo_only,L02_intermediate,bst,0,,topo,,5,-0.3333,probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree -> bst
+A_proposer_only,L02_intermediate,binary_tree,1,AlreadyKnown,unverified,,6,-1.7087,probe:recursion -> remediate:recursion_no_base_case -> recursion -> linked_list -> tree -> binary_tree
+B_critic_repair,L02_intermediate,binary_tree,0,,repaired,1,5,-0.5833,probe:recursion -> remediate:recursion_no_base_case -> recursion -> tree -> binary_tree
+C_full_C3,L02_intermediate,binary_tree,0,,repaired,1,5,-0.5833,probe:recursion -> remediate:recursion_no_base_case -> recursion -> tree -> binary_tree
+D_topo_only,L02_intermediate,binary_tree,0,,topo,,4,-0.05,probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree
+A_proposer_only,L02_intermediate,tree,1,AlreadyKnown,unverified,,5,-1.5567,probe:recursion -> remediate:recursion_no_base_case -> recursion -> linked_list -> tree
+B_critic_repair,L02_intermediate,tree,0,,repaired,1,4,-0.425,probe:recursion -> remediate:recursion_no_base_case -> recursion -> tree
+C_full_C3,L02_intermediate,tree,0,,repaired,1,4,-0.425,probe:recursion -> remediate:recursion_no_base_case -> recursion -> tree
+D_topo_only,L02_intermediate,tree,0,,topo,,3,0.4,probe:recursion -> remediate:recursion_no_base_case -> tree
+A_proposer_only,L02_intermediate,stack,1,AlreadyKnown,unverified,,2,-0.6,arrays -> stack
+B_critic_repair,L02_intermediate,stack,0,,repaired,1,1,0.8,stack
+C_full_C3,L02_intermediate,stack,0,,repaired,1,1,0.8,stack
+D_topo_only,L02_intermediate,stack,0,,topo,,1,0.8,stack
+A_proposer_only,L02_intermediate,queue,1,AlreadyKnown,unverified,,2,-0.78,arrays -> queue
+B_critic_repair,L02_intermediate,queue,0,,repaired,0.67,1,0.08,queue
+C_full_C3,L02_intermediate,queue,0,,repaired,0.67,1,0.08,queue
+D_topo_only,L02_intermediate,queue,0,,topo,,1,0.08,queue
+A_proposer_only,L02_intermediate,recursion,1,AlreadyKnown,unverified,,3,-0.9625,functions -> remediate:recursion_no_base_case -> recursion
+B_critic_repair,L02_intermediate,recursion,0,,repaired,1,2,-0.15,remediate:recursion_no_base_case -> recursion
+C_full_C3,L02_intermediate,recursion,0,,repaired,1,2,-0.15,remediate:recursion_no_base_case -> recursion
+D_topo_only,L02_intermediate,recursion,0,,topo,,2,-0.15,remediate:recursion_no_base_case -> recursion
+A_proposer_only,L03_strong_unsure,heap,2,AlreadyKnown;MissingProbe,unverified,,4,-3.0933,arrays -> probe:binary_tree -> binary_tree -> heap
+B_critic_repair,L03_strong_unsure,heap,0,,repaired,1,3,-0.71,probe:tree -> binary_tree -> heap
+C_full_C3,L03_strong_unsure,heap,0,,repaired,1,3,-0.71,probe:tree -> binary_tree -> heap
+D_topo_only,L03_strong_unsure,heap,0,,topo,,2,0.6,probe:binary_tree -> heap
+A_proposer_only,L03_strong_unsure,priority_queue,0,,unverified,,3,0.15,probe:binary_tree -> heap -> priority_queue
+B_critic_repair,L03_strong_unsure,priority_queue,0,,draft,0,3,0.15,probe:binary_tree -> heap -> priority_queue
+C_full_C3,L03_strong_unsure,priority_queue,0,,draft,0,3,0.15,probe:binary_tree -> heap -> priority_queue
+D_topo_only,L03_strong_unsure,priority_queue,0,,topo,,3,0.15,probe:binary_tree -> heap -> priority_queue
+A_proposer_only,L03_strong_unsure,bst,1,MissingProbe,unverified,,3,-0.21,probe:binary_tree -> binary_tree -> bst
+B_critic_repair,L03_strong_unsure,bst,0,,draft,0.67,2,0.6,probe:binary_tree -> bst
+C_full_C3,L03_strong_unsure,bst,0,,draft,0.67,2,0.6,probe:binary_tree -> bst
+D_topo_only,L03_strong_unsure,bst,0,,topo,,2,0.6,probe:binary_tree -> bst
+A_proposer_only,L03_strong_unsure,binary_tree,0,,unverified,,2,-0.12,probe:tree -> binary_tree
+B_critic_repair,L03_strong_unsure,binary_tree,0,,draft,0,2,-0.12,probe:tree -> binary_tree
+C_full_C3,L03_strong_unsure,binary_tree,0,,draft,0,2,-0.12,probe:tree -> binary_tree
+D_topo_only,L03_strong_unsure,binary_tree,0,,topo,,2,-0.12,probe:tree -> binary_tree
+A_proposer_only,L03_strong_unsure,tree,2,AlreadyKnown,unverified,,3,-0.9811,linked_list -> recursion -> tree
+B_critic_repair,L03_strong_unsure,tree,0,,repaired,1,1,0.06,tree
+C_full_C3,L03_strong_unsure,tree,0,,repaired,1,1,0.06,tree
+D_topo_only,L03_strong_unsure,tree,0,,topo,,1,0.06,tree
+A_proposer_only,L03_strong_unsure,stack,1,AlreadyKnown,unverified,,3,-1.0,arrays -> remediate:stack_is_fifo -> stack
+B_critic_repair,L03_strong_unsure,stack,0,,repaired,1,2,-0.2,remediate:stack_is_fifo -> stack
+C_full_C3,L03_strong_unsure,stack,0,,repaired,1,2,-0.2,remediate:stack_is_fifo -> stack
+D_topo_only,L03_strong_unsure,stack,0,,topo,,2,-0.2,remediate:stack_is_fifo -> stack
+A_proposer_only,L04_cold_start,heap,0,,unverified,,9,-2.7444,variables -> loops -> arrays -> linked_list -> functions -> recursion -> tree -> binary_tree -> heap
+B_critic_repair,L04_cold_start,heap,0,,draft,0,9,-2.7444,variables -> loops -> arrays -> linked_list -> functions -> recursion -> tree -> binary_tree -> heap
+C_full_C3,L04_cold_start,heap,0,,draft,0,9,-2.7444,variables -> loops -> arrays -> linked_list -> functions -> recursion -> tree -> binary_tree -> heap
+D_topo_only,L04_cold_start,heap,0,,topo,,9,-2.7444,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree -> binary_tree -> heap
+A_proposer_only,L04_cold_start,priority_queue,1,MissingPrerequisite,unverified,,11,-3.1545,variables -> loops -> arrays -> linked_list -> queue -> functions -> recursion -> binary_tree -> tree -> heap -> priority_queue
+B_critic_repair,L04_cold_start,priority_queue,0,,repaired,0.67,11,-3.1545,variables -> loops -> arrays -> linked_list -> queue -> functions -> recursion -> tree -> binary_tree -> heap -> priority_queue
+C_full_C3,L04_cold_start,priority_queue,0,,repaired,0.67,11,-3.1545,variables -> loops -> arrays -> linked_list -> queue -> functions -> recursion -> tree -> binary_tree -> heap -> priority_queue
+D_topo_only,L04_cold_start,priority_queue,0,,topo,,11,-3.1545,variables -> arrays -> loops -> functions -> linked_list -> queue -> recursion -> tree -> binary_tree -> heap -> priority_queue
+A_proposer_only,L04_cold_start,bst,0,,unverified,,9,-2.2444,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree -> binary_tree -> bst
+B_critic_repair,L04_cold_start,bst,0,,draft,0,9,-2.2444,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree -> binary_tree -> bst
+C_full_C3,L04_cold_start,bst,0,,draft,0,9,-2.2444,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree -> binary_tree -> bst
+D_topo_only,L04_cold_start,bst,0,,topo,,9,-2.2444,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree -> binary_tree -> bst
+A_proposer_only,L04_cold_start,binary_tree,0,,unverified,,8,-2.0375,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree -> binary_tree
+B_critic_repair,L04_cold_start,binary_tree,0,,draft,0,8,-2.0375,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree -> binary_tree
+C_full_C3,L04_cold_start,binary_tree,0,,draft,0,8,-2.0375,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree -> binary_tree
+D_topo_only,L04_cold_start,binary_tree,0,,topo,,8,-2.0375,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree -> binary_tree
+A_proposer_only,L04_cold_start,tree,0,,unverified,,7,-1.8286,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree
+B_critic_repair,L04_cold_start,tree,0,,draft,0.33,7,-1.8286,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree
+C_full_C3,L04_cold_start,tree,0,,draft,0.33,7,-1.8286,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree
+D_topo_only,L04_cold_start,tree,0,,topo,,7,-1.8286,variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree
+A_proposer_only,L04_cold_start,stack,0,,unverified,,3,-0.4333,variables -> arrays -> stack
+B_critic_repair,L04_cold_start,stack,0,,draft,0,3,-0.4333,variables -> arrays -> stack
+C_full_C3,L04_cold_start,stack,0,,draft,0,3,-0.4333,variables -> arrays -> stack
+D_topo_only,L04_cold_start,stack,0,,topo,,3,-0.4333,variables -> arrays -> stack
+A_proposer_only,L04_cold_start,queue,0,,unverified,,3,-0.4333,variables -> arrays -> queue
+B_critic_repair,L04_cold_start,queue,0,,draft,0,3,-0.4333,variables -> arrays -> queue
+C_full_C3,L04_cold_start,queue,0,,draft,0,3,-0.4333,variables -> arrays -> queue
+D_topo_only,L04_cold_start,queue,0,,topo,,3,-0.4333,variables -> arrays -> queue
+A_proposer_only,L04_cold_start,recursion,0,,unverified,,4,-1.175,variables -> loops -> functions -> recursion
+B_critic_repair,L04_cold_start,recursion,0,,draft,0.33,4,-1.175,variables -> loops -> functions -> recursion
+C_full_C3,L04_cold_start,recursion,0,,draft,0.33,4,-1.175,variables -> loops -> functions -> recursion
+D_topo_only,L04_cold_start,recursion,0,,topo,,4,-1.175,variables -> loops -> functions -> recursion
+A_proposer_only,L05_uneven,heap,0,,unverified,,6,-1.7936,linked_list -> recursion -> tree -> binary_tree -> remediate:heap_is_sorted -> heap
+B_critic_repair,L05_uneven,heap,0,,draft,0,6,-1.675,linked_list -> probe:recursion -> tree -> binary_tree -> remediate:heap_is_sorted -> heap
+C_full_C3,L05_uneven,heap,0,,draft,0,6,-1.675,linked_list -> probe:recursion -> tree -> binary_tree -> remediate:heap_is_sorted -> heap
+D_topo_only,L05_uneven,heap,0,,topo,,6,-1.675,linked_list -> probe:recursion -> tree -> binary_tree -> remediate:heap_is_sorted -> heap
+A_proposer_only,L05_uneven,priority_queue,1,MissingPrerequisite,unverified,,6,-1.675,linked_list -> probe:recursion -> binary_tree -> remediate:heap_is_sorted -> heap -> priority_queue
+B_critic_repair,L05_uneven,priority_queue,0,,repaired,1,7,-1.88,linked_list -> probe:recursion -> tree -> binary_tree -> remediate:heap_is_sorted -> heap -> priority_queue
+C_full_C3,L05_uneven,priority_queue,0,,repaired,1,7,-1.88,linked_list -> probe:recursion -> tree -> binary_tree -> remediate:heap_is_sorted -> heap -> priority_queue
+D_topo_only,L05_uneven,priority_queue,0,,topo,,7,-1.88,linked_list -> probe:recursion -> tree -> binary_tree -> remediate:heap_is_sorted -> heap -> priority_queue
+A_proposer_only,L05_uneven,bst,0,,unverified,,5,-0.975,linked_list -> probe:recursion -> tree -> binary_tree -> bst
+B_critic_repair,L05_uneven,bst,0,,draft,0.33,5,-0.975,linked_list -> probe:recursion -> tree -> binary_tree -> bst
+C_full_C3,L05_uneven,bst,0,,draft,0.33,5,-0.975,linked_list -> probe:recursion -> tree -> binary_tree -> bst
+D_topo_only,L05_uneven,bst,0,,topo,,5,-0.975,linked_list -> probe:recursion -> tree -> binary_tree -> bst
+A_proposer_only,L05_uneven,binary_tree,0,,unverified,,5,-1.1081,linked_list -> probe:recursion -> recursion -> tree -> binary_tree
+B_critic_repair,L05_uneven,binary_tree,0,,draft,0,4,-0.9081,linked_list -> recursion -> tree -> binary_tree
+C_full_C3,L05_uneven,binary_tree,0,,draft,0,4,-0.9081,linked_list -> recursion -> tree -> binary_tree
+D_topo_only,L05_uneven,binary_tree,0,,topo,,4,-0.7667,linked_list -> probe:recursion -> tree -> binary_tree
+A_proposer_only,L05_uneven,tree,0,,unverified,,3,-0.55,linked_list -> probe:recursion -> tree
+B_critic_repair,L05_uneven,tree,0,,draft,0.33,3,-0.55,linked_list -> probe:recursion -> tree
+C_full_C3,L05_uneven,tree,0,,draft,0.33,3,-0.55,linked_list -> probe:recursion -> tree
+D_topo_only,L05_uneven,tree,0,,topo,,3,-0.55,linked_list -> probe:recursion -> tree
+A_proposer_only,L05_uneven,recursion,1,AlreadyKnown,unverified,,2,-0.7275,functions -> recursion
+B_critic_repair,L05_uneven,recursion,0,,repaired,0.67,1,0.09,recursion
+C_full_C3,L05_uneven,recursion,0,,repaired,0.67,1,0.09,recursion
+D_topo_only,L05_uneven,recursion,0,,topo,,1,0.09,recursion
