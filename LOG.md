@@ -206,3 +206,8 @@ This log records the work completed for Component 4 and the associated project a
 
 ### 2026-10-19 04:32:00 +05:30
 - Added a Cmd/Ctrl+Enter shortcut in the explanation box to run the verifier and a tooltip on the button; no behaviour change otherwise. Syntax-checked the script; 60 tests pass.
+
+### 2026-10-19 04:45:00 +05:30
+- Step 7: documented the web workbench in [c4/README.md](./c4/README.md) (how to start it, tabs, settings, deep links, API, localhost-only warning) with a six-step PP1 demo run-sheet that includes the learner-relative edit and the rewrite-off ablation.
+- Updated [WBS.md](./WBS.md) (items 40-47 and the server command), [PLAN.md](./PLAN.md) (step 7 done, remaining frontend follow-ups), and [GUIDELINES.md](./GUIDELINES.md) (replaced the outdated "no implementation yet" fact with a dated update and noted that the workbench may be used for the required demonstration).
+- Final validation: 60 tests pass; Python compilation passes; the server was started from the script and the UI was exercised in headless Chrome.

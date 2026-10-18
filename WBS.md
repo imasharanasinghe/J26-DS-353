@@ -54,6 +54,16 @@ The work was completed in these major steps:
     28-explanation Qwen3 set, and a threshold sensitivity sweep.
 39. Documented results and their limitations in
     [c4/results/RESULTS.md](./c4/results/RESULTS.md).
+40. Planned and built a local web workbench in seven committed steps.
+41. Added a validated service layer shared by the CLI and the web UI.
+42. Added a localhost HTTP API server with safe static serving.
+43. Built the frontend shell with light/dark theme and status chips.
+44. Added claim cards, rewrite trace, metrics, and JSON report views.
+45. Added example loaders, a learner mastery editor, verifier settings and
+    ablation toggles, and template/Qwen draft generation.
+46. Added an evaluation tab with the stress-test, ablation, Qwen, and
+    sensitivity results behind a caveat banner.
+47. Verified the UI in headless Chrome and added frontend contract tests.
 
 ## Current demo commands
 
@@ -77,6 +87,12 @@ Focused scenarios:
 python3 scripts/run_c4_demo.py --scenario valid --pretty
 python3 scripts/run_c4_demo.py --scenario factual --pretty
 python3 scripts/run_c4_demo.py --scenario cognitive --pretty
+```
+
+Web workbench (frontend):
+
+```bash
+python3 scripts/run_c4_server.py --open
 ```
 
 Preliminary evaluation:

@@ -545,7 +545,10 @@ maintained or improved clarity and comprehension.
   use different identifiers: C1 text names, C2 ASSISTments skill ids, C3
   `mock_kg.json` ids).
 - [ ] Learner study (needs ethics approval) and clarity/comprehension measures.
-- [ ] Unified slides, supervisor dry run, and viva preparation.
+- [ ] Unified slides, supervisor dry run, and viva preparation (the workbench
+  run-sheet is in [c4/README.md](./c4/README.md)).
+- [ ] Frontend follow-ups: group-level integration page once the shared REST
+  contract exists, and an accessibility pass with a screen reader.
 
 ## Web workbench (frontend) - added 2026-10-19
 
@@ -560,4 +563,4 @@ interactively (standard-library server + vanilla HTML/CSS/JS; no npm, no cloud).
 - [x] Step 4: verification views (claim cards, rewrite trace, metrics, final text).
 - [x] Step 5: scenarios, learner editor, and generator (template/Qwen) controls.
 - [x] Step 6: evaluation tab (stress test, ablations, sensitivity, caveats).
-- [ ] Step 7: documentation, demo script, and final validation.
+- [x] Step 7: documentation, demo script, and final validation.

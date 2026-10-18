@@ -79,7 +79,8 @@ The following facts were confirmed on 14 October 2026:
 - A live demonstration is required; no backup recording is currently required.
 - Every member presents their own component.
 - No official slide template or slide count is currently confirmed.
-- C1, C2, C3, and C4 have no implementation yet.
+- C1, C2, C3, and C4 had no implementation on 14 October 2026; by 19 October
+  each has an incomplete prototype (see [PLAN.md](./PLAN.md)).
 - Inter-component JSON schemas and implementations have not been finalized.
 - Component datasets or materials may exist individually, but are not officially
   integrated or used yet.
@@ -400,6 +401,9 @@ Show one complete execution:
 6. Rewrite only violating claims.
 7. Re-verify the revised content.
 8. Show the final explanation and faithfulness report.
+
+The local web workbench (`python3 scripts/run_c4_server.py`) may be used for
+this demonstration; it runs the same pipeline as the command-line demo.
 
 Include three contrasting examples:
 

@@ -34,7 +34,8 @@ verified C3 path + C2 learner + C1 graph + explanation
   -> final explanation + report (c4-report/1.0): trace, review_first, metrics
 ```
 
-Modules: `pipeline.py` (verify/repair), `metrics.py` (frozen metric definitions),
+Modules: `pipeline.py` (verify/repair), `service.py` and `server.py` (web API),
+`web/` (frontend), `metrics.py` (frozen metric definitions),
 `evaluation.py` (stress test, natural set, threshold sensitivity), `explainer.py`
 (replaceable generators), `adapters.py`, `paths.py`, `models.py`.
 
@@ -61,6 +62,41 @@ ollama serve
 ollama pull qwen3:4b
 python3 scripts/run_c4_demo.py --ollama --model qwen3:4b --pretty
 ```
+
+## Web workbench (frontend)
+
+A local, dependency-free UI over the same pipeline (standard-library server,
+vanilla HTML/CSS/JS; nothing is sent off the machine except the optional local
+Ollama call):
+
+```bash
+python3 scripts/run_c4_server.py --open     # http://127.0.0.1:8765
+```
+
+- **Verification tab:** choose a target and learner state (presets or per-concept
+  mastery/uncertainty sliders), load an example or draft with the template or
+  Qwen, then verify. You see claim cards (factual and cognitive labels, typed
+  violations, graph evidence), the before/after rewrite trace, re-verification,
+  the final explanation, metrics, and the downloadable `c4-report/1.0` JSON.
+- **Settings:** toggle factual verification, cognitive verification, or the
+  rewrite loop to reproduce the ablations interactively.
+- **Evaluation tab:** the committed stress-test and Qwen results with their caveats.
+- Deep links: `/#run` runs the default case on load, `/#eval` opens the evaluation tab.
+- The server binds to `127.0.0.1` and has no authentication; do not expose it.
+
+API: `GET /api/health|meta|results`, `POST /api/verify|generate`
+(see [c4/server.py](server.py) and [c4/service.py](service.py)).
+
+### Suggested PP1 demo run-sheet
+
+1. Start the server and open the page (Qwen chip green if Ollama is ready).
+2. Heap + demo learner, **Mixed** example, Verify: walk through the three claims
+   (supported, contradicted, true but too advanced), then the rewrite trace.
+3. Edit Binary Trees mastery to 0.95 / uncertainty 0.05 and verify again: the
+   cognitive violation disappears, showing the check is learner-relative.
+4. Untick **Rewrite loop**: violations stay unresolved and are not presented as verified.
+5. Optional: **Qwen (Ollama)** draft, then verify.
+6. **Evaluation** tab: ablation bars, then say the caveats aloud.
 
 ## Run tests and evaluation
 
