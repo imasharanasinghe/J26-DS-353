@@ -247,7 +247,9 @@ function badge(tone, key, value) {
 }
 
 function pct(value) {
-  return value === null || value === undefined ? "n/a" : `${value}%`;
+  if (value === null || value === undefined) return "n/a";
+  const n = Number(value);
+  return `${Number.isInteger(n) ? n : n.toFixed(1)}%`;
 }
 
 function tile(label, value, sub, good) {

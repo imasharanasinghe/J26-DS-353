@@ -64,6 +64,8 @@ The work was completed in these major steps:
 46. Added an evaluation tab with the stress-test, ablation, Qwen, and
     sensitivity results behind a caveat banner.
 47. Verified the UI in headless Chrome and added frontend contract tests.
+48. Redesigned the interface as a white, minimal editorial theme (serif text,
+    hairline rules, plain-text labels) and fixed the metric strip layout.
 
 ## Current demo commands
 

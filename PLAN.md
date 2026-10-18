@@ -564,3 +564,5 @@ interactively (standard-library server + vanilla HTML/CSS/JS; no npm, no cloud).
 - [x] Step 5: scenarios, learner editor, and generator (template/Qwen) controls.
 - [x] Step 6: evaluation tab (stress test, ablations, sensitivity, caveats).
 - [x] Step 7: documentation, demo script, and final validation.
+- [x] Visual redesign (2026-10-19): white editorial theme, serif/mono typography,
+  hairline rules, no cards, pills, gradients, or dark mode.
