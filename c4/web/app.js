@@ -211,6 +211,7 @@ async function run() {
   const button = $("#run");
   button.disabled = true;
   button.textContent = "Verifying…";
+  $("#results").setAttribute("aria-busy", "true");
   try {
     state.report = await api("/api/verify", {
       target: state.target,
@@ -224,6 +225,7 @@ async function run() {
   } finally {
     button.disabled = false;
     button.textContent = "Verify and repair";
+    $("#results").removeAttribute("aria-busy");
   }
 }
 
@@ -242,8 +244,19 @@ const VIOLATION_HELP = {
 };
 const pretty = (text) => text.replaceAll("_", " ").toLowerCase();
 
-function badge(tone, key, value) {
-  return el("span", { class: `badge ${tone}` }, key ? el("span", { class: "k" }, key) : null, value);
+const LABEL_HELP = {
+  ENTAILED: "A graph statement supports this claim.",
+  CONTRADICTED: "The graph states the opposite.",
+  UNSUPPORTED: "No graph statement supports this claim.",
+  APPROPRIATE: "Suitable for this learner at this point.",
+  BLOOM_MISMATCH: "Asks for a higher cognitive level than the learner's Bloom ceiling.",
+  UNMASTERED_PREREQUISITE: "Relies on a concept the learner has not mastered.",
+  INCONCLUSIVE: "Learner evidence is missing, uncertain, or too close to the threshold.",
+};
+
+function badge(tone, key, value, help) {
+  return el("span", { class: `badge ${tone}`, title: help || null },
+    key ? el("span", { class: "k" }, key) : null, value);
 }
 
 function pct(value) {
@@ -271,11 +284,11 @@ function claimCard(claim) {
       badge(CONFIDENCE_TONE[claim.confidence], "confidence", claim.confidence.toLowerCase())),
     el("p", { class: "claim-text" }, claim.text),
     el("div", { class: "badges" },
-      badge(FACTUAL_TONE[claim.factual_status], "factual", pretty(claim.factual_status)),
-      badge(COGNITIVE_TONE[claim.cognitive_status], "cognitive", pretty(claim.cognitive_status)),
-      badge("", "Bloom ≈", claim.estimated_bloom_level),
+      badge(FACTUAL_TONE[claim.factual_status], "factual", pretty(claim.factual_status), LABEL_HELP[claim.factual_status]),
+      badge(COGNITIVE_TONE[claim.cognitive_status], "cognitive", pretty(claim.cognitive_status), LABEL_HELP[claim.cognitive_status]),
+      badge("", "Bloom ≈", claim.estimated_bloom_level, "Estimated cognitive level of the sentence (1 remember … 6 create)."),
       names.map((name) => badge("info", "", name)),
-      claim.violations.map((v) => badge("bad", "", pretty(v)))),
+      claim.violations.map((v) => badge("bad", "", pretty(v), VIOLATION_HELP[v]))),
     claim.evidence.length
       ? el("div", { class: "evidence" }, el("b", {}, "Graph evidence: "), claim.evidence.join(" · "))
       : el("div", { class: "evidence" }, el("b", {}, "Graph evidence: "), "none found"),
@@ -285,6 +298,30 @@ function claimCard(claim) {
 function block(title, lede, content) {
   return el("section", { class: "block" }, el("h3", {}, title),
     lede ? el("p", { class: "lede" }, lede) : null, content);
+}
+
+function verdict(report) {
+  const initial = report.initial_claims;
+  const flagged = initial.filter((c) => !c.accepted);
+  const unresolved = report.unresolved_claims.length;
+  const kinds = {};
+  flagged.forEach((c) => c.violations.forEach((v) => { kinds[v] = (kinds[v] || 0) + 1; }));
+  const detail = Object.entries(kinds).map(([v, n]) => `${n} ${pretty(v)}`).join(", ");
+  let tone = "ok", title, note;
+  if (!flagged.length) {
+    title = `All ${initial.length} claim${initial.length === 1 ? "" : "s"} verified`;
+    note = "Nothing needed repair; the explanation was left exactly as written.";
+  } else if (!unresolved) {
+    title = `${flagged.length} of ${initial.length} claims needed repair, and now all pass`;
+    note = `Found: ${detail}. Rewritten in ${report.rewrite_attempts} round${report.rewrite_attempts === 1 ? "" : "s"}.`;
+  } else {
+    tone = "warn";
+    title = `${unresolved} claim${unresolved === 1 ? "" : "s"} still not verified`;
+    note = `Found: ${detail}. Unresolved claims are not presented as verified.`;
+  }
+  return el("div", { class: `verdict ${tone}`, role: "status" },
+    el("span", { class: "mark", "aria-hidden": "true" }, el("span", {}, tone === "ok" ? "✓" : "!")),
+    el("div", {}, el("strong", {}, title), el("small", {}, note)));
 }
 
 function renderReport(report) {
@@ -324,6 +361,7 @@ function renderReport(report) {
     el("div", { class: "json-actions" }, el("button", { type: "button", onclick: () => downloadJson(json) }, "Download JSON")));
 
   $("#results").replaceChildren(
+    verdict(report),
     tiles,
     block("Initial verification", "Every sentence is one claim, labelled on two independent dimensions.",
       el("div", { class: "claims" }, report.initial_claims.map(claimCard))),
@@ -338,6 +376,7 @@ function renderReport(report) {
     reverify: report.rewrite_trace.length > 0, report: true };
   document.querySelectorAll("#pipeline li").forEach((item) =>
     item.classList.toggle("done", stages[item.dataset.stage]));
+  if (window.innerWidth <= 920) $("#pipeline").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function downloadJson(text) {
@@ -449,6 +488,7 @@ function renderEvaluation(results) {
 let evaluationLoaded = false;
 async function loadEvaluation() {
   if (evaluationLoaded) return;
+  $("#view-eval").replaceChildren(el("p", { class: "hint" }, "Loading evaluation results…"));
   try {
     renderEvaluation(await api("/api/results"));
     evaluationLoaded = true;
@@ -476,6 +516,7 @@ async function boot() {
     if ((event.metaKey || event.ctrlKey) && event.key === "Enter") { event.preventDefault(); run(); }
   });
   $("#run").addEventListener("click", run);
+  $("#run-empty").addEventListener("click", run);
   $("#reset").addEventListener("click", () => { applyTarget(); resetConfig(); showError(""); });
   document.querySelectorAll("[data-scenario]").forEach((b) =>
     b.addEventListener("click", () => loadScenario(b.dataset.scenario)));
