@@ -92,3 +92,34 @@ This log records the work completed for Component 4 and the associated project a
   optional generated-demo mode without claiming that an external LLM is
   integrated.
 - Updated the plan to reflect the actual incomplete upstream branch status.
+
+## 2026-10-18
+
+### 14:45:00 +05:30
+- Audited the three available component branches directly from Git:
+  `origin/Component1_KG`, `origin/component2-gnn-student-model`, and
+  `origin/c3_pathplanner`.
+- Confirmed that all three are incomplete: C1 exports unverified CSV
+  candidates, C2 has an experimental learner model, and C3 has a path-planning
+  prototype with a documented verified-path contract.
+- Added C4 adapters, C3 hand-off validation, an offline explanation generator,
+  focused demo scenarios, a readable report, and graph-evidence factual repair.
+- Committed each logical change separately and pushed the changes to
+  `origin/c4`.
+
+### 15:10:00 +05:30
+- Added an optional local Ollama explanation generator using the Qwen3 model
+  through Ollama's local HTTP API.
+- Added `--ollama` and `--model` options to the C4 demo.
+- Added tests for the personalization context included in the Ollama prompt.
+- Confirmed that Ollama is not currently installed on this Mac; the integration
+  is implemented but requires local installation and model download before use.
+- Documented the offline fallback and Ollama setup in [c4/README.md](./c4/README.md).
+
+### 15:20:00 +05:30
+- Created [WBS.md](./WBS.md) as a brief user-facing A–Z summary of the major
+  project and C4 implementation steps.
+- Kept [LOG.md](./LOG.md) as the detailed AI-agent work record and
+  [PLAN.md](./PLAN.md) as the forward-looking work plan.
+- Validated the repository with 9 passing tests, Python compilation, demo
+  execution, JSON validation, and `git diff --check`.
