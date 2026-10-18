@@ -21,6 +21,34 @@
       "bloom_level": 2,
       "prerequisites": ["binary_tree", "arrays"],
       "facts": ["A heap is a complete binary tree."]
+    },
+    "arrays": {
+      "name": "Arrays",
+      "difficulty": 1,
+      "bloom_level": 1,
+      "prerequisites": [],
+      "facts": ["An array stores elements in contiguous indexed positions."]
+    },
+    "recursion": {
+      "name": "Recursion",
+      "difficulty": 2,
+      "bloom_level": 2,
+      "prerequisites": [],
+      "facts": ["Recursion solves a problem by calling a function on smaller input."]
+    },
+    "stack": {
+      "name": "Stacks",
+      "difficulty": 2,
+      "bloom_level": 2,
+      "prerequisites": ["arrays"],
+      "facts": ["A stack follows the last-in-first-out rule."]
+    },
+    "queue": {
+      "name": "Queues",
+      "difficulty": 2,
+      "bloom_level": 2,
+      "prerequisites": ["arrays"],
+      "facts": ["A queue follows the first-in-first-out rule."]
     }
   },
   "misconceptions": {
