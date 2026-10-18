@@ -45,7 +45,7 @@ class OllamaExplanationGenerator:
     def __init__(
         self,
         model: str = "qwen3:4b",
-        endpoint: str = "http://localhost:11434/api/generate",
+        endpoint: str = "http://localhost:11434/api/chat",
         timeout: float = 300.0,
     ) -> None:
         self.model = model
@@ -83,7 +83,21 @@ class OllamaExplanationGenerator:
     ) -> str:
         payload = json.dumps({
             "model": self.model,
-            "prompt": self.build_prompt(c3_path, learner_state, knowledge_graph),
+            "messages": [
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a concise educational explanation writer. "
+                        "Return only the explanation."
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": self.build_prompt(
+                        c3_path, learner_state, knowledge_graph
+                    ),
+                },
+            ],
             "stream": False,
             "think": False,
             "options": {
@@ -106,7 +120,7 @@ class OllamaExplanationGenerator:
                 "Ollama is unavailable. Start it with `ollama serve` and "
                 f"confirm that model `{self.model}` is installed."
             ) from exc
-        text = result.get("response", "").strip()
+        text = result.get("message", {}).get("content", "").strip()
         if not text:
             raise RuntimeError("Ollama returned an empty explanation")
         return text
