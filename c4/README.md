@@ -120,6 +120,12 @@ python3 scripts/run_c4_eval.py --refresh  # regenerate missing Qwen outputs into
   true fact and negation polarity matches
 - Maximum rewrite rounds: `3`; unresolved claims are listed, never reported as verified
 
+## Third-party assets
+
+- Josefin Sans (variable roman and italic), (c) The Josefin Sans Project Authors,
+  SIL Open Font License 1.1 - see [web/fonts/OFL.txt](web/fonts/OFL.txt).
+  Self-hosted; the UI makes no external requests.
+
 ## Limitations (read before presenting results)
 
 - Factual checking is rule-based graph-statement matching, not NLI. It cannot

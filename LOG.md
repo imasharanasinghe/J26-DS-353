@@ -223,3 +223,7 @@ This log records the work completed for Component 4 and the associated project a
 ### 2026-10-19 05:45:00 +05:30
 - Font change, commit 1 (assets): vendored Josefin Sans (variable roman and italic TrueType, about 250 KB, with its SIL Open Font License text) under `c4/web/fonts/` and declared it with `@font-face` in `styles.css`. It is self-hosted instead of loaded from Google Fonts so the live demo works offline and no request leaves the machine; the page still references only local assets.
 - The server now sends `font/ttf` for font files. Added tests for serving the font and for the licence shipping with it. The font is not applied yet; that is the next commit.
+
+### 2026-10-19 05:58:00 +05:30
+- Font change, commit 2 (apply): set Josefin Sans as the single typeface for every element (headings, body, labels, inputs, tables, JSON) through one `--font` variable; the old serif and monospace variables now alias it. Retuned sizes and weights for Josefin's small x-height: light 300 for headings, metric values and the final explanation, larger body, claim, label and table text, and 600 for emphasis.
+- Verified in a headless-Chrome screenshot that the self-hosted font loads and renders on the Verification view. 62 tests pass.

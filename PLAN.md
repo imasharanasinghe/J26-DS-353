@@ -566,3 +566,5 @@ interactively (standard-library server + vanilla HTML/CSS/JS; no npm, no cloud).
 - [x] Step 7: documentation, demo script, and final validation.
 - [x] Visual redesign (2026-10-19): white editorial theme, serif/mono typography,
   hairline rules, no cards, pills, gradients, or dark mode.
+- [x] Typography (2026-10-19): Josefin Sans everywhere, self-hosted under
+  `c4/web/fonts/` with its SIL OFL licence (no external font requests).

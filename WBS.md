@@ -66,6 +66,7 @@ The work was completed in these major steps:
 47. Verified the UI in headless Chrome and added frontend contract tests.
 48. Redesigned the interface as a white, minimal editorial theme (serif text,
     hairline rules, plain-text labels) and fixed the metric strip layout.
+49. Self-hosted Josefin Sans (SIL OFL) and applied it as the only typeface.
 
 ## Current demo commands
 
