@@ -218,7 +218,20 @@ class C4Pipeline:
 
     @staticmethod
     def _contains_term(sentence: str, term: str) -> bool:
-        return re.search(rf"\b{re.escape(term.lower())}\b", sentence.lower()) is not None
+        sentence_words = set(re.findall(r"[a-z0-9]+", sentence.lower()))
+        term_words = re.findall(r"[a-z0-9]+", term.lower())
+        if not term_words:
+            return False
+        normalized_terms = {
+            word[:-1] if word.endswith("s") and len(word) > 3 else word
+            for word in term_words
+        }
+        return all(
+            word in sentence_words
+            or (word[:-1] if word.endswith("s") and len(word) > 3 else word)
+            in sentence_words
+            for word in normalized_terms
+        )
 
     @staticmethod
     def _estimate_bloom(sentence: str) -> int:

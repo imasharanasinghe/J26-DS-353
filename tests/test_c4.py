@@ -70,6 +70,21 @@ def test_factual_violation_can_be_rewritten_when_prerequisites_are_ready(
     assert result.claims[0].accepted is True
 
 
+def test_singular_concept_name_matches_plural_graph_name(pipeline: C4Pipeline) -> None:
+    result = pipeline.run(
+        {
+            "learner_id": "L02_intermediate",
+            "target": "arrays",
+            "verified": True,
+            "path": [{"kind": "learn", "id": "arrays", "name": "Arrays"}],
+        },
+        load("learner_state.json"),
+        "An array stores elements in contiguous indexed positions.",
+    )
+    assert result.claims[0].factual_status == "ENTAILED"
+    assert result.claims[0].accepted is True
+
+
 def test_complete_fixture_has_c3_contract() -> None:
     path = load("verified_path.json")
     assert path["verified"] is True
