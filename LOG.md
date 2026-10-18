@@ -188,3 +188,12 @@ This log records the work completed for Component 4 and the associated project a
 - Unresolved claims are shown in amber and explicitly labelled as not presented as verified, matching the failure policy in [GUIDELINES.md](./GUIDELINES.md).
 - Added a `#run` URL hash that runs the default case on load, used for demos and for headless-Chrome screenshots, which I used to check the layout. Widened the metric tiles after the screenshot showed the rate values crowding.
 - The verifier numbers shown in the UI come from the same `/api/verify` response as the CLI, so both interfaces report identical results.
+
+### 2026-10-19 03:55:00 +05:30
+- Step 5: added interactive controls to the workbench.
+  - Example buttons (Mixed, Supported, Contradicted, Too advanced) load the same target-aware sentences as the CLI scenarios.
+  - Learner editor: per-concept mastery and uncertainty sliders with a tick box to simulate missing history; any edit switches the preset to "Custom (edited)". Learner values are sent to the verifier unchanged.
+  - Verifier settings: factual, cognitive, and rewrite toggles, max rewrite rounds, and mastery and uncertainty thresholds. Switching a check off reproduces the factual-only and cognitive-only ablations interactively.
+  - Draft generators: "Template" and "Qwen (Ollama)" fill the explanation box; the Qwen button is disabled with a hint when Ollama or the model is unavailable, and the prompt actually sent to the model is shown in a collapsible block.
+- Verified in headless Chrome with a scripted run: editing Binary Trees mastery to 0.95 flips the "true but too advanced" claim to verified; disabling the rewrite loop leaves the contradicted claim unresolved and labelled as not verified; template generation and target switching reset state correctly. Checked the editor layout in a screenshot.
+- Added `tests/test_frontend.py` (ids used by the script exist in the page, no `innerHTML`, only local assets). 60 tests pass.

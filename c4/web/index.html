@@ -33,12 +33,49 @@
         <label for="preset">Learner state (from C2)</label>
         <select id="preset"></select>
         <div id="learner-summary" class="learner-summary"></div>
+        <details class="editor">
+          <summary>Edit mastery and uncertainty</summary>
+          <p class="hint">Mastery is the estimated probability the learner knows a concept; uncertainty is the model's
+             spread around it. Untick a concept to simulate missing learner history.</p>
+          <div id="learner-editor" class="learner-editor"></div>
+        </details>
       </section>
 
       <section>
         <h2>2 · Explanation to verify</h2>
         <label for="explanation">Draft explanation <span class="count" id="char-count"></span></label>
         <textarea id="explanation" rows="7" spellcheck="false" maxlength="2000"></textarea>
+        <div class="tools">
+          <span class="tools-label">Load example</span>
+          <button type="button" class="chipbtn" data-scenario="mixed" title="Supported, contradicted and too-advanced claims together">Mixed</button>
+          <button type="button" class="chipbtn" data-scenario="valid" title="Supported and appropriate">Supported</button>
+          <button type="button" class="chipbtn" data-scenario="factual" title="Contradicted by the graph">Contradicted</button>
+          <button type="button" class="chipbtn" data-scenario="cognitive" title="True, but relies on an unmastered concept">Too advanced</button>
+        </div>
+        <div class="tools">
+          <span class="tools-label">Draft with</span>
+          <button type="button" class="chipbtn" id="gen-template">Template</button>
+          <button type="button" class="chipbtn" id="gen-ollama">Qwen (Ollama)</button>
+        </div>
+        <details class="editor" id="prompt-box" hidden>
+          <summary>Prompt sent to the model</summary>
+          <pre id="prompt-text"></pre>
+        </details>
+        <details class="editor">
+          <summary>Verifier settings and ablations</summary>
+          <div class="settings">
+            <label class="check"><input type="checkbox" id="cfg-factual" checked> Factual verification</label>
+            <label class="check"><input type="checkbox" id="cfg-cognitive" checked> Cognitive verification</label>
+            <label class="check"><input type="checkbox" id="cfg-rewrite" checked> Rewrite loop</label>
+            <label for="cfg-attempts">Max rewrite rounds <b id="cfg-attempts-val"></b></label>
+            <input type="range" id="cfg-attempts" min="0" max="5" step="1">
+            <label for="cfg-mastery">Mastery threshold <b id="cfg-mastery-val"></b></label>
+            <input type="range" id="cfg-mastery" min="0.3" max="0.95" step="0.05">
+            <label for="cfg-uncertainty">Uncertainty threshold <b id="cfg-uncertainty-val"></b></label>
+            <input type="range" id="cfg-uncertainty" min="0.05" max="0.6" step="0.05">
+            <p class="hint">Turning a check off reproduces the factual-only and cognitive-only ablations from the evaluation.</p>
+          </div>
+        </details>
         <div class="row">
           <button type="button" id="run" class="primary">Verify and repair</button>
           <button type="button" id="reset" class="ghost">Reset</button>

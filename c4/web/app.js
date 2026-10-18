@@ -34,7 +34,7 @@ async function api(path, body) {
 }
 
 /* ---------- state ---------- */
-const state = { meta: null, target: null, preset: null, learner: null, report: null };
+const state = { meta: null, target: null, preset: null, learner: null, report: null, ollamaReady: false };
 
 const targetInfo = () => state.meta.targets.find((item) => item.id === state.target);
 
@@ -73,14 +73,66 @@ function renderLearnerSummary() {
   }
 }
 
+function learnerConcepts() {
+  const target = targetInfo();
+  const ordered = [...target.prerequisites, ...Object.keys(state.meta.concepts)];
+  return [...new Set(ordered)].filter((id) => id !== target.id);
+}
+
+function markCustom() {
+  const select = $("#preset");
+  if (!select.querySelector('option[value="custom"]')) select.append(el("option", { value: "custom" }, "Custom (edited)"));
+  select.value = "custom";
+  state.preset = "custom";
+  renderLearnerSummary();
+}
+
+function renderLearnerEditor() {
+  const box = $("#learner-editor");
+  box.replaceChildren();
+  for (const id of learnerConcepts()) {
+    const has = state.learner.mastery[id] !== undefined;
+    const mastery = state.learner.mastery[id] ?? 0.5;
+    const spread = state.learner.uncertainty[id] ?? 0.2;
+    const row = el("div", { class: "lrow", "data-off": String(!has) });
+    const sync = () => {
+      const on = check.checked;
+      row.dataset.off = String(!on);
+      if (on) {
+        state.learner.mastery[id] = Number(m.value);
+        state.learner.uncertainty[id] = Number(u.value);
+      } else {
+        delete state.learner.mastery[id];
+        delete state.learner.uncertainty[id];
+      }
+      mv.textContent = Number(m.value).toFixed(2);
+      uv.textContent = Number(u.value).toFixed(2);
+      markCustom();
+    };
+    const check = el("input", { type: "checkbox", "aria-label": `Has history for ${state.meta.concepts[id]}`, onchange: sync });
+    check.checked = has;
+    const m = el("input", { type: "range", min: 0, max: 1, step: 0.05, value: mastery, "aria-label": "mastery", oninput: sync });
+    const u = el("input", { type: "range", min: 0, max: 1, step: 0.05, value: spread, "aria-label": "uncertainty", oninput: sync });
+    const mv = el("span", {}, Number(mastery).toFixed(2));
+    const uv = el("span", {}, Number(spread).toFixed(2));
+    row.append(check, el("span", { class: "lname" }, state.meta.concepts[id] || id),
+      el("div", { class: "lsliders" }, "mastery", m, mv), el("div", { class: "lsliders" }, "uncertainty", u, uv));
+    box.append(row);
+  }
+}
+
 function applyPreset() {
+  if ($("#preset").value === "custom") return;  // edited learner stays as typed
   state.preset = $("#preset").value;
   state.learner = JSON.parse(JSON.stringify(targetInfo().learner_presets[state.preset]));
   renderLearnerSummary();
+  renderLearnerEditor();
 }
 
 function applyTarget() {
   state.target = $("#target").value;
+  $('#preset option[value="custom"]')?.remove();
+  if ($("#preset").value === "custom" || !$("#preset").value) $("#preset").value = "demo_learner";
   const target = targetInfo();
   const names = target.prerequisites.map((id) => state.meta.concepts[id] || id);
   $("#path-hint").textContent = names.length
@@ -95,6 +147,64 @@ function updateCount() {
   $("#char-count").textContent = `${$("#explanation").value.length} / 2000`;
 }
 
+/* ---------- verifier settings ---------- */
+function readConfig() {
+  return {
+    check_factual: $("#cfg-factual").checked,
+    check_cognitive: $("#cfg-cognitive").checked,
+    rewrite: $("#cfg-rewrite").checked,
+    max_rewrite_attempts: Number($("#cfg-attempts").value),
+    mastery_threshold: Number($("#cfg-mastery").value),
+    uncertainty_threshold: Number($("#cfg-uncertainty").value),
+  };
+}
+
+function syncConfigLabels() {
+  $("#cfg-attempts-val").textContent = $("#cfg-attempts").value;
+  $("#cfg-mastery-val").textContent = Number($("#cfg-mastery").value).toFixed(2);
+  $("#cfg-uncertainty-val").textContent = Number($("#cfg-uncertainty").value).toFixed(2);
+}
+
+function resetConfig() {
+  const d = state.meta.config_defaults;
+  $("#cfg-factual").checked = d.check_factual;
+  $("#cfg-cognitive").checked = d.check_cognitive;
+  $("#cfg-rewrite").checked = d.rewrite;
+  $("#cfg-attempts").value = d.max_rewrite_attempts;
+  $("#cfg-mastery").value = d.mastery_threshold;
+  $("#cfg-uncertainty").value = d.uncertainty_threshold;
+  syncConfigLabels();
+}
+
+/* ---------- examples and generators ---------- */
+function loadScenario(name) {
+  $("#explanation").value = targetInfo().scenarios[name];
+  $("#prompt-box").hidden = true;
+  updateCount();
+}
+
+async function generate(source) {
+  showError("");
+  const buttons = [$("#gen-template"), $("#gen-ollama")];
+  const label = $(source === "ollama" ? "#gen-ollama" : "#gen-template");
+  const original = label.textContent;
+  buttons.forEach((b) => { b.disabled = true; });
+  label.textContent = source === "ollama" ? "Writing… (a few seconds)" : "Writing…";
+  try {
+    const result = await api("/api/generate", { target: state.target, source, learner: state.learner });
+    $("#explanation").value = result.explanation;
+    updateCount();
+    $("#prompt-box").hidden = !result.prompt;
+    $("#prompt-text").textContent = result.prompt || "";
+  } catch (error) {
+    showError(error.message);
+  } finally {
+    label.textContent = original;
+    buttons.forEach((b) => { b.disabled = false; });
+    $("#gen-ollama").disabled = !state.ollamaReady;
+  }
+}
+
 /* ---------- run ---------- */
 async function run() {
   showError("");
@@ -106,6 +216,7 @@ async function run() {
       target: state.target,
       explanation: $("#explanation").value,
       learner: state.learner,
+      config: readConfig(),
     });
     renderReport(state.report);
   } catch (error) {
@@ -250,7 +361,13 @@ async function boot() {
   $("#preset").addEventListener("change", applyPreset);
   $("#explanation").addEventListener("input", updateCount);
   $("#run").addEventListener("click", run);
-  $("#reset").addEventListener("click", applyTarget);
+  $("#reset").addEventListener("click", () => { applyTarget(); resetConfig(); showError(""); });
+  document.querySelectorAll("[data-scenario]").forEach((b) =>
+    b.addEventListener("click", () => loadScenario(b.dataset.scenario)));
+  $("#gen-template").addEventListener("click", () => generate("template"));
+  $("#gen-ollama").addEventListener("click", () => generate("ollama"));
+  ["#cfg-attempts", "#cfg-mastery", "#cfg-uncertainty"].forEach((id) => $(id).addEventListener("input", syncConfigLabels));
+  $("#gen-ollama").disabled = true;
   try {
     state.meta = await api("/api/meta");
     setChip("#chip-api", true);
@@ -264,10 +381,14 @@ async function boot() {
   const presets = Object.keys(state.meta.targets[0].learner_presets);
   $("#preset").replaceChildren(...presets.map((id) => el("option", { value: id }, PRESET_LABELS[id] || id)));
   applyTarget();
+  resetConfig();
   if (location.hash === "#run") run();  // deep link used for demos and screenshots
   api("/api/health").then((health) => {
     const { online, model_installed: installed, model } = health.ollama;
-    setChip("#chip-ollama", online && installed, online ? (installed ? model : `${model} missing`) : "Ollama offline");
+    state.ollamaReady = online && installed;
+    $("#gen-ollama").disabled = !state.ollamaReady;
+    $("#gen-ollama").title = state.ollamaReady ? "Generate a draft with the local model" : "Start Ollama and install qwen3:4b to enable";
+    setChip("#chip-ollama", state.ollamaReady, online ? (installed ? model : `${model} missing`) : "Ollama offline");
   }).catch(() => setChip("#chip-ollama", false, "Ollama offline"));
 }
 

@@ -558,6 +558,6 @@ interactively (standard-library server + vanilla HTML/CSS/JS; no npm, no cloud).
   `/api/results`, `/api/health`) bound to localhost.
 - [x] Step 3: frontend shell (layout, theme, input panel).
 - [x] Step 4: verification views (claim cards, rewrite trace, metrics, final text).
-- [ ] Step 5: scenarios, learner editor, and generator (template/Qwen) controls.
+- [x] Step 5: scenarios, learner editor, and generator (template/Qwen) controls.
 - [ ] Step 6: evaluation tab (stress test, ablations, sensitivity, caveats).
 - [ ] Step 7: documentation, demo script, and final validation.
