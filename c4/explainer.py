@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 from typing import Any
@@ -120,7 +121,25 @@ class OllamaExplanationGenerator:
                 "Ollama is unavailable. Start it with `ollama serve` and "
                 f"confirm that model `{self.model}` is installed."
             ) from exc
-        text = result.get("message", {}).get("content", "").strip()
+        text = self._clean_response(result.get("message", {}).get("content", ""))
         if not text:
             raise RuntimeError("Ollama returned an empty explanation")
         return text
+
+    @staticmethod
+    def _clean_response(text: str) -> str:
+        ignored_prefixes = (
+            "we are given", "we must", "step ", "example:", "the only fact",
+            "return only", "write exactly", "use only",
+        )
+        sentences = re.split(r"(?<=[.!?])\s+", text.strip())
+        cleaned: list[str] = []
+        for sentence in sentences:
+            normalized = sentence.strip()
+            if not normalized:
+                continue
+            if normalized.lower().startswith(ignored_prefixes):
+                continue
+            if normalized not in cleaned:
+                cleaned.append(normalized)
+        return " ".join(cleaned)

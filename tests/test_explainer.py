@@ -13,3 +13,14 @@ def test_ollama_prompt_contains_personalization_context() -> None:
     assert "heap" in prompt
     assert "binary_tree" in prompt
     assert "A heap is a complete binary tree." in prompt
+
+
+def test_ollama_response_cleaner_removes_planning_and_duplicates() -> None:
+    text = (
+        "We are given the fact. Step 1: reason. "
+        "A heap is a complete binary tree. "
+        "A heap is a complete binary tree."
+    )
+    assert OllamaExplanationGenerator._clean_response(text) == (
+        "A heap is a complete binary tree."
+    )
