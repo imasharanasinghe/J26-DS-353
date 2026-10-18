@@ -40,11 +40,16 @@ relevant knowledge-graph context are available.
 
 ### Confirmed project state
 
-- C1 currently has no implementation.
-- C2 currently has no implementation.
-- C3 currently has no implementation.
-- C4 currently has no implementation.
-- No inter-component JSON schemas or implementations have been finalized.
+- C1 has an incomplete extraction prototype that currently exports unverified
+  CSV candidate concepts and relations; final verification and graph storage
+  are not implemented.
+- C2 has an incomplete GNN/Monte Carlo Dropout prototype with experimental
+  mastery and uncertainty outputs; its graph and data integration remain
+  provisional.
+- C3 has an incomplete path-planning prototype with a documented verified-path
+  JSON hand-off and optional Neo4j loader.
+- C4 has a deterministic pilot prototype; no final inter-component schemas,
+  graph deployment, or end-to-end integration has been completed.
 - Component-specific datasets or materials may exist with individual members,
   but none are officially integrated or being used by the project at present.
 
@@ -146,6 +151,8 @@ Return a structured response containing:
 - Select representative DSA concepts with varied prerequisite depth and
   cognitive demand.
 - Create controlled mock graph, learner profiles, and verified-path fixtures.
+- Track actual upstream branch contracts through adapters rather than importing
+  another component's private implementation.
 
 Implementation note: the initial fixtures now exist under `c4/data/` and use
 the C3 `PlanResult.to_json` path shape without copying the C3 working folder.
@@ -171,7 +178,8 @@ the C3 `PlanResult.to_json` path shape without copying the C3 working folder.
 - Preserve claim IDs, source context, and provenance across all stages.
 
 Pilot status: deterministic explanation input and atomic sentence claim IDs are
-implemented. External LLM generation remains a replaceable integration point.
+implemented. A path/learner-aware offline template generator now provides a
+replaceable generation boundary; external LLM generation remains unintegrated.
 
 ### Milestone 4 — Factual verification
 

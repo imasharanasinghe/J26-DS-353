@@ -79,3 +79,16 @@ This log records the work completed for Component 4 and the associated project a
 - Implemented verified-path gating, atomic claim decomposition, factual status checks, cognitive prerequisite/Bloom checks, typed violations, bounded targeted rewriting, re-verification, unresolved-claim reporting, and initial/final claim records.
 - Installed the missing pytest runner for validation; 4 focused C4 tests passed, Python compilation passed, and the demo produced valid JSON.
 - Recorded that the current deterministic checker and Bloom heuristic are pilot baselines, not final research-grade NLI or calibrated models.
+
+### 14:45:00 +05:30
+- Audited the available remote component branches: `origin/Component1_KG`,
+  `origin/component2-gnn-student-model`, and `origin/c3_pathplanner`.
+- Confirmed that C1 currently exports unverified CSV candidates, C2 exposes
+  experimental mastery/uncertainty outputs, and C3 provides the verified-path
+  JSON contract plus an optional Neo4j loader; none of the branches is complete.
+- Added C4 adapters for the current C1 CSV shape, C2 single/collection learner
+  shapes, and C3 path validation.
+- Added an offline path/learner-aware explanation-generation boundary and
+  optional generated-demo mode without claiming that an external LLM is
+  integrated.
+- Updated the plan to reflect the actual incomplete upstream branch status.
