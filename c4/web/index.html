@@ -1,1 +1,80 @@
-<!doctype html><title>C4</title><p>C4 workbench placeholder</p>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C4 Faithfulness Workbench</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f5fd0'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">C4</span>
+      <div>
+        <h1>Faithfulness Workbench</h1>
+        <p>Bloom-level-aware verification of personalized explanations</p>
+      </div>
+    </div>
+    <div class="status" aria-live="polite">
+      <span class="chip" id="chip-api" data-state="pending"><i></i>API</span>
+      <span class="chip" id="chip-ollama" data-state="pending"><i></i>Qwen (Ollama)</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel inputs" aria-label="Inputs">
+      <section>
+        <h2>1 · Target and learner</h2>
+        <label for="target">Target concept (verified path step)</label>
+        <select id="target"></select>
+        <p class="hint" id="path-hint"></p>
+
+        <label for="preset">Learner state (from C2)</label>
+        <select id="preset"></select>
+        <div id="learner-summary" class="learner-summary"></div>
+      </section>
+
+      <section>
+        <h2>2 · Explanation to verify</h2>
+        <label for="explanation">Draft explanation <span class="count" id="char-count"></span></label>
+        <textarea id="explanation" rows="7" spellcheck="false" maxlength="2000"></textarea>
+        <div class="row">
+          <button type="button" id="run" class="primary">Verify and repair</button>
+          <button type="button" id="reset" class="ghost">Reset</button>
+        </div>
+        <p class="error" id="error" role="alert" hidden></p>
+      </section>
+    </aside>
+
+    <section class="output" aria-label="Results">
+      <nav class="tabs" role="tablist">
+        <button role="tab" id="tab-verify" aria-selected="true" aria-controls="view-verify">Verification</button>
+        <button role="tab" id="tab-eval" aria-selected="false" aria-controls="view-eval">Evaluation</button>
+      </nav>
+      <div id="view-verify" role="tabpanel" aria-labelledby="tab-verify">
+        <ol class="pipeline" id="pipeline" aria-label="Pipeline stages">
+          <li data-stage="decompose">Decompose</li>
+          <li data-stage="verify">Verify</li>
+          <li data-stage="rewrite">Rewrite</li>
+          <li data-stage="reverify">Re-verify</li>
+          <li data-stage="report">Report</li>
+        </ol>
+        <div id="results" class="results">
+          <div class="empty">
+            <h2>Nothing verified yet</h2>
+            <p>Pick a target and learner, then run the verifier. Each sentence becomes a claim that is
+               checked against the knowledge graph and the learner's mastery.</p>
+          </div>
+        </div>
+      </div>
+      <div id="view-eval" role="tabpanel" aria-labelledby="tab-eval" hidden></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    Pilot prototype · rule-based verifier, fixture C1/C2/C3 inputs · parameters are assumptions, not validated values
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>

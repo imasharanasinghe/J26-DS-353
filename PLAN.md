@@ -556,7 +556,7 @@ interactively (standard-library server + vanilla HTML/CSS/JS; no npm, no cloud).
   validation, tested without a server.
 - [x] Step 2: HTTP API server (`/api/meta`, `/api/verify`, `/api/generate`,
   `/api/results`, `/api/health`) bound to localhost.
-- [ ] Step 3: frontend shell (layout, theme, input panel).
+- [x] Step 3: frontend shell (layout, theme, input panel).
 - [ ] Step 4: verification views (claim cards, rewrite trace, metrics, final text).
 - [ ] Step 5: scenarios, learner editor, and generator (template/Qwen) controls.
 - [ ] Step 6: evaluation tab (stress test, ablations, sensitivity, caveats).

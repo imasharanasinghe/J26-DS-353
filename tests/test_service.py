@@ -87,3 +87,11 @@ def test_unreachable_ollama_surfaces_as_runtime_error(bench: Workbench) -> None:
     offline = OllamaExplanationGenerator(endpoint="http://127.0.0.1:1/api/chat", timeout=1.0)
     with pytest.raises(RuntimeError, match="Ollama is unavailable"):
         bench.generate({"target": "heap", "source": "ollama"}, ollama=offline)
+
+
+def test_every_preset_and_scenario_round_trips_through_verify(bench: Workbench) -> None:
+    for target in bench.meta()["targets"]:
+        for preset in target["learner_presets"].values():
+            for text in target["scenarios"].values():
+                report = bench.verify({"target": target["id"], "explanation": text, "learner": preset})
+                assert report["unresolved_claims"] == []

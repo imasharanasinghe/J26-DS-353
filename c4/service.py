@@ -106,12 +106,13 @@ class Workbench:
             "schema_version": "c4-report/1.0",
         }
 
-    @staticmethod
-    def _learner_payload(learner: dict[str, Any]) -> dict[str, Any]:
+    def _learner_payload(self, learner: dict[str, Any]) -> dict[str, Any]:
+        """Learner state restricted to concepts present in the graph (C2 may know more)."""
+        known = self.kg["concepts"]
         return {
             "learner_id": learner.get("learner_id", "custom"),
-            "mastery": dict(learner.get("mastery", {})),
-            "uncertainty": dict(learner.get("uncertainty", {})),
+            "mastery": {k: v for k, v in learner.get("mastery", {}).items() if k in known},
+            "uncertainty": {k: v for k, v in learner.get("uncertainty", {}).items() if k in known},
         }
 
     # ---------------------------------------------------------------- verify

@@ -176,3 +176,9 @@ This log records the work completed for Component 4 and the associated project a
 - Added `tests/test_server.py` (live server on an ephemeral port: round trip, bad JSON, oversize body, unknown routes, traversal) and an unreachable-Ollama test. 56 tests pass.
 - Verified the running script manually with curl against `/api/health` and `/api/verify`.
 - The server has no authentication; it binds to 127.0.0.1 and is documented as not for network exposure.
+
+### 2026-10-19 03:08:00 +05:30
+- Step 3: built the frontend shell in `c4/web/` (`index.html`, `styles.css`, `app.js`): responsive two-column layout, automatic light/dark theme, status chips for the API and Ollama/Qwen, target and learner-preset selectors, learner mastery summary chips, explanation editor with a character counter, and a pipeline stage indicator. The JavaScript builds the DOM with `textContent` only (no `innerHTML`) so server or user text cannot inject markup.
+- The shell already calls `/api/meta`, `/api/health`, and `/api/verify`; the full result renderer follows in step 4.
+- Checked the page with headless Chrome (screenshot) and `node --check`.
+- Found by that check that the demo-learner preset contained `linked_list`, which is not in the pilot graph, so the service would have rejected it on Verify. Presets are now restricted to graph concepts and a test verifies that every preset and scenario round-trips through `verify`. 57 tests pass.
