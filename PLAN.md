@@ -546,3 +546,18 @@ maintained or improved clarity and comprehension.
   `mock_kg.json` ids).
 - [ ] Learner study (needs ethics approval) and clarity/comprehension measures.
 - [ ] Unified slides, supervisor dry run, and viva preparation.
+
+## Web workbench (frontend) - added 2026-10-19
+
+A local, dependency-free web UI so the C4 pipeline can be demonstrated
+interactively (standard-library server + vanilla HTML/CSS/JS; no npm, no cloud).
+
+- [x] Step 1: transport-independent service layer (`c4/service.py`) with input
+  validation, tested without a server.
+- [ ] Step 2: HTTP API server (`/api/meta`, `/api/verify`, `/api/generate`,
+  `/api/results`, `/api/health`) bound to localhost.
+- [ ] Step 3: frontend shell (layout, theme, input panel).
+- [ ] Step 4: verification views (claim cards, rewrite trace, metrics, final text).
+- [ ] Step 5: scenarios, learner editor, and generator (template/Qwen) controls.
+- [ ] Step 6: evaluation tab (stress test, ablations, sensitivity, caveats).
+- [ ] Step 7: documentation, demo script, and final validation.

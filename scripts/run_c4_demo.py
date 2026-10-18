@@ -11,29 +11,10 @@ sys.path.insert(0, str(ROOT))
 from c4 import C4Pipeline, OllamaExplanationGenerator, TemplateExplanationGenerator
 from c4.adapters import load_c2_learner, load_json, validate_c3_path
 from c4.paths import build_verified_path
+from c4.service import scenario_text
 
 
 DATA = ROOT / "c4" / "data"
-
-
-def scenario_text(pipeline: C4Pipeline, target: str, scenario: str, default_text: str) -> str:
-    """Target-aware demo sentences; the learner state is never edited to fake a result."""
-    concept = pipeline.kg["concepts"][target]
-    name = concept.get("name", target)
-    facts = concept.get("facts", [])
-    known_false = concept.get("known_false", [f"{name} is always fully sorted."])
-    if scenario == "valid":
-        # A graph fact whose only non-target dependencies the learner has mastered.
-        return facts[-1] if facts else f"{name} is introduced."
-    if scenario == "factual":
-        return known_false[0]
-    if scenario == "cognitive":
-        # A true graph fact that depends on a concept the learner has not mastered.
-        for fact in facts:
-            if pipeline._mentioned_concepts(fact) not in ((), (target,)):
-                return fact
-        return facts[0] if facts else f"{name} is introduced."
-    return default_text
 
 
 def print_claims(title: str, claims) -> None:

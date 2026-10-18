@@ -149,7 +149,7 @@ This log records the work completed for Component 4 and the associated project a
 - Added tests for the new multi-target behavior and model-response cleanup.
 - Current validation: 11 tests pass; the branch is pushed and clean.
 
-### 2026-10-19 02:50:00 +05:30
+### 2026-10-19 02:30:00 +05:30
 - Reviewed C4 against the PP1 mark sheet and the C1, C2, and C3 remote branches. Found that the demo scenarios did not show a clean supported claim or a cognitive-only violation, `pretty` mixed pre- and post-repair claims, cognitive violations could not be repaired, and there was no evaluation evidence.
 - Fixed claim-to-concept matching (longest match, so "binary tree" no longer also counts as "tree"); the current target is exempt from the prerequisite check, and every other mentioned concept must be mastered.
 - Added INCONCLUSIVE handling for high uncertainty, mastery within 0.05 of the threshold, and missing learner history.
@@ -162,3 +162,11 @@ This log records the work completed for Component 4 and the associated project a
 - Results and limits: see [c4/results/RESULTS.md](./c4/results/RESULTS.md). The stress-test labels are recipe-built (no human annotators, no kappa), post-repair rates use the same verifier, and the natural set shows the rule-based matcher flagging every paraphrased Qwen sentence as not graph-supported.
 - Tests: 28 pass; compilation, demo modes (including Ollama), and JSON output validated.
 - Rewrote [c4/README.md](./c4/README.md) (fixed the broken run/test section; documented pipeline, parameters, and limitations).
+
+### 2026-10-19 02:40:00 +05:30
+- Started the C4 web workbench (frontend) as a stepwise piece of work; recorded the seven steps in [PLAN.md](./PLAN.md).
+- Step 1: added `c4/service.py`, a transport-independent `Workbench` with `meta()`, `verify()`, `generate()`, and `results()`. Requests are validated (known target and concepts, mastery/uncertainty in [0, 1], whitelisted config keys with ranges, 2000-character explanation cap) and invalid input raises `ValueError`.
+- Moved the demo scenario sentences into the service so the CLI demo and the web UI share one implementation; the CLI output is unchanged.
+- Added `tests/test_service.py` (16 cases including parametrised invalid requests). 44 tests pass.
+- Corrected the timestamp of the previous log entry (it was written ahead of the clock).
+
