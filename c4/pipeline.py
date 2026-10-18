@@ -196,16 +196,21 @@ class C4Pipeline:
         for verified in claims:
             if verified.accepted:
                 continue
-            replacement = self._safe_rewrite(verified.claim, c3_path)
+            replacement = self._safe_rewrite(verified, c3_path)
             replacements[verified.claim.text] = replacement
             verified.rewritten_text = replacement
         for original, replacement in replacements.items():
             explanation = explanation.replace(original, replacement, 1)
         return explanation
 
-    def _safe_rewrite(self, claim: Claim, c3_path: dict[str, Any]) -> str:
-        target_name = self.kg.get("concepts", {}).get(c3_path["target"], {}).get("name", c3_path["target"])
-        return f"{target_name} is introduced using the verified learning path and its prerequisites."
+    def _safe_rewrite(self, verified: VerifiedClaim, c3_path: dict[str, Any]) -> str:
+        target = self.kg.get("concepts", {}).get(c3_path["target"], {})
+        if "UNSUPPORTED_CLAIM" in verified.violations or "CONTRADICTED_CLAIM" in verified.violations:
+            facts = target.get("facts", [])
+            if facts:
+                return facts[0]
+        target_name = target.get("name", c3_path["target"])
+        return f"{target_name} requires the verified learning path and its prerequisites."
 
     @staticmethod
     def _normalize(value: str) -> str:

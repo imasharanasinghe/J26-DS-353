@@ -54,6 +54,22 @@ def test_valid_claim_is_preserved(pipeline: C4Pipeline) -> None:
     assert result.claims[0].accepted is True
 
 
+def test_factual_violation_can_be_rewritten_when_prerequisites_are_ready(
+    pipeline: C4Pipeline,
+) -> None:
+    learner = load("learner_state.json")
+    learner["mastery"].update({"tree": 0.9, "binary_tree": 0.9})
+    learner["uncertainty"].update({"tree": 0.1, "binary_tree": 0.1})
+    result = pipeline.run(
+        load("verified_path.json"),
+        learner,
+        "A heap is a fully sorted array.",
+    )
+    assert result.final_explanation == "A heap is a complete binary tree."
+    assert result.unresolved_claims == []
+    assert result.claims[0].accepted is True
+
+
 def test_complete_fixture_has_c3_contract() -> None:
     path = load("verified_path.json")
     assert path["verified"] is True
