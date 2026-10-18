@@ -211,3 +211,8 @@ This log records the work completed for Component 4 and the associated project a
 - Step 7: documented the web workbench in [c4/README.md](./c4/README.md) (how to start it, tabs, settings, deep links, API, localhost-only warning) with a six-step PP1 demo run-sheet that includes the learner-relative edit and the rewrite-off ablation.
 - Updated [WBS.md](./WBS.md) (items 40-47 and the server command), [PLAN.md](./PLAN.md) (step 7 done, remaining frontend follow-ups), and [GUIDELINES.md](./GUIDELINES.md) (replaced the outdated "no implementation yet" fact with a dated update and noted that the workbench may be used for the required demonstration).
 - Final validation: 60 tests pass; Python compilation passes; the server was started from the script and the UI was exercised in headless Chrome.
+
+### 2026-10-19 05:10:00 +05:30
+- UI redesign, commit 1 (theme): replaced the workbench styling with a quiet editorial look at the user's request for a white, minimal, less "AI-looking" interface. White paper background (light only, dark mode removed), ink-black text, serif headings and claim text, monospace for labels and ids, hairline rules instead of cards and shadows, square corners, no gradients, no rounded pills; primary action is a solid ink button; status labels, violation labels and evidence are plain coloured text rather than badges; before/after rewrites use a struck-through red line and a green rule instead of tinted boxes; bars use two muted series colours.
+- Updated the masthead and section labels in `c4/web/index.html` (no behaviour change) and the favicon.
+- Checked the result in a headless-Chrome screenshot; it showed the before/after rate values overflowing their metric tiles, which is fixed in the next commit.
