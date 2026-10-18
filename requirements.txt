@@ -1,8 +1,0 @@
-# C3 path planner
-neo4j>=5.0            # read C1's knowledge graph
-python-dotenv>=1.0    # load passwords / API keys from .env
-google-genai>=1.0     # Gemini (default LLM proposer)
-pytest>=7             # tests
-# Optional other LLM providers:
-# openai>=1.40
-# anthropic>=0.40
