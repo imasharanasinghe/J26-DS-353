@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>C4 Faithfulness Workbench</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23161616'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2317302e'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -25,7 +25,7 @@
   <main class="layout">
     <aside class="panel inputs" aria-label="Inputs">
       <section>
-        <h2>01 &nbsp;Target and learner</h2>
+        <h2 data-n="1">Target and learner</h2>
         <label for="target">Target concept (verified path step)</label>
         <select id="target"></select>
         <p class="hint" id="path-hint"></p>
@@ -42,7 +42,7 @@
       </section>
 
       <section>
-        <h2>02 &nbsp;Explanation to verify</h2>
+        <h2 data-n="2">Explanation to verify</h2>
         <label for="explanation">Draft explanation <span class="count" id="char-count"></span></label>
         <textarea id="explanation" rows="7" spellcheck="false" maxlength="2000"></textarea>
         <div class="tools">

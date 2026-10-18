@@ -227,3 +227,7 @@ This log records the work completed for Component 4 and the associated project a
 ### 2026-10-19 05:58:00 +05:30
 - Font change, commit 2 (apply): set Josefin Sans as the single typeface for every element (headings, body, labels, inputs, tables, JSON) through one `--font` variable; the old serif and monospace variables now alias it. Retuned sizes and weights for Josefin's small x-height: light 300 for headings, metric values and the final explanation, larger body, claim, label and table text, and 600 for emphasis.
 - Verified in a headless-Chrome screenshot that the self-hosted font loads and renders on the Verification view. 62 tests pass.
+
+### 2026-10-19 06:20:00 +05:30
+- Palette redesign, commit 1 (theme): the pure white page with hairline rules made the structure hard to see, so the theme now uses a warm sand background with ivory panels, a dark-teal masthead, and a single teal accent. Inputs, results, claims, rewrites, metrics, JSON, and evaluation sections are separate panels with a subtle border and soft shadow (no gradients, no glow); claims carry a green or red left bar so pass/fail scans at a glance; status labels are tinted tags with small radius; the pipeline is a numbered stepper that fills with check marks; tabs are buttons that lift onto a panel.
+- Kept Josefin Sans and all behaviour. Matched the favicon to the masthead colour and moved the section numbers into styled step markers. Checked a headless-Chrome screenshot of the verification view. 62 tests pass.
