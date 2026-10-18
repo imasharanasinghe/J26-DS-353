@@ -69,6 +69,7 @@ The work was completed in these major steps:
 49. Self-hosted Josefin Sans (SIL OFL) and applied it as the only typeface.
 50. Replaced the stark white theme with a warm sand/ivory/teal palette and
     added UX improvements (verdict banner, tooltips, empty-state action).
+51. Recoloured the interface to a navy-blue palette.
 
 ## Current demo commands
 
