@@ -238,3 +238,8 @@ This log records the work completed for Component 4 and the associated project a
 
 ### 2026-10-19 07:05:00 +05:30
 - Recoloured the workbench from teal and warm sand to navy blues at the user's request: navy masthead, cool blue-grey page background, pale blue panels, royal-navy accent for the primary button, step markers, tabs, focus rings, links and chart series, and cool-toned shadows and borders. Pass, fail, and warning colours stay green, red, and amber because they carry meaning. Favicon matches the masthead. Layout, font, and behaviour are unchanged; checked a headless-Chrome screenshot. 62 tests pass.
+
+### 2026-10-19 07:30:00 +05:30
+- Removed the `Co-authored-by` trailer from the 16 commit messages that carried it (the commits made since the web-workbench work began, one of which was already pushed to `origin/c4`) so that commits show the repository owner only. File contents and authorship were not changed; only commit messages were rewritten, so those 16 commits have new hashes.
+- Kept a local safety branch, `c4-backup-before-trailer-cleanup`, holding the pre-rewrite history.
+- Updated [GUIDELINES.md](./GUIDELINES.md) and [PLAN.md](./PLAN.md), which previously required that trailer, to say that commits carry no co-author or tool-attribution trailer.

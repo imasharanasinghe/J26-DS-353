@@ -509,7 +509,7 @@ maintained or improved clarity and comprehension.
   reproducibility rules that guide this plan.
 - Every work change must update [LOG.md](./LOG.md) and this plan where relevant.
 - Every work change must be committed to the `c4` branch with a descriptive
-  commit message and the required Copilot co-author trailer.
+  commit message and no co-author or tool-attribution trailer.
 
 ## Decision record (pilot, 2026-10-19)
 

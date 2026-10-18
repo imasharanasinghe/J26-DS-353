@@ -53,12 +53,9 @@ together so that the repository history remains understandable.
 - Commit only related changes; do not include unrelated work from another
   contributor.
 - Never commit secrets, credentials, personal data, or restricted datasets.
-- Include this trailer in every commit unless the user explicitly instructs
-  otherwise:
-
-```text
-Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
-```
+- Do not add `Co-authored-by` trailers or any other tool attribution to commit
+  messages or pull-request descriptions; commits carry the repository owner's
+  name only.
 
 Before finishing a work item, verify that:
 
