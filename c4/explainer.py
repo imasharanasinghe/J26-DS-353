@@ -46,7 +46,7 @@ class OllamaExplanationGenerator:
         self,
         model: str = "qwen3:4b",
         endpoint: str = "http://localhost:11434/api/generate",
-        timeout: float = 60.0,
+        timeout: float = 300.0,
     ) -> None:
         self.model = model
         self.endpoint = endpoint
@@ -85,6 +85,7 @@ class OllamaExplanationGenerator:
             "model": self.model,
             "prompt": self.build_prompt(c3_path, learner_state, knowledge_graph),
             "stream": False,
+            "think": False,
         }).encode("utf-8")
         request = Request(
             self.endpoint,
