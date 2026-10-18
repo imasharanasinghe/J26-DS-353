@@ -4,9 +4,10 @@ Every call is logged to results/llm_log.jsonl (prompt, reply, model, time) so
 experiments can be checked and repeated later.
 
 Settings in .env:
-  C3_LLM_PROVIDER = gemini | openai | anthropic     (default: gemini)
-  C3_LLM_MODEL    = model name                      (defaults below)
-  GEMINI_API_KEY / OPENAI_API_KEY / ANTHROPIC_API_KEY
+  C3_LLM_PROVIDER = azure | openai | gemini | anthropic
+  C3_LLM_MODEL    = model name (for Azure: the DEPLOYMENT name)
+  Azure:  AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_VERSION
+  Others: OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
 """
 from __future__ import annotations
 
@@ -18,8 +19,9 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 
 DEFAULT_MODELS = {
-    "gemini": "gemini-3.6-flash",
+    "azure": "gpt-4o",
     "openai": "gpt-4o-mini",
+    "gemini": "gemini-3.6-flash",
     "anthropic": "claude-haiku-4-5-20251001",
 }
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,12 +34,19 @@ class LLMClient:
         self.log_path = log_path
         self.calls = 0
         self.failures = 0
-        if provider == "gemini":
-            from google import genai  # pip install google-genai
-            self._c = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+        if provider == "azure":
+            import openai  # pip install openai
+            self._c = openai.AzureOpenAI(
+                api_key=os.environ["AZURE_OPENAI_API_KEY"],
+                azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
+                api_version=os.environ.get("AZURE_OPENAI_API_VERSION", "2024-12-01-preview"),
+            )
         elif provider == "openai":
             import openai  # pip install openai
             self._c = openai.OpenAI()
+        elif provider == "gemini":
+            from google import genai  # pip install google-genai
+            self._c = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
         elif provider == "anthropic":
             import anthropic  # pip install anthropic
             self._c = anthropic.Anthropic()
@@ -47,30 +56,25 @@ class LLMClient:
     @classmethod
     def from_env(cls) -> "LLMClient":
         load_dotenv()
-        p = os.environ.get("C3_LLM_PROVIDER", "gemini").lower()
+        p = os.environ.get("C3_LLM_PROVIDER", "azure").lower()
         return cls(p, os.environ.get("C3_LLM_MODEL", DEFAULT_MODELS.get(p, "")))
 
     # ------------------------------------------------------------------
     def _call(self, system: str, user: str, temperature: float) -> str:
-        if self.provider == "gemini":
-            from google.genai import types
-            r = self._c.models.generate_content(
-                model=self.model,
-                contents=user,
-                config=types.GenerateContentConfig(
-                    system_instruction=system,
-                    temperature=temperature,
-                    max_output_tokens=self.max_tokens,
-                    response_mime_type="application/json",
-                ),
-            )
-            return r.text or ""
-        if self.provider == "openai":
+        if self.provider in ("azure", "openai"):
             r = self._c.chat.completions.create(
-                model=self.model, temperature=temperature,
+                model=self.model, temperature=temperature, max_tokens=self.max_tokens,
                 messages=[{"role": "system", "content": system},
                           {"role": "user", "content": user}])
             return r.choices[0].message.content or ""
+        if self.provider == "gemini":
+            from google.genai import types
+            r = self._c.models.generate_content(
+                model=self.model, contents=user,
+                config=types.GenerateContentConfig(
+                    system_instruction=system, temperature=temperature,
+                    max_output_tokens=self.max_tokens, response_mime_type="application/json"))
+            return r.text or ""
         r = self._c.messages.create(model=self.model, max_tokens=self.max_tokens,
                                     temperature=temperature, system=system,
                                     messages=[{"role": "user", "content": user}])

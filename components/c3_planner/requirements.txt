@@ -6,3 +6,4 @@ pytest>=7             # tests
 # Optional other LLM providers:
 # openai>=1.40
 # anthropic>=0.40
+openai>=1.40

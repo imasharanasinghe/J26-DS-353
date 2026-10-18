@@ -1,5 +1,12 @@
-import os
-from openai import AzureOpenAI
+from c3.llm_client import LLMClient
 
-endpoint = "https://ashenweerasinghe10-6492-resource.cognitiveservices.azure.com/"
-model = os.getenv("AZURE_OPENAI_DEPLOYMENT")
+client = LLMClient.from_env()
+print("Provider:", client.provider, "| Model:", client.model)
+
+reply = client.complete(
+    "You reply with JSON only.",
+    'Return exactly this: {"ok": true}',
+    tag="key-check",
+)
+print("Reply:", reply)
+print("KEY WORKS!")
