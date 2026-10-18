@@ -79,3 +79,11 @@ def test_results_returns_committed_artefacts(bench: Workbench) -> None:
     results = bench.results()
     assert results["stress"]["cases"] == 28
     assert "C4 preliminary evaluation" in results["markdown"]
+
+
+def test_unreachable_ollama_surfaces_as_runtime_error(bench: Workbench) -> None:
+    from c4 import OllamaExplanationGenerator
+
+    offline = OllamaExplanationGenerator(endpoint="http://127.0.0.1:1/api/chat", timeout=1.0)
+    with pytest.raises(RuntimeError, match="Ollama is unavailable"):
+        bench.generate({"target": "heap", "source": "ollama"}, ollama=offline)

@@ -554,7 +554,7 @@ interactively (standard-library server + vanilla HTML/CSS/JS; no npm, no cloud).
 
 - [x] Step 1: transport-independent service layer (`c4/service.py`) with input
   validation, tested without a server.
-- [ ] Step 2: HTTP API server (`/api/meta`, `/api/verify`, `/api/generate`,
+- [x] Step 2: HTTP API server (`/api/meta`, `/api/verify`, `/api/generate`,
   `/api/results`, `/api/health`) bound to localhost.
 - [ ] Step 3: frontend shell (layout, theme, input panel).
 - [ ] Step 4: verification views (claim cards, rewrite trace, metrics, final text).

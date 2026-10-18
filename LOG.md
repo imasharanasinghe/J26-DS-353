@@ -170,3 +170,9 @@ This log records the work completed for Component 4 and the associated project a
 - Added `tests/test_service.py` (16 cases including parametrised invalid requests). 44 tests pass.
 - Corrected the timestamp of the previous log entry (it was written ahead of the clock).
 
+### 2026-10-19 02:52:00 +05:30
+- Step 2: added `c4/server.py`, a localhost-only standard-library HTTP server with `GET /api/health|meta|results`, `POST /api/verify|generate`, and a static file handler restricted to `c4/web` (path-traversal safe, `nosniff`, `no-store`). Request bodies are capped at 64 KB; validation errors return 400, an unavailable Ollama returns 503.
+- Added `scripts/run_c4_server.py` (`--port`, `--open`) and a placeholder `c4/web/index.html` so the static route can be tested before the real UI exists.
+- Added `tests/test_server.py` (live server on an ephemeral port: round trip, bad JSON, oversize body, unknown routes, traversal) and an unreachable-Ollama test. 56 tests pass.
+- Verified the running script manually with curl against `/api/health` and `/api/verify`.
+- The server has no authentication; it binds to 127.0.0.1 and is documented as not for network exposure.
