@@ -80,18 +80,21 @@ def main() -> None:
     learner = load_c2_learner(load_json(DATA / "learner_state.json"), args.learner)
     path["learner_id"] = learner["learner_id"]
     explanation = (DATA / "explanation.txt").read_text(encoding="utf-8")
+    target_facts = pipeline.kg.get("concepts", {}).get(args.target, {}).get("facts", [])
+    target_name = pipeline.kg.get("concepts", {}).get(args.target, {}).get(
+        "name", args.target.replace("_", " ").title()
+    )
     if args.scenario == "valid":
         learner = deepcopy(learner)
-        learner["mastery"].update({"tree": 0.9, "binary_tree": 0.9})
-        learner["uncertainty"].update({"tree": 0.1, "binary_tree": 0.1})
-        explanation = "A heap is a complete binary tree."
+        prerequisites = pipeline.kg["concepts"][args.target].get("prerequisites", [])
+        learner["mastery"].update({concept: 0.9 for concept in prerequisites})
+        learner["uncertainty"].update({concept: 0.1 for concept in prerequisites})
+        explanation = target_facts[0] if target_facts else f"{target_name} is introduced."
     elif args.scenario == "factual":
         learner = deepcopy(learner)
-        learner["mastery"].update({"tree": 0.9, "binary_tree": 0.9})
-        learner["uncertainty"].update({"tree": 0.1, "binary_tree": 0.1})
-        explanation = "A heap is a fully sorted array."
+        explanation = f"{target_name} is always fully sorted."
     elif args.scenario == "cognitive":
-        explanation = "A heap is a complete binary tree."
+        explanation = target_facts[0] if target_facts else f"{target_name} is introduced."
     if args.ollama:
         explanation = OllamaExplanationGenerator(model=args.model).generate(
             path, learner, pipeline.kg
