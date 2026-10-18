@@ -1,0 +1,40 @@
+{
+  "explanations": {
+    "tree/all_mastered": "A tree is a hierarchical data structure where each node connects to zero or more child nodes. Since you know recursion, you can traverse trees by recursively visiting each node's children.",
+    "tree/missing_prereq": "A tree is a hierarchical data structure where each node connects to zero or more child nodes. You can traverse trees using recursion because each subtree mirrors the entire tree's recursive pattern.",
+    "tree/several_low": "A tree is a hierarchical structure where each node connects to zero or more child nodes. You can traverse it using recursion because each subtree follows the same pattern as the whole tree.",
+    "tree/uncertain": "A tree is a hierarchical data structure where each node connects to zero or more child nodes. Since you know recursion, you can traverse trees by recursively visiting each node's children.",
+    "binary_tree/all_mastered": "A binary tree is a type of tree where each node can have up to two children. This structure builds on your understanding of trees and recursion by limiting branching to at most two paths per node.",
+    "binary_tree/missing_prereq": "A binary tree is a type of tree where each node can have up to two children. Since you know recursion, this structure naturally supports recursive algorithms for traversing and manipulating trees.",
+    "binary_tree/several_low": "A binary tree is a type of tree where each node can have up to two children. This structure helps build recursive algorithms by breaking problems into smaller subproblems.",
+    "binary_tree/uncertain": "A binary tree is a type of tree where each node can have up to two children. This structure builds on your understanding of trees and recursion by limiting branching to at most two paths per node.",
+    "heap/all_mastered": "A heap is a complete binary tree where each parent node is larger (max-heap) or smaller (min-heap) than its children. It can be efficiently stored in an array while maintaining these properties for fast access and operations.",
+    "heap/missing_prereq": "A heap is a complete binary tree where each parent node is larger (or smaller) than its children, and it can be efficiently stored in an array using the parent-child relationships.",
+    "heap/several_low": "A heap is a complete binary tree where each parent node is larger (max-heap) or smaller (min-heap) than its children. It can be efficiently stored in an array by placing nodes level by level.",
+    "heap/uncertain": "A heap is a complete binary tree where each parent node is larger (max-heap) or smaller (min-heap) than its children. It can be efficiently stored in an array using level-order traversal.",
+    "arrays/all_mastered": "An array is a data structure that holds elements in consecutive memory locations, each identified by a numerical index starting from zero. You access any element using its index number to retrieve or modify it.",
+    "arrays/missing_prereq": "An array is a data structure that holds elements in consecutive memory locations, each identified by an index starting from 0. You access any element using its index number to retrieve or modify it.",
+    "arrays/several_low": "An array is a data structure that holds elements in consecutive memory locations, each identified by an index starting at 0. You access any element using its index number to retrieve or modify it.",
+    "arrays/uncertain": "An array is a data structure that holds elements in consecutive memory locations, each identified by an index starting from 0. You access any element using its index number to retrieve or modify it.",
+    "recursion/all_mastered": "Recursion solves problems by having a function call itself on smaller inputs until it reaches a base case that stops the process.",
+    "recursion/missing_prereq": "Recursion solves problems by having a function call itself with smaller inputs until it reaches a base case that stops the process.",
+    "recursion/several_low": "Recursion solves problems by having a function call itself on smaller inputs until it reaches a base case that stops the process.",
+    "recursion/uncertain": "Recursion solves problems by having a function call itself on smaller inputs until it reaches a base case that stops the process.",
+    "stack/all_mastered": "A stack is a data structure that follows last-in-first-out (LIFO) order, meaning the last item added is the first one removed. You can implement a stack using an array by adding and removing items only at the end.",
+    "stack/missing_prereq": "A stack is a data structure that follows last-in-first-out (LIFO) order, meaning the last item added is the first one removed. Since you already know about arrays, you can implement a stack using an array by adding and removing items only at the end.",
+    "stack/several_low": "A stack is a data structure that follows last-in-first-out (LIFO) order, meaning the last item added is the first one removed. Since you already know arrays, you can implement a stack using an array by adding and removing items only at the end.",
+    "stack/uncertain": "A stack is a data structure that follows last-in-first-out (LIFO) order, meaning the last item added is the first one removed. You can implement a stack using an array by adding and removing items only at the end.",
+    "queue/all_mastered": "A queue is a data structure where elements are processed in the order they arrive, following first-in-first-out (FIFO). Since you already know arrays, you can implement a queue using an array by tracking the front and rear indices to manage additions and removals.",
+    "queue/missing_prereq": "A queue is a data structure where elements are processed in the order they arrive (first-in-first-out). Since you know arrays, you can implement a queue using an array by tracking the front and rear pointers to manage additions and removals.",
+    "queue/several_low": "A queue is a data structure where elements are processed in the order they arrive (first-in-first-out). Since you know arrays, you can implement a queue using an array by tracking the front and back pointers to manage additions and removals.",
+    "queue/uncertain": "A queue is a data structure where elements are processed in the order they arrive, following first-in-first-out (FIFO). You can build a queue using an array by tracking the front and rear indices to manage additions and removals."
+  },
+  "model": "qwen3:4b",
+  "options": {
+    "temperature": 0.2,
+    "num_predict": 200,
+    "repeat_penalty": 1.1,
+    "think": false,
+    "format": "json: {explanation}"
+  }
+}

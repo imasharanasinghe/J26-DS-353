@@ -1,54 +1,109 @@
 {
-  "_note": "C1-compatible pilot fixture; facts and Bloom metadata are temporary C4 test data.",
+  "_note": "C1-compatible pilot fixture; facts, known_false statements and Bloom metadata are temporary C4 test data (v2).",
   "concepts": {
     "tree": {
       "name": "Trees",
       "difficulty": 3,
       "bloom_level": 1,
-      "prerequisites": ["linked_list", "recursion"],
-      "facts": ["Trees are hierarchical data structures."]
+      "prerequisites": [
+        "linked_list",
+        "recursion"
+      ],
+      "facts": [
+        "Trees are hierarchical data structures.",
+        "Tree nodes can be traversed using recursion."
+      ],
+      "known_false": [
+        "A tree is a linear data structure."
+      ]
     },
     "binary_tree": {
       "name": "Binary Trees",
       "difficulty": 3,
       "bloom_level": 1,
-      "prerequisites": ["tree"],
-      "facts": ["A binary tree has at most two children per node."]
+      "prerequisites": [
+        "tree"
+      ],
+      "facts": [
+        "A binary tree has at most two children per node.",
+        "A binary tree is a tree in which every node has at most two children."
+      ],
+      "known_false": [
+        "A binary tree node can have any number of children."
+      ]
     },
     "heap": {
       "name": "Heaps",
       "difficulty": 4,
       "bloom_level": 2,
-      "prerequisites": ["binary_tree", "arrays"],
-      "facts": ["A heap is a complete binary tree."]
+      "prerequisites": [
+        "binary_tree",
+        "arrays"
+      ],
+      "facts": [
+        "A heap is a complete binary tree.",
+        "A heap can be stored in an array."
+      ],
+      "known_false": [
+        "A heap is a fully sorted array.",
+        "A heap is always fully sorted."
+      ]
     },
     "arrays": {
       "name": "Arrays",
       "difficulty": 1,
       "bloom_level": 1,
       "prerequisites": [],
-      "facts": ["An array stores elements in contiguous indexed positions."]
+      "facts": [
+        "An array stores elements in contiguous indexed positions.",
+        "Array elements are accessed by index."
+      ],
+      "known_false": [
+        "An array stores elements in random unrelated memory locations."
+      ]
     },
     "recursion": {
       "name": "Recursion",
       "difficulty": 2,
       "bloom_level": 2,
       "prerequisites": [],
-      "facts": ["Recursion solves a problem by calling a function on smaller input."]
+      "facts": [
+        "Recursion solves a problem by calling a function on smaller input.",
+        "Recursion needs a base case to stop."
+      ],
+      "known_false": [
+        "Recursion never needs a base case."
+      ]
     },
     "stack": {
       "name": "Stacks",
       "difficulty": 2,
       "bloom_level": 2,
-      "prerequisites": ["arrays"],
-      "facts": ["A stack follows the last-in-first-out rule."]
+      "prerequisites": [
+        "arrays"
+      ],
+      "facts": [
+        "A stack follows the last-in-first-out rule.",
+        "A stack can be implemented with an array."
+      ],
+      "known_false": [
+        "A stack follows the first-in-first-out rule."
+      ]
     },
     "queue": {
       "name": "Queues",
       "difficulty": 2,
       "bloom_level": 2,
-      "prerequisites": ["arrays"],
-      "facts": ["A queue follows the first-in-first-out rule."]
+      "prerequisites": [
+        "arrays"
+      ],
+      "facts": [
+        "A queue follows the first-in-first-out rule.",
+        "A queue can be implemented with an array."
+      ],
+      "known_false": [
+        "A queue follows the last-in-first-out rule."
+      ]
     }
   },
   "misconceptions": {

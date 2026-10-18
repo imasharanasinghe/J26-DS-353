@@ -148,3 +148,17 @@ This log records the work completed for Component 4 and the associated project a
   cleanup for planning text and duplicate sentences.
 - Added tests for the new multi-target behavior and model-response cleanup.
 - Current validation: 11 tests pass; the branch is pushed and clean.
+
+### 2026-10-19 02:50:00 +05:30
+- Reviewed C4 against the PP1 mark sheet and the C1, C2, and C3 remote branches. Found that the demo scenarios did not show a clean supported claim or a cognitive-only violation, `pretty` mixed pre- and post-repair claims, cognitive violations could not be repaired, and there was no evaluation evidence.
+- Fixed claim-to-concept matching (longest match, so "binary tree" no longer also counts as "tree"); the current target is exempt from the prerequisite check, and every other mentioned concept must be mastered.
+- Added INCONCLUSIVE handling for high uncertainty, mastery within 0.05 of the threshold, and missing learner history.
+- Replaced exact-substring factual checking with content-word similarity plus `known_false` graph statements, negation polarity, and closest-statement resolution (fixes LIFO vs FIFO false contradiction found during evaluation).
+- Replaced the filler rewrite with targeted repair: a graph fact that itself verifies, else prerequisite-review guidance, else removal of a duplicate; added a rewrite trace, `review_first`, per-run metrics, latency, and report schema `c4-report/1.0`.
+- Rewrote the demo report to show initial verification, rewrites, and re-verification separately; scenarios no longer edit the learner state.
+- Added `c4/metrics.py` (frozen definitions, precision/recall/F1, exact McNemar, Wilson interval), `c4/paths.py`, and `c4/evaluation.py`; added `scripts/run_c4_eval.py` and committed `c4/results/`.
+- Evaluation: 28-case, 84-claim controlled stress test (7 concepts x 4 learner profiles; baseline, factual-only, cognitive-only, full C4) and a 28-explanation cached Qwen3 4B natural set, plus an entailment-threshold sensitivity sweep.
+- Changed the Ollama generator to a short prompt with schema-constrained JSON output because the 4B model echoed its planning text with the longer prompt.
+- Results and limits: see [c4/results/RESULTS.md](./c4/results/RESULTS.md). The stress-test labels are recipe-built (no human annotators, no kappa), post-repair rates use the same verifier, and the natural set shows the rule-based matcher flagging every paraphrased Qwen sentence as not graph-supported.
+- Tests: 28 pass; compilation, demo modes (including Ollama), and JSON output validated.
+- Rewrote [c4/README.md](./c4/README.md) (fixed the broken run/test section; documented pipeline, parameters, and limitations).

@@ -1,1 +1,1 @@
-A heap is a complete binary tree. A heap is a fully sorted array.
+A heap can be stored in an array. A heap is always fully sorted. A heap is a complete binary tree.

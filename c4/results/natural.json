@@ -1,0 +1,52 @@
+{
+  "model": "qwen3:4b",
+  "explanations": 28,
+  "failed_generations": [],
+  "claims": 51,
+  "before": {
+    "claims": 51,
+    "factual_violations": 51,
+    "cognitive_violations": 12,
+    "inconclusive": 6,
+    "hallucination_rate": 100.0,
+    "cognitive_mismatch_rate": 23.53
+  },
+  "after": {
+    "claims": 49,
+    "factual_violations": 0,
+    "cognitive_violations": 0,
+    "inconclusive": 0,
+    "hallucination_rate": 0.0,
+    "cognitive_mismatch_rate": 0.0
+  },
+  "explanations_with_flagged_claim": 28,
+  "explanations_with_flagged_claim_ci95": [
+    87.9,
+    100.0
+  ],
+  "rewrite_success_rate": 100.0,
+  "unresolved_explanations": 0,
+  "caveat": "Rates are measured by C4's own verifier on unlabelled model output: they show how much the rules flag, not ground-truth accuracy. Independent human labels are still required.",
+  "examples": [
+    {
+      "case_id": "tree/all_mastered",
+      "original": "A tree is a hierarchical data structure where each node connects to zero or more child nodes. Since you know recursion, you can traverse trees by recursively visiting each node's children.",
+      "final": "Trees are hierarchical data structures. Tree nodes can be traversed using recursion."
+    },
+    {
+      "case_id": "tree/missing_prereq",
+      "original": "A tree is a hierarchical data structure where each node connects to zero or more child nodes. You can traverse trees using recursion because each subtree mirrors the entire tree's recursive pattern.",
+      "final": "Trees are hierarchical data structures. Tree nodes can be traversed using recursion."
+    },
+    {
+      "case_id": "tree/several_low",
+      "original": "A tree is a hierarchical structure where each node connects to zero or more child nodes. You can traverse it using recursion because each subtree follows the same pattern as the whole tree.",
+      "final": "Trees are hierarchical data structures. For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing."
+    },
+    {
+      "case_id": "tree/uncertain",
+      "original": "A tree is a hierarchical data structure where each node connects to zero or more child nodes. Since you know recursion, you can traverse trees by recursively visiting each node's children.",
+      "final": "Trees are hierarchical data structures. For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing."
+    }
+  ]
+}

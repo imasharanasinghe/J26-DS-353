@@ -9,6 +9,9 @@ from urllib.request import Request, urlopen
 from typing import Any
 
 
+GENERATION_OPTIONS = {"temperature": 0.2, "num_predict": 200, "repeat_penalty": 1.1}
+
+
 class TemplateExplanationGenerator:
     """Offline, deterministic generator used until the team selects an LLM."""
 
@@ -58,23 +61,26 @@ class OllamaExplanationGenerator:
         c3_path: dict[str, Any],
         learner_state: dict[str, Any],
         knowledge_graph: dict[str, Any],
+        mastery_threshold: float = 0.7,
     ) -> str:
+        """Short, direct prompt: small models echo long structured prompts back."""
+        concepts = knowledge_graph.get("concepts", {})
         target = c3_path["target"]
-        concept = knowledge_graph.get("concepts", {}).get(target, {})
-        prerequisites = concept.get("prerequisites", [])
+        concept = concepts.get(target, {})
+        name = concept.get("name", target)
         facts = concept.get("facts", [])
-        path = [step.get("id") for step in c3_path.get("path", [])]
+        path = [step["id"] for step in c3_path.get("path", []) if step.get("kind") != "remediate" and step.get("id")]
         mastery = learner_state.get("mastery", {})
-        return (
-            "Write exactly 2 or 3 concise sentences for one learner. "
-            "Use only the supplied facts; do not invent facts or repeat sentences. "
-            "Return plain text with no preamble.\n\n"
-            f"Target concept: {target}\n"
-            f"Verified learning path: {path}\n"
-            f"Prerequisites: {prerequisites}\n"
-            f"Known graph facts: {facts}\n"
-            f"Learner mastery: {mastery}\n"
-        )
+        known = [c for c in path if c != target and float(mastery.get(c, 0.0)) >= mastery_threshold]
+        unknown = [c for c in path if c != target and c not in known]
+        lines = [f"Explain {name} to a student in exactly 2 short sentences."]
+        lines.append("Only use these facts:")
+        lines += [f"- {fact}" for fact in facts]
+        lines.append(f"Learning path (verified): {' -> '.join(path)}")
+        lines.append(f"Concepts the student already knows: {', '.join(known) or 'none'}")
+        lines.append(f"Concepts the student has not mastered yet: {', '.join(unknown) or 'none'}")
+        lines.append("Write the explanation now, with no preamble.")
+        return "\n".join(lines)
 
     def generate(
         self,
@@ -89,7 +95,7 @@ class OllamaExplanationGenerator:
                     "role": "system",
                     "content": (
                         "You are a concise educational explanation writer. "
-                        "Return only the explanation."
+                        "Reply as JSON with a single field `explanation`."
                     ),
                 },
                 {
@@ -101,11 +107,13 @@ class OllamaExplanationGenerator:
             ],
             "stream": False,
             "think": False,
-            "options": {
-                "temperature": 0.2,
-                "num_predict": 120,
-                "repeat_penalty": 1.15,
+            # Schema-constrained output stops the 4B model echoing its planning text.
+            "format": {
+                "type": "object",
+                "properties": {"explanation": {"type": "string"}},
+                "required": ["explanation"],
             },
+            "options": GENERATION_OPTIONS,
         }).encode("utf-8")
         request = Request(
             self.endpoint,
@@ -121,7 +129,12 @@ class OllamaExplanationGenerator:
                 "Ollama is unavailable. Start it with `ollama serve` and "
                 f"confirm that model `{self.model}` is installed."
             ) from exc
-        text = self._clean_response(result.get("message", {}).get("content", ""))
+        content = result.get("message", {}).get("content", "")
+        try:
+            content = json.loads(content).get("explanation", "")
+        except (ValueError, AttributeError):
+            pass  # fall back to cleaning free text
+        text = self._clean_response(content)
         if not text:
             raise RuntimeError("Ollama returned an empty explanation")
         return text
@@ -130,7 +143,9 @@ class OllamaExplanationGenerator:
     def _clean_response(text: str) -> str:
         ignored_prefixes = (
             "we are given", "we must", "step ", "example:", "the only fact",
-            "return only", "write exactly", "use only",
+            "return only", "write exactly", "use only", "- ", "constraints", "target concept",
+            "known graph", "learner mastery", "prerequisites:", "explain ", "only use",
+            "learning path", "concepts the student", "write the explanation",
         )
         sentences = re.split(r"(?<=[.!?])\s+", text.strip())
         cleaned: list[str] = []

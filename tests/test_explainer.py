@@ -24,3 +24,15 @@ def test_ollama_response_cleaner_removes_planning_and_duplicates() -> None:
     assert OllamaExplanationGenerator._clean_response(text) == (
         "A heap is a complete binary tree."
     )
+
+
+def test_ollama_prompt_separates_known_from_unmastered_concepts() -> None:
+    prompt = OllamaExplanationGenerator().build_prompt(
+        {"target": "heap", "path": [{"id": "arrays", "kind": "learn"},
+                                    {"id": "binary_tree", "kind": "learn"},
+                                    {"id": "heap", "kind": "learn"}]},
+        {"mastery": {"arrays": 0.9, "binary_tree": 0.2}},
+        {"concepts": {"heap": {"name": "Heaps", "facts": ["A heap is a complete binary tree."]}}},
+    )
+    assert "already knows: arrays" in prompt
+    assert "not mastered yet: binary_tree" in prompt

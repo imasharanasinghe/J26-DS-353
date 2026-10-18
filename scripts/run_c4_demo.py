@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import json
 import argparse
-from copy import deepcopy
+import json
 import sys
 from pathlib import Path
 
@@ -11,48 +10,66 @@ sys.path.insert(0, str(ROOT))
 
 from c4 import C4Pipeline, OllamaExplanationGenerator, TemplateExplanationGenerator
 from c4.adapters import load_c2_learner, load_json, validate_c3_path
+from c4.paths import build_verified_path
 
 
 DATA = ROOT / "c4" / "data"
 
 
-def build_verified_path(target: str, graph: dict) -> dict:
-    concepts = graph.get("concepts", {})
-    if target not in concepts:
-        raise ValueError(f"Unknown target concept: {target}")
-    ordered: list[str] = []
-    visiting: set[str] = set()
+def scenario_text(pipeline: C4Pipeline, target: str, scenario: str, default_text: str) -> str:
+    """Target-aware demo sentences; the learner state is never edited to fake a result."""
+    concept = pipeline.kg["concepts"][target]
+    name = concept.get("name", target)
+    facts = concept.get("facts", [])
+    known_false = concept.get("known_false", [f"{name} is always fully sorted."])
+    if scenario == "valid":
+        # A graph fact whose only non-target dependencies the learner has mastered.
+        return facts[-1] if facts else f"{name} is introduced."
+    if scenario == "factual":
+        return known_false[0]
+    if scenario == "cognitive":
+        # A true graph fact that depends on a concept the learner has not mastered.
+        for fact in facts:
+            if pipeline._mentioned_concepts(fact) not in ((), (target,)):
+                return fact
+        return facts[0] if facts else f"{name} is introduced."
+    return default_text
 
-    def visit(concept_id: str) -> None:
-        if concept_id in ordered:
-            return
-        if concept_id in visiting:
-            raise ValueError(f"Prerequisite cycle includes {concept_id}")
-        visiting.add(concept_id)
-        for prerequisite in concepts[concept_id].get("prerequisites", []):
-            if prerequisite in concepts:
-                visit(prerequisite)
-        visiting.remove(concept_id)
-        ordered.append(concept_id)
 
-    visit(target)
-    return {
-        "learner_id": "L02_intermediate",
-        "target": target,
-        "verified": True,
-        "source": "pilot",
-        "path": [
-            {
-                "step": index,
-                "kind": "learn",
-                "id": concept_id,
-                "name": concepts[concept_id].get("name", concept_id),
-                "difficulty": concepts[concept_id].get("difficulty", 1),
-                "prerequisites": concepts[concept_id].get("prerequisites", []),
-            }
-            for index, concept_id in enumerate(ordered, 1)
-        ],
-    }
+def print_claims(title: str, claims) -> None:
+    print(title)
+    for item in claims:
+        flags = ", ".join(item.violations) or "none"
+        print(f"  {item.claim.claim_id} [{item.confidence}] {item.claim.text}")
+        print(f"      factual={item.factual_status} cognitive={item.cognitive_status} "
+              f"bloom~{item.claim.estimated_bloom_level} violations: {flags}")
+        for evidence in item.evidence:
+            print(f"      evidence: {evidence}")
+
+
+def print_report(result) -> None:
+    metrics = result.metrics
+    print(f"C4 REPORT | learner={result.learner_id} target={result.target} "
+          f"verified_path={result.verified_path}")
+    print(f"ORIGINAL: {result.original_explanation}\n")
+    print_claims("INITIAL VERIFICATION", result.initial_claims)
+    print("\nTARGETED REWRITES (only violating claims change)")
+    if not result.trace:
+        print("  none needed")
+    for step in result.trace:
+        print(f"  attempt {step.attempt} {step.claim_id} [{', '.join(step.violations)}] via {step.strategy}")
+        print(f"      - {step.before}\n      + {step.after or '(sentence removed)'}")
+    print()
+    print_claims("RE-VERIFICATION", result.claims)
+    print(f"\nFINAL: {result.final_explanation}")
+    print(f"unresolved: {', '.join(result.unresolved_claims) or 'none'}"
+          f" | review first: {', '.join(result.review_first) or 'nothing'}")
+    before, after = metrics["before"], metrics["after"]
+    print(f"hallucination rate {before['hallucination_rate']}% -> {after['hallucination_rate']}% | "
+          f"cognitive mismatch {before['cognitive_mismatch_rate']}% -> {after['cognitive_mismatch_rate']}% | "
+          f"rewrite success {metrics['rewrite_success_rate']}% | "
+          f"new violations {metrics['new_violations_introduced']} | "
+          f"latency {result.latency_s * 1000:.1f} ms")
 
 
 def main() -> None:
@@ -64,8 +81,7 @@ def main() -> None:
                         help="Generate the input explanation from the C3 path and learner")
     parser.add_argument("--ollama", action="store_true",
                         help="Generate the input explanation with local Ollama")
-    parser.add_argument("--model", default="qwen3:4b",
-                        help="Ollama model name")
+    parser.add_argument("--model", default="qwen3:4b", help="Ollama model name")
     parser.add_argument("--scenario", choices=("default", "valid", "factual", "cognitive"),
                         default="default")
     parser.add_argument("--pretty", action="store_true",
@@ -73,28 +89,14 @@ def main() -> None:
     args = parser.parse_args()
 
     pipeline = C4Pipeline.from_files(DATA / "knowledge_graph.json")
+    learner = load_c2_learner(load_json(DATA / "learner_state.json"), args.learner)
     path = load_json(DATA / "verified_path.json")
     if args.target != path["target"]:
         path = build_verified_path(args.target, pipeline.kg)
-    validate_c3_path(path)
-    learner = load_c2_learner(load_json(DATA / "learner_state.json"), args.learner)
     path["learner_id"] = learner["learner_id"]
-    explanation = (DATA / "explanation.txt").read_text(encoding="utf-8")
-    target_facts = pipeline.kg.get("concepts", {}).get(args.target, {}).get("facts", [])
-    target_name = pipeline.kg.get("concepts", {}).get(args.target, {}).get(
-        "name", args.target.replace("_", " ").title()
-    )
-    if args.scenario == "valid":
-        learner = deepcopy(learner)
-        prerequisites = pipeline.kg["concepts"][args.target].get("prerequisites", [])
-        learner["mastery"].update({concept: 0.9 for concept in prerequisites})
-        learner["uncertainty"].update({concept: 0.1 for concept in prerequisites})
-        explanation = target_facts[0] if target_facts else f"{target_name} is introduced."
-    elif args.scenario == "factual":
-        learner = deepcopy(learner)
-        explanation = f"{target_name} is always fully sorted."
-    elif args.scenario == "cognitive":
-        explanation = target_facts[0] if target_facts else f"{target_name} is introduced."
+    validate_c3_path(path)
+    default_text = (DATA / "explanation.txt").read_text(encoding="utf-8").strip()
+    explanation = scenario_text(pipeline, args.target, args.scenario, default_text)
     if args.ollama:
         explanation = OllamaExplanationGenerator(model=args.model).generate(
             path, learner, pipeline.kg
@@ -103,18 +105,7 @@ def main() -> None:
         explanation = TemplateExplanationGenerator().generate(path, learner, pipeline.kg)
     result = pipeline.run(path, learner, explanation)
     if args.pretty:
-        print(f"C4 REPORT | learner={result.learner_id} target={result.target}")
-        print(f"verified_path={result.verified_path} rewrite_attempts={result.rewrite_attempts}")
-        print(f"original: {result.original_explanation}")
-        for claim in result.claims:
-            print(
-                f"- {claim.claim.claim_id}: factual={claim.factual_status} "
-                f"cognitive={claim.cognitive_status} accepted={claim.accepted}"
-            )
-            if claim.violations:
-                print(f"  violations: {', '.join(claim.violations)}")
-        print(f"final: {result.final_explanation}")
-        print(f"unresolved: {', '.join(result.unresolved_claims) or 'none'}")
+        print_report(result)
         return
     print(json.dumps(result.to_dict(), indent=2))
 

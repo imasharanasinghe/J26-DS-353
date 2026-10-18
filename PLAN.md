@@ -18,11 +18,16 @@ relevant knowledge-graph context are available.
 - C4 implementation: **runnable pilot prototype complete**; the current
   implementation uses deterministic local verification and interface-compatible
   fixtures derived from the documented C3 hand-off.
-- C4 pilot validation: **11 tests pass**, Python compilation passes, and the
+- C4 pilot validation: **28 tests pass**, Python compilation passes, and the
   offline demos produce readable reports and valid JSON output.
+- C4 preliminary evaluation: controlled 28-case/84-claim stress test with
+  baseline, factual-only, cognitive-only, and full-C4 conditions, plus a
+  28-explanation cached Qwen3 4B natural set and a threshold sensitivity sweep
+  ([c4/results/RESULTS.md](./c4/results/RESULTS.md)). Labels are recipe-built,
+  not independently human-annotated.
 - Local explanation generation: Ollama and Qwen3 4B are installed and the
-  adapter has been exercised with multiple targets. The model output remains
-  untrusted and must pass C4 verification.
+  adapter uses a short prompt with schema-constrained JSON output. The model
+  output remains untrusted and must pass C4 verification.
 - C4 research-grade NLI evaluation, real upstream integration, and final
   threshold calibration remain outstanding.
 - Untracked upstream proposal and sprint-board files are reference inputs and
@@ -296,16 +301,16 @@ The minimum convincing C4 demonstration is:
 - [ ] Problem and research gap explained
 - [ ] C4 architecture and responsibility boundary shown
 - [ ] Versioned input/output schema shown
-- [ ] Working end-to-end proof-of-concept pipeline
-- [ ] Successful supported-claim case
-- [ ] Unsupported or contradicted factual case
-- [ ] Bloom-level mismatch case
-- [ ] Unmastered-prerequisite case
-- [ ] Typed violation report shown
-- [ ] Targeted rewrite and re-verification shown
-- [ ] Confidence tier and KG grounding shown
-- [ ] Initial test/evaluation results shown
-- [ ] Technology choices justified
+- [x] Working end-to-end proof-of-concept pipeline
+- [x] Successful supported-claim case
+- [x] Unsupported or contradicted factual case
+- [x] Bloom-level mismatch case
+- [x] Unmastered-prerequisite case
+- [x] Typed violation report shown
+- [x] Targeted rewrite and re-verification shown
+- [x] Confidence tier and KG grounding shown
+- [x] Initial test/evaluation results shown
+- [x] Technology choices justified
 - [ ] Functional and non-functional requirements summarized
 - [ ] Risks and mitigations explained
 - [ ] Commercial/user value explained
@@ -505,3 +510,39 @@ maintained or improved clarity and comprehension.
 - Every work change must update [LOG.md](./LOG.md) and this plan where relevant.
 - Every work change must be committed to the `c4` branch with a descriptive
   commit message and the required Copilot co-author trailer.
+
+## Decision record (pilot, 2026-10-19)
+
+| Decision | Choice | Rationale | Revisit when |
+|---|---|---|---|
+| Factual verifier | Rule-based graph-statement mapping (content-word Jaccard >= 0.6, `known_false` statements, negation polarity) instead of an NLI model | Deterministic, inspectable, no GPU/API, evidence is a graph statement; stress F1 is stable for thresholds 0.4-0.6 | PP2: add NLI as a second stage and compare against human labels; natural Qwen output is currently over-flagged |
+| Claim granularity | One sentence = one claim | Simple, stable claim ids | PP2: atomic-proposition decomposition |
+| Mastery rule | mastery >= 0.70 and uncertainty <= 0.25; +/-0.05 margin and missing history INCONCLUSIVE | Conservative, never accepts unknown state | PP2 sensitivity analysis with real C2 output |
+| Bloom ceiling | 2, or 3 if all direct target prerequisites mastered and certain | Uncertainty lowers the ceiling; target exempt | PP2: evaluate classifier against manual labels |
+| Repair | Graph fact that itself verifies, else review guidance, else drop duplicate; 3 rounds; unresolved reported | Preserves valid claims; true-but-inappropriate claims are not silently swapped | PP2: LLM-assisted rewrite compared in the rewrite-loop ablation |
+| Generator | Qwen3 4B via Ollama, schema-constrained JSON | Local, free, reproducible; GPT-4o remains the planned primary generator | When Azure/OpenAI access is agreed |
+
+## Completed since the PP1 review (2026-10-19)
+
+- [x] Demo defects fixed (clean valid/factual/cognitive scenarios; separated
+  before/after report).
+- [x] Cognitive-violation repair (review guidance) and rewrite trace.
+- [x] INCONCLUSIVE cognitive status implemented.
+- [x] Metrics module and preliminary stress-test evaluation with ablations.
+- [x] Natural Qwen3 evaluation set (28 explanations, cached) and threshold sweep.
+- [x] Statistical comparison: exact McNemar and Wilson intervals (paired
+  Wilcoxon deferred; needs per-claim continuous scores).
+
+## Outstanding after PP1 preparation
+
+- [ ] Independent human annotation of a corpus subset and Cohen's kappa
+  (stress labels are currently recipe-built).
+- [ ] NLI second-stage verifier and atomic-claim decomposition; re-measure the
+  natural set against human labels.
+- [ ] Evaluate the Bloom estimator against manual labels.
+- [ ] GPT-4o baseline and open-weight generalisation comparison.
+- [ ] Real C1/C2/C3 integration and shared concept identifiers (the branches
+  use different identifiers: C1 text names, C2 ASSISTments skill ids, C3
+  `mock_kg.json` ids).
+- [ ] Learner study (needs ethics approval) and clarity/comprehension measures.
+- [ ] Unified slides, supervisor dry run, and viva preparation.

@@ -44,6 +44,17 @@ The work was completed in these major steps:
 31. Validated tests, compilation, demos, JSON output, and Git checks.
 32. Committed each logical change separately and pushed the work to `c4`.
 
+33. Reviewed the work against the PP1 mark sheet and the C1, C2, and C3 branches.
+34. Fixed concept matching, target exemption, and the demo scenarios.
+35. Added INCONCLUSIVE handling and a documented mastery/uncertainty rule.
+36. Replaced the factual matcher and added known-false graph statements.
+37. Added cognitive repair (review guidance), a rewrite trace, and the
+    `c4-report/1.0` report with metrics.
+38. Added the metrics module, a 28-case stress test with ablations, a
+    28-explanation Qwen3 set, and a threshold sensitivity sweep.
+39. Documented results and their limitations in
+    [c4/results/RESULTS.md](./c4/results/RESULTS.md).
+
 ## Current demo commands
 
 Offline deterministic generator:
@@ -66,6 +77,12 @@ Focused scenarios:
 python3 scripts/run_c4_demo.py --scenario valid --pretty
 python3 scripts/run_c4_demo.py --scenario factual --pretty
 python3 scripts/run_c4_demo.py --scenario cognitive --pretty
+```
+
+Preliminary evaluation:
+
+```bash
+python3 scripts/run_c4_eval.py
 ```
 
 ## Current limitation

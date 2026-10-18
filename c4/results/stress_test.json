@@ -1,0 +1,651 @@
+{
+  "corpus_version": "stress-v1",
+  "label_provenance": "constructed by recipe + hand-written mention table; not independently human-annotated; no Cohen's kappa",
+  "cases": 28,
+  "targets": 7,
+  "profiles": [
+    "all_mastered",
+    "missing_prereq",
+    "several_low",
+    "uncertain"
+  ],
+  "claims": 84,
+  "reference_factual_labels": {
+    "ENTAILED": 63,
+    "CONTRADICTED": 7,
+    "UNSUPPORTED": 14
+  },
+  "reference_cognitive_labels": {
+    "APPROPRIATE": 53,
+    "BLOOM_MISMATCH": 14,
+    "UNMASTERED_PREREQUISITE": 11,
+    "INCONCLUSIVE": 6
+  },
+  "baseline_unverified_reference": {
+    "claims": 84,
+    "hallucination_rate": 25.0,
+    "cognitive_mismatch_rate": 29.76,
+    "cases_with_violation": 28
+  },
+  "baseline_cases_with_violation_ci95": [
+    87.9,
+    100.0
+  ],
+  "detection": {
+    "factual": {
+      "tp": 21,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "cognitive_all": {
+      "tp": 25,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "bloom_mismatch": {
+      "tp": 14,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "unmastered_prerequisite": {
+      "tp": 11,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "exact_factual_label_accuracy": 100.0,
+    "exact_cognitive_label_accuracy": 100.0
+  },
+  "rewrite": {
+    "claims_sent": 44,
+    "corrected": 44,
+    "success_rate": 100.0,
+    "new_violations_introduced": 0
+  },
+  "conditions_after_repair": {
+    "factual_only": {
+      "claims_after": 84,
+      "hallucination_rate": 0.0,
+      "cognitive_mismatch_rate": 21.43,
+      "cases_with_violation": 12,
+      "cases_with_violation_ci95": [
+        26.5,
+        60.9
+      ],
+      "mcnemar_vs_baseline": {
+        "fixed": 16,
+        "worsened": 0,
+        "p_exact": 3.052e-05
+      },
+      "mean_latency_ms": 0.385
+    },
+    "cognitive_only": {
+      "claims_after": 73,
+      "hallucination_rate": 17.81,
+      "cognitive_mismatch_rate": 0.0,
+      "cases_with_violation": 13,
+      "cases_with_violation_ci95": [
+        29.5,
+        64.2
+      ],
+      "mcnemar_vs_baseline": {
+        "fixed": 15,
+        "worsened": 0,
+        "p_exact": 6.104e-05
+      },
+      "mean_latency_ms": 0.336
+    },
+    "full_c4": {
+      "claims_after": 68,
+      "hallucination_rate": 0.0,
+      "cognitive_mismatch_rate": 0.0,
+      "cases_with_violation": 0,
+      "cases_with_violation_ci95": [
+        0.0,
+        12.1
+      ],
+      "mcnemar_vs_baseline": {
+        "fixed": 28,
+        "worsened": 0,
+        "p_exact": 1e-08
+      },
+      "mean_latency_ms": 0.39
+    }
+  },
+  "caveat": "Post-repair rates use the same verifier as the repair loop (not independent). Detection scores on a recipe-built corpus show the rules behave as specified; they are not generalisation evidence.",
+  "sample_reports": {
+    "tree/all_mastered": {
+      "schema_version": "c4-report/1.0",
+      "learner_id": "all_mastered:tree",
+      "target": "tree",
+      "verified_path": true,
+      "original_explanation": "Trees are hierarchical data structures. A tree is a linear data structure. Tree nodes can be traversed using recursion.",
+      "final_explanation": "Trees are hierarchical data structures. For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing. Tree nodes can be traversed using recursion.",
+      "initial_claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Trees are hierarchical data structures.",
+          "concept_ids": [
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "Trees are hierarchical data structures."
+          ],
+          "violations": [],
+          "confidence": "HIGH",
+          "accepted": true,
+          "rewritten_text": null
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "A tree is a linear data structure.",
+          "concept_ids": [
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "CONTRADICTED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "contradicts graph misconception: A tree is a linear data structure."
+          ],
+          "violations": [
+            "CONTRADICTED_CLAIM"
+          ],
+          "confidence": "MEDIUM",
+          "accepted": false,
+          "rewritten_text": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing."
+        },
+        {
+          "claim_id": "claim-3",
+          "text": "Tree nodes can be traversed using recursion.",
+          "concept_ids": [
+            "recursion",
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "Tree nodes can be traversed using recursion."
+          ],
+          "violations": [],
+          "confidence": "HIGH",
+          "accepted": true,
+          "rewritten_text": null
+        }
+      ],
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Trees are hierarchical data structures.",
+          "concept_ids": [
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "Trees are hierarchical data structures."
+          ],
+          "violations": [],
+          "confidence": "HIGH",
+          "accepted": true,
+          "rewritten_text": null
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
+          "concept_ids": [
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "pipeline guidance sentence; asserts no domain fact"
+          ],
+          "violations": [],
+          "confidence": "MEDIUM",
+          "accepted": true,
+          "rewritten_text": null
+        },
+        {
+          "claim_id": "claim-3",
+          "text": "Tree nodes can be traversed using recursion.",
+          "concept_ids": [
+            "recursion",
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "Tree nodes can be traversed using recursion."
+          ],
+          "violations": [],
+          "confidence": "HIGH",
+          "accepted": true,
+          "rewritten_text": null
+        }
+      ],
+      "rewrite_attempts": 1,
+      "rewrite_trace": [
+        {
+          "attempt": 1,
+          "claim_id": "claim-2",
+          "violations": [
+            "CONTRADICTED_CLAIM"
+          ],
+          "before": "A tree is a linear data structure.",
+          "after": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
+          "strategy": "prerequisite-review guidance"
+        }
+      ],
+      "unresolved_claims": [],
+      "review_first": [],
+      "metrics": {
+        "before": {
+          "claims": 3,
+          "factual_violations": 1,
+          "cognitive_violations": 0,
+          "inconclusive": 0,
+          "hallucination_rate": 33.33,
+          "cognitive_mismatch_rate": 0.0
+        },
+        "after": {
+          "claims": 3,
+          "factual_violations": 0,
+          "cognitive_violations": 0,
+          "inconclusive": 0,
+          "hallucination_rate": 0.0,
+          "cognitive_mismatch_rate": 0.0
+        },
+        "claims_sent_for_rewrite": 1,
+        "claims_corrected": 1,
+        "rewrite_success_rate": 100.0,
+        "new_violations_introduced": 0,
+        "unresolved": 0,
+        "final_confidence": {
+          "HIGH": 2,
+          "MEDIUM": 1,
+          "LOW": 0
+        },
+        "llm_calls_in_verifier": 0
+      },
+      "latency_s": 0.0004,
+      "config": {
+        "mastery_threshold": 0.7,
+        "uncertainty_threshold": 0.25,
+        "threshold_margin": 0.05,
+        "max_rewrite_attempts": 3,
+        "default_bloom_ceiling": 2,
+        "mastered_bloom_ceiling": 3,
+        "entail_similarity": 0.6,
+        "contradict_recall": 0.75,
+        "check_factual": true,
+        "check_cognitive": true,
+        "rewrite": true
+      }
+    },
+    "tree/missing_prereq": {
+      "schema_version": "c4-report/1.0",
+      "learner_id": "missing_prereq:tree",
+      "target": "tree",
+      "verified_path": true,
+      "original_explanation": "Trees are hierarchical data structures. Trees always takes constant time for every operation. Tree nodes can be traversed using recursion.",
+      "final_explanation": "Trees are hierarchical data structures. For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing. Tree nodes can be traversed using recursion.",
+      "initial_claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Trees are hierarchical data structures.",
+          "concept_ids": [
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "Trees are hierarchical data structures."
+          ],
+          "violations": [],
+          "confidence": "HIGH",
+          "accepted": true,
+          "rewritten_text": null
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "Trees always takes constant time for every operation.",
+          "concept_ids": [
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "UNSUPPORTED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [],
+          "violations": [
+            "UNSUPPORTED_CLAIM"
+          ],
+          "confidence": "LOW",
+          "accepted": false,
+          "rewritten_text": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing."
+        },
+        {
+          "claim_id": "claim-3",
+          "text": "Tree nodes can be traversed using recursion.",
+          "concept_ids": [
+            "recursion",
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "Tree nodes can be traversed using recursion."
+          ],
+          "violations": [],
+          "confidence": "HIGH",
+          "accepted": true,
+          "rewritten_text": null
+        }
+      ],
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Trees are hierarchical data structures.",
+          "concept_ids": [
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "Trees are hierarchical data structures."
+          ],
+          "violations": [],
+          "confidence": "HIGH",
+          "accepted": true,
+          "rewritten_text": null
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
+          "concept_ids": [
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "pipeline guidance sentence; asserts no domain fact"
+          ],
+          "violations": [],
+          "confidence": "MEDIUM",
+          "accepted": true,
+          "rewritten_text": null
+        },
+        {
+          "claim_id": "claim-3",
+          "text": "Tree nodes can be traversed using recursion.",
+          "concept_ids": [
+            "recursion",
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "Tree nodes can be traversed using recursion."
+          ],
+          "violations": [],
+          "confidence": "HIGH",
+          "accepted": true,
+          "rewritten_text": null
+        }
+      ],
+      "rewrite_attempts": 1,
+      "rewrite_trace": [
+        {
+          "attempt": 1,
+          "claim_id": "claim-2",
+          "violations": [
+            "UNSUPPORTED_CLAIM"
+          ],
+          "before": "Trees always takes constant time for every operation.",
+          "after": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
+          "strategy": "prerequisite-review guidance"
+        }
+      ],
+      "unresolved_claims": [],
+      "review_first": [],
+      "metrics": {
+        "before": {
+          "claims": 3,
+          "factual_violations": 1,
+          "cognitive_violations": 0,
+          "inconclusive": 0,
+          "hallucination_rate": 33.33,
+          "cognitive_mismatch_rate": 0.0
+        },
+        "after": {
+          "claims": 3,
+          "factual_violations": 0,
+          "cognitive_violations": 0,
+          "inconclusive": 0,
+          "hallucination_rate": 0.0,
+          "cognitive_mismatch_rate": 0.0
+        },
+        "claims_sent_for_rewrite": 1,
+        "claims_corrected": 1,
+        "rewrite_success_rate": 100.0,
+        "new_violations_introduced": 0,
+        "unresolved": 0,
+        "final_confidence": {
+          "HIGH": 2,
+          "MEDIUM": 1,
+          "LOW": 0
+        },
+        "llm_calls_in_verifier": 0
+      },
+      "latency_s": 0.0004,
+      "config": {
+        "mastery_threshold": 0.7,
+        "uncertainty_threshold": 0.25,
+        "threshold_margin": 0.05,
+        "max_rewrite_attempts": 3,
+        "default_bloom_ceiling": 2,
+        "mastered_bloom_ceiling": 3,
+        "entail_similarity": 0.6,
+        "contradict_recall": 0.75,
+        "check_factual": true,
+        "check_cognitive": true,
+        "rewrite": true
+      }
+    },
+    "tree/several_low": {
+      "schema_version": "c4-report/1.0",
+      "learner_id": "several_low:tree",
+      "target": "tree",
+      "verified_path": true,
+      "original_explanation": "Trees are hierarchical data structures. Analyze and compare Trees against every alternative data structure. Tree nodes can be traversed using recursion.",
+      "final_explanation": "Trees are hierarchical data structures. For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
+      "initial_claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Trees are hierarchical data structures.",
+          "concept_ids": [
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "Trees are hierarchical data structures."
+          ],
+          "violations": [],
+          "confidence": "HIGH",
+          "accepted": true,
+          "rewritten_text": null
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "Analyze and compare Trees against every alternative data structure.",
+          "concept_ids": [
+            "tree"
+          ],
+          "estimated_bloom_level": 4,
+          "factual_status": "UNSUPPORTED",
+          "cognitive_status": "BLOOM_MISMATCH",
+          "evidence": [],
+          "violations": [
+            "UNSUPPORTED_CLAIM",
+            "BLOOM_MISMATCH"
+          ],
+          "confidence": "LOW",
+          "accepted": false,
+          "rewritten_text": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing."
+        },
+        {
+          "claim_id": "claim-3",
+          "text": "Tree nodes can be traversed using recursion.",
+          "concept_ids": [
+            "recursion",
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "UNMASTERED_PREREQUISITE",
+          "evidence": [
+            "Tree nodes can be traversed using recursion."
+          ],
+          "violations": [
+            "UNMASTERED_PREREQUISITE"
+          ],
+          "confidence": "MEDIUM",
+          "accepted": false,
+          "rewritten_text": ""
+        }
+      ],
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Trees are hierarchical data structures.",
+          "concept_ids": [
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "Trees are hierarchical data structures."
+          ],
+          "violations": [],
+          "confidence": "HIGH",
+          "accepted": true,
+          "rewritten_text": null
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
+          "concept_ids": [
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "pipeline guidance sentence; asserts no domain fact"
+          ],
+          "violations": [],
+          "confidence": "MEDIUM",
+          "accepted": true,
+          "rewritten_text": null
+        }
+      ],
+      "rewrite_attempts": 1,
+      "rewrite_trace": [
+        {
+          "attempt": 1,
+          "claim_id": "claim-2",
+          "violations": [
+            "UNSUPPORTED_CLAIM",
+            "BLOOM_MISMATCH"
+          ],
+          "before": "Analyze and compare Trees against every alternative data structure.",
+          "after": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
+          "strategy": "prerequisite-review guidance"
+        },
+        {
+          "attempt": 1,
+          "claim_id": "claim-3",
+          "violations": [
+            "UNMASTERED_PREREQUISITE"
+          ],
+          "before": "Tree nodes can be traversed using recursion.",
+          "after": "",
+          "strategy": "removed (replacement already stated)"
+        }
+      ],
+      "unresolved_claims": [],
+      "review_first": [
+        "recursion"
+      ],
+      "metrics": {
+        "before": {
+          "claims": 3,
+          "factual_violations": 1,
+          "cognitive_violations": 2,
+          "inconclusive": 0,
+          "hallucination_rate": 33.33,
+          "cognitive_mismatch_rate": 66.67
+        },
+        "after": {
+          "claims": 2,
+          "factual_violations": 0,
+          "cognitive_violations": 0,
+          "inconclusive": 0,
+          "hallucination_rate": 0.0,
+          "cognitive_mismatch_rate": 0.0
+        },
+        "claims_sent_for_rewrite": 2,
+        "claims_corrected": 2,
+        "rewrite_success_rate": 100.0,
+        "new_violations_introduced": 0,
+        "unresolved": 0,
+        "final_confidence": {
+          "HIGH": 1,
+          "MEDIUM": 1,
+          "LOW": 0
+        },
+        "llm_calls_in_verifier": 0
+      },
+      "latency_s": 0.0003,
+      "config": {
+        "mastery_threshold": 0.7,
+        "uncertainty_threshold": 0.25,
+        "threshold_margin": 0.05,
+        "max_rewrite_attempts": 3,
+        "default_bloom_ceiling": 2,
+        "mastered_bloom_ceiling": 3,
+        "entail_similarity": 0.6,
+        "contradict_recall": 0.75,
+        "check_factual": true,
+        "check_cognitive": true,
+        "rewrite": true
+      }
+    }
+  }
+}
