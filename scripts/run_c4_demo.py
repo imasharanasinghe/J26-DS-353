@@ -23,6 +23,8 @@ def main() -> None:
                         help="Generate the input explanation from the C3 path and learner")
     parser.add_argument("--scenario", choices=("default", "valid", "factual", "cognitive"),
                         default="default")
+    parser.add_argument("--pretty", action="store_true",
+                        help="Print a concise human-readable report")
     args = parser.parse_args()
 
     pipeline = C4Pipeline.from_files(DATA / "knowledge_graph.json")
@@ -45,6 +47,20 @@ def main() -> None:
     if args.generated:
         explanation = TemplateExplanationGenerator().generate(path, learner, pipeline.kg)
     result = pipeline.run(path, learner, explanation)
+    if args.pretty:
+        print(f"C4 REPORT | learner={result.learner_id} target={result.target}")
+        print(f"verified_path={result.verified_path} rewrite_attempts={result.rewrite_attempts}")
+        print(f"original: {result.original_explanation}")
+        for claim in result.claims:
+            print(
+                f"- {claim.claim.claim_id}: factual={claim.factual_status} "
+                f"cognitive={claim.cognitive_status} accepted={claim.accepted}"
+            )
+            if claim.violations:
+                print(f"  violations: {', '.join(claim.violations)}")
+        print(f"final: {result.final_explanation}")
+        print(f"unresolved: {', '.join(result.unresolved_claims) or 'none'}")
+        return
     print(json.dumps(result.to_dict(), indent=2))
 
 
