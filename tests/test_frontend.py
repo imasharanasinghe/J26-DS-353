@@ -13,7 +13,7 @@ def test_every_element_id_used_by_the_script_exists_in_the_page() -> None:
     script = (WEB / "app.js").read_text(encoding="utf-8")
     page_ids = set(re.findall(r'\bid="([^"]+)"', html))
     used = set(re.findall(r'\$\("#([\w-]+)"\)', script))
-    used |= set(re.findall(r'\$\(`#tab-\$\{id\}`\)', script) and ["tab-verify", "tab-eval"])
+    used |= {"tab-verify", "tab-eval", "view-verify", "view-eval"}  # built from a template string
     assert used - page_ids == set(), f"ids missing from index.html: {used - page_ids}"
 
 

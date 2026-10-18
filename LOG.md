@@ -197,3 +197,9 @@ This log records the work completed for Component 4 and the associated project a
   - Draft generators: "Template" and "Qwen (Ollama)" fill the explanation box; the Qwen button is disabled with a hint when Ollama or the model is unavailable, and the prompt actually sent to the model is shown in a collapsible block.
 - Verified in headless Chrome with a scripted run: editing Binary Trees mastery to 0.95 flips the "true but too advanced" claim to verified; disabling the rewrite loop leaves the contradicted claim unresolved and labelled as not verified; template generation and target switching reset state correctly. Checked the editor layout in a screenshot.
 - Added `tests/test_frontend.py` (ids used by the script exist in the page, no `innerHTML`, only local assets). 60 tests pass.
+
+### 2026-10-19 04:20:00 +05:30
+- Step 6: added the Evaluation tab to the workbench. It lazily loads `/api/results` and shows the stress-test conditions as paired bars (hallucination and cognitive-mismatch rate) and a table with Wilson intervals and exact McNemar results, detection precision/recall/F1 per dimension, rewrite statistics, the cached Qwen3 natural set with before/after examples, the entailment-threshold sensitivity table with the default highlighted, and a limitations list.
+- The tab opens with an amber banner repeating the caveats (recipe-built labels, same-verifier post-repair rates) so the numbers cannot be shown without them. A `#eval` URL hash opens the tab directly.
+- `scripts/run_c4_eval.py` now also writes `c4/results/sensitivity.json` so the tab and the markdown report use the same data; regenerated `c4/results/` (only latency values changed in the existing files).
+- Simplified the frontend contract test for the tab ids. Checked the tab in a headless-Chrome screenshot. 60 tests pass.

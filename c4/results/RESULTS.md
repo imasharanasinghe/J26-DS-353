@@ -29,7 +29,7 @@ Baseline = original explanations, rates from the reference labels. Repaired rate
 | full_c4 | 0.0 | 0.0 | 0/28 | (0.0, 12.1) | 28/0, p=1e-08 |
 
 Rewrite (full C4): 44/44 violating claims corrected (success 100.0%); new violations introduced: 0.
-Mean full-C4 latency per case: 0.39 ms (verifier only; 0 LLM calls).
+Mean full-C4 latency per case: 0.392 ms (verifier only; 0 LLM calls).
 
 **Caveat.** Post-repair rates use the same verifier as the repair loop (not independent). Detection scores on a recipe-built corpus show the rules behave as specified; they are not generalisation evidence.
 

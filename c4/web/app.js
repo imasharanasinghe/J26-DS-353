@@ -346,12 +346,122 @@ function downloadJson(text) {
   link.remove();
 }
 
+/* ---------- evaluation tab ---------- */
+const CONDITION_LABELS = {
+  baseline: "Unverified baseline", factual_only: "Factual-only ablation",
+  cognitive_only: "Cognitive-only ablation", full_c4: "Full C4",
+};
+
+function barRow(kind, value) {
+  const width = Math.max(0, Math.min(100, value ?? 0));
+  return el("div", { class: "barrow" },
+    el("div", { class: "track", role: "img", "aria-label": `${kind} ${pct(value)}` },
+      el("div", { class: `fill ${kind === "Hallucination" ? "fact" : "cog"}`, style: `width:${width}%` })),
+    el("span", { class: "num" }, pct(value)));
+}
+
+function table(headers, rows, highlight) {
+  return el("div", { class: "scroll" }, el("table", { class: "data" },
+    el("thead", {}, el("tr", {}, headers.map((h) => el("th", {}, h)))),
+    el("tbody", {}, rows.map((row, i) => el("tr", { class: highlight === i ? "hl" : "" },
+      row.map((cell) => el("td", {}, cell ?? "n/a")))))));
+}
+
+const ci = (pair) => (pair ? `${pair[0]}–${pair[1]}%` : "n/a");
+const num = (value) => (value === null || value === undefined ? "n/a" : value);
+
+function renderEvaluation(results) {
+  const view = $("#view-eval");
+  const { stress, natural, sensitivity } = results;
+  if (!stress) {
+    view.replaceChildren(el("div", { class: "empty" }, el("h2", {}, "No evaluation results found"),
+      el("p", {}, "Run python3 scripts/run_c4_eval.py to generate them.")));
+    return;
+  }
+  const base = stress.baseline_unverified_reference;
+  const rows = [["baseline", base.hallucination_rate, base.cognitive_mismatch_rate,
+    `${base.cases_with_violation}/${stress.cases}`, ci(stress.baseline_cases_with_violation_ci95), "—"]];
+  for (const [name, item] of Object.entries(stress.conditions_after_repair)) {
+    const m = item.mcnemar_vs_baseline;
+    rows.push([name, item.hallucination_rate, item.cognitive_mismatch_rate,
+      `${item.cases_with_violation}/${stress.cases}`, ci(item.cases_with_violation_ci95),
+      `${m.fixed} fixed / ${m.worsened} worse, p=${m.p_exact}`]);
+  }
+  const bars = el("div", { class: "bars" }, rows.map((row) => el("div", { class: "bargroup" },
+    el("div", { class: "bname" }, CONDITION_LABELS[row[0]]),
+    barRow("Hallucination", row[1]), barRow("Cognitive mismatch", row[2]))));
+
+  const det = stress.detection;
+  const detRows = [["Factual violations", "factual"], ["Cognitive (all)", "cognitive_all"],
+    ["Bloom mismatch", "bloom_mismatch"], ["Unmastered prerequisite", "unmastered_prerequisite"]]
+    .map(([label, key]) => [label, det[key].tp, det[key].fp, det[key].fn,
+      num(det[key].precision), num(det[key].recall), num(det[key].f1)]);
+
+  const sections = [
+    el("div", { class: "banner" }, el("b", {}, "Read before presenting: "), stress.caveat, " Labels: ", stress.label_provenance, "."),
+    block("Controlled stress test",
+      `${stress.cases} cases (${stress.targets} concepts × ${stress.profiles.length} learner profiles), ${stress.claims} claims. ` +
+      "Baseline rates come from the reference labels; repaired rates are re-measured by the verifier.",
+      el("div", {},
+        el("div", { class: "legend" },
+          el("span", {}, el("i", { style: "background:var(--series-fact)" }), "Hallucination rate"),
+          el("span", {}, el("i", { style: "background:var(--series-cog)" }), "Cognitive-mismatch rate")),
+        bars,
+        table(["Condition", "Halluc. %", "Cog. mismatch %", "Cases with violation", "95% CI", "McNemar vs baseline"],
+          rows.map((r) => [CONDITION_LABELS[r[0]], ...r.slice(1)]), 3))),
+    block("Verifier detection against reference labels", "Initial claims, full C4. Perfect scores here show the rules behave as specified on a recipe-built corpus, not generalisation.",
+      table(["Dimension", "TP", "FP", "FN", "Precision", "Recall", "F1"], detRows)),
+    block("Rewrite loop", null, el("p", {}, `${stress.rewrite.corrected} of ${stress.rewrite.claims_sent} violating claims corrected `,
+      `(${pct(stress.rewrite.success_rate)}); new violations introduced: ${stress.rewrite.new_violations_introduced}.`)),
+  ];
+
+  if (natural) {
+    sections.push(block("Natural generation (Qwen3 4B, exploratory)",
+      `${natural.explanations} cached explanations, ${natural.claims} claims. No reference labels exist, so this measures how much the rules flag, not accuracy.`,
+      el("div", {},
+        table(["Measure", "Before C4", "After C4"], [
+          ["Claims not graph-supported", pct(natural.before.hallucination_rate), pct(natural.after.hallucination_rate)],
+          ["Cognitive mismatch", pct(natural.before.cognitive_mismatch_rate), pct(natural.after.cognitive_mismatch_rate)],
+          ["Inconclusive claims", natural.before.inconclusive, natural.after.inconclusive]]),
+        natural.examples.map((item) => el("div", { class: "example" }, el("code", {}, item.case_id),
+          el("p", {}, el("b", {}, "Qwen: "), item.original), el("p", {}, el("b", {}, "After C4: "), item.final))))));
+  }
+  if (sensitivity) {
+    const current = state.meta.config_defaults.entail_similarity;
+    sections.push(block("Entailment-threshold sensitivity",
+      "Stress-test F1 is stable for thresholds 0.4–0.6, supporting the 0.6 default; natural output stays flagged because the matcher is strict about paraphrase.",
+      table(["Similarity threshold", "Stress precision", "Stress recall", "Stress F1", "Natural % not graph-supported"],
+        sensitivity.map((r) => [r.entail_similarity, num(r.stress_factual_precision), num(r.stress_factual_recall),
+          num(r.stress_factual_f1), `${r.natural_not_graph_supported_pct}%`]),
+        sensitivity.findIndex((r) => r.entail_similarity === current))));
+  }
+  sections.push(block("Known limitations", null, el("ul", { class: "limits" },
+    el("li", {}, "Factual checking is rule-based graph-statement matching, not NLI; it cannot separate a faithful paraphrase from an invention."),
+    el("li", {}, "A claim is a whole sentence, not an atomic proposition."),
+    el("li", {}, "The Bloom estimator is a verb-cue heuristic and has not been evaluated against manual labels."),
+    el("li", {}, "No independent human annotation or Cohen's kappa yet; post-repair rates reuse the same verifier."),
+    el("li", {}, "C1, C2 and C3 outputs are mocked with compatible fixtures; real integration is pending."))));
+  view.replaceChildren(...sections);
+}
+
+let evaluationLoaded = false;
+async function loadEvaluation() {
+  if (evaluationLoaded) return;
+  try {
+    renderEvaluation(await api("/api/results"));
+    evaluationLoaded = true;
+  } catch (error) {
+    $("#view-eval").replaceChildren(el("p", { class: "error" }, error.message));
+  }
+}
+
 /* ---------- tabs and boot ---------- */
 function selectTab(name) {
   for (const id of ["verify", "eval"]) {
     $(`#tab-${id}`).setAttribute("aria-selected", String(id === name));
     $(`#view-${id}`).hidden = id !== name;
   }
+  if (name === "eval") loadEvaluation();
 }
 
 async function boot() {
@@ -382,7 +492,8 @@ async function boot() {
   $("#preset").replaceChildren(...presets.map((id) => el("option", { value: id }, PRESET_LABELS[id] || id)));
   applyTarget();
   resetConfig();
-  if (location.hash === "#run") run();  // deep link used for demos and screenshots
+  if (location.hash === "#run") run();
+  if (location.hash === "#eval") selectTab("eval");  // deep link used for demos and screenshots
   api("/api/health").then((health) => {
     const { online, model_installed: installed, model } = health.ollama;
     state.ollamaReady = online && installed;

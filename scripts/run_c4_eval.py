@@ -134,6 +134,7 @@ def main() -> None:
     if natural:
         (RESULTS / "natural.json").write_text(json.dumps(natural, indent=2) + "\n", encoding="utf-8")
     sensitivity = evaluate_sensitivity(kg, DATA / "natural_cache.json")
+    (RESULTS / "sensitivity.json").write_text(json.dumps(sensitivity, indent=2) + "\n", encoding="utf-8")
     report = render(stress, natural, sensitivity)
     (RESULTS / "RESULTS.md").write_text(report, encoding="utf-8")
     print(report)

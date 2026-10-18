@@ -88,7 +88,7 @@
         "worsened": 0,
         "p_exact": 3.052e-05
       },
-      "mean_latency_ms": 0.385
+      "mean_latency_ms": 0.387
     },
     "cognitive_only": {
       "claims_after": 73,
@@ -120,7 +120,7 @@
         "worsened": 0,
         "p_exact": 1e-08
       },
-      "mean_latency_ms": 0.39
+      "mean_latency_ms": 0.392
     }
   },
   "caveat": "Post-repair rates use the same verifier as the repair loop (not independent). Detection scores on a recipe-built corpus show the rules behave as specified; they are not generalisation evidence.",

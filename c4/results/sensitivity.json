@@ -1,0 +1,44 @@
+[
+  {
+    "entail_similarity": 0.3,
+    "stress_factual_precision": 1.0,
+    "stress_factual_recall": 0.9524,
+    "stress_factual_f1": 0.9756,
+    "natural_not_graph_supported_pct": 70.59
+  },
+  {
+    "entail_similarity": 0.4,
+    "stress_factual_precision": 1.0,
+    "stress_factual_recall": 1.0,
+    "stress_factual_f1": 1.0,
+    "natural_not_graph_supported_pct": 100.0
+  },
+  {
+    "entail_similarity": 0.5,
+    "stress_factual_precision": 1.0,
+    "stress_factual_recall": 1.0,
+    "stress_factual_f1": 1.0,
+    "natural_not_graph_supported_pct": 100.0
+  },
+  {
+    "entail_similarity": 0.6,
+    "stress_factual_precision": 1.0,
+    "stress_factual_recall": 1.0,
+    "stress_factual_f1": 1.0,
+    "natural_not_graph_supported_pct": 100.0
+  },
+  {
+    "entail_similarity": 0.7,
+    "stress_factual_precision": 0.913,
+    "stress_factual_recall": 1.0,
+    "stress_factual_f1": 0.9545,
+    "natural_not_graph_supported_pct": 100.0
+  },
+  {
+    "entail_similarity": 0.8,
+    "stress_factual_precision": 0.7778,
+    "stress_factual_recall": 1.0,
+    "stress_factual_f1": 0.875,
+    "natural_not_graph_supported_pct": 100.0
+  }
+]
