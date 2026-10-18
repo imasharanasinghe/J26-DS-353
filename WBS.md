@@ -3,45 +3,44 @@
 This is a brief user-facing summary of the major work completed for Component
 4. It is not a replacement for the detailed [LOG.md](./LOG.md).
 
-## A–Z progress
+## Major work breakdown
 
-- **A — Branch:** Created and used the `c4` branch.
-- **B — Background:** Read the project README and identified the four-component
-  architecture.
-- **C — Component scope:** Confirmed that Component 4 owns explanation
-  faithfulness, not C1, C2, or C3 implementation.
-- **D — Documents:** Read C1, C2, C3, C4, PP1 marks, and project guidelines.
-- **E — Evaluation plan:** Defined factual and learner-relative cognitive
-  faithfulness criteria.
-- **F — Fixtures:** Created local C1, C2, and C3-compatible pilot fixtures.
-- **G — Graph evidence:** Added graph-grounded factual checking.
-- **H — Handoff:** Inspected the C3 working folder and documented its JSON
-  hand-off contract without copying it.
-- **I — Interfaces:** Added adapters for the actual incomplete C1, C2, and C3
-  branch shapes.
-- **J — JSON:** Added structured claim, verification, and result output.
-- **K — Knowledge checks:** Added prerequisite mastery and Bloom-ceiling checks.
-- **L — LLM boundary:** Added a replaceable explanation-generation interface.
-- **M — Mock generator:** Added an offline path- and learner-aware generator.
-- **N — Neo4j review:** Inspected the C3 Neo4j loader and kept Neo4j optional
-  until the shared database is available.
-- **O — Ollama:** Added optional local Ollama integration using Qwen3.
-- **P — Pipeline:** Implemented path validation, claim decomposition, checking,
-  rewriting, and re-verification.
-- **Q — Qwen3:** Documented `qwen3:4b` as the free local demo model.
-- **R — Rewriting:** Added evidence-based correction for factual violations.
-- **S — Scenarios:** Added valid, factual-error, and cognitive-error demos.
-- **T — Tests:** Added automated tests for the pipeline, adapters, and
-  explanation-generation boundary.
-- **U — Upstream status:** Recorded that C1, C2, and C3 are incomplete and are
-  not being presented as finished.
-- **V — Verification report:** Added concise human-readable demo output.
-- **W — Work tracking:** Maintained separate commits for logical changes and
-  updated project documentation.
-- **X — eXecution:** Validated demos, tests, compilation, and JSON output.
-- **Y — Yield:** Produced a runnable C4 proof of concept for PP1.
-- **Z — Zero false claims:** Kept real integrations, final thresholds, and
-  research-grade evaluation explicitly marked as future work.
+The work was completed in these major steps:
+
+1. Created and used the `c4` branch.
+2. Read the project README and identified the four-component architecture.
+3. Confirmed that Component 4 owns explanation faithfulness, not C1, C2, or C3
+   implementation.
+4. Read the C1, C2, C3, and C4 proposals, PP1 marks, and research guidelines.
+5. Defined factual and learner-relative cognitive faithfulness criteria.
+6. Created the C4 work plan, research guidelines, and detailed work log.
+7. Reviewed the group sprint-board requirements and recorded PP1 priorities.
+8. Inspected the C3 working folder without copying it into the repository.
+9. Documented the C3-to-C4 verified-path JSON hand-off contract.
+10. Created local C1, C2, and C3-compatible pilot fixtures.
+11. Implemented C4 verified-path gating and atomic claim decomposition.
+12. Implemented graph-grounded factual verification.
+13. Implemented prerequisite mastery and Bloom-ceiling checks.
+14. Implemented typed violation reporting, rewriting, and re-verification.
+15. Added initial-claim, final-claim, and unresolved-claim reporting.
+16. Added automated tests for the C4 proof of concept.
+17. Inspected the actual C1, C2, and C3 remote branches and confirmed that all
+    three are incomplete.
+18. Added adapters for the current C1 CSV, C2 learner-state, and C3 path
+    formats.
+19. Added C3 hand-off validation before C4 processing.
+20. Added a replaceable explanation-generation interface.
+21. Added an offline path- and learner-aware template generator.
+22. Added valid, factual-error, and cognitive-error demo scenarios.
+23. Added a concise human-readable C4 report mode.
+24. Improved factual rewriting using graph evidence.
+25. Added optional Ollama integration using the local Qwen3 model.
+26. Documented the Ollama setup and offline fallback.
+27. Installed the Ollama macOS application and confirmed its local API.
+28. Deferred the Qwen3 model download because approximately 2.5 GB of storage
+    was not available.
+29. Validated tests, compilation, demos, JSON output, and Git checks.
+30. Committed each logical change separately and pushed the work to `c4`.
 
 ## Current demo commands
 
