@@ -203,3 +203,6 @@ This log records the work completed for Component 4 and the associated project a
 - The tab opens with an amber banner repeating the caveats (recipe-built labels, same-verifier post-repair rates) so the numbers cannot be shown without them. A `#eval` URL hash opens the tab directly.
 - `scripts/run_c4_eval.py` now also writes `c4/results/sensitivity.json` so the tab and the markdown report use the same data; regenerated `c4/results/` (only latency values changed in the existing files).
 - Simplified the frontend contract test for the tab ids. Checked the tab in a headless-Chrome screenshot. 60 tests pass.
+
+### 2026-10-19 04:32:00 +05:30
+- Added a Cmd/Ctrl+Enter shortcut in the explanation box to run the verifier and a tooltip on the button; no behaviour change otherwise. Syntax-checked the script; 60 tests pass.

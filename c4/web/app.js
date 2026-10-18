@@ -470,6 +470,9 @@ async function boot() {
   $("#target").addEventListener("change", applyTarget);
   $("#preset").addEventListener("change", applyPreset);
   $("#explanation").addEventListener("input", updateCount);
+  $("#explanation").addEventListener("keydown", (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") { event.preventDefault(); run(); }
+  });
   $("#run").addEventListener("click", run);
   $("#reset").addEventListener("click", () => { applyTarget(); resetConfig(); showError(""); });
   document.querySelectorAll("[data-scenario]").forEach((b) =>
