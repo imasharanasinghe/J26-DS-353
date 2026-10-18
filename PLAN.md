@@ -18,11 +18,11 @@ relevant knowledge-graph context are available.
 - C4 implementation: **runnable pilot prototype complete**; the current
   implementation uses deterministic local verification and interface-compatible
   fixtures derived from the documented C3 hand-off.
-- C4 pilot validation: **9 tests pass**, Python compilation passes, and the
+- C4 pilot validation: **11 tests pass**, Python compilation passes, and the
   offline demos produce readable reports and valid JSON output.
-- Optional local explanation generation: an Ollama/Qwen3 adapter is implemented
-  and documented; Ollama installation and model download remain local setup
-  steps, not repository dependencies.
+- Local explanation generation: Ollama and Qwen3 4B are installed and the
+  adapter has been exercised with multiple targets. The model output remains
+  untrusted and must pass C4 verification.
 - C4 research-grade NLI evaluation, real upstream integration, and final
   threshold calibration remain outstanding.
 - Untracked upstream proposal and sprint-board files are reference inputs and
@@ -176,9 +176,8 @@ the C3 `PlanResult.to_json` path shape without copying the C3 working folder.
 - Implement the replaceable GPT-4o explanation-generation interface.
 - Assemble C1, C2, and C3 context without unnecessary learner PII.
 - Generate path-oriented explanations under controlled settings.
-- Keep explanation generation replaceable: the current offline template
-  generator is available, and an optional local Ollama/Qwen3 generator is
-  available for demonstration.
+- Keep explanation generation replaceable: the offline template generator and
+  local Ollama/Qwen3 generator are both available for demonstration.
 - Implement structured, deterministic or constrained atomic-claim
   decomposition.
 - Preserve claim IDs, source context, and provenance across all stages.

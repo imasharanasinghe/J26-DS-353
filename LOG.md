@@ -132,3 +132,19 @@ This log records the work completed for Component 4 and the associated project a
   storage is currently unavailable.
 - Confirmed that the repository's offline deterministic generator and all C4
   demos remain usable without the model download.
+
+### 2026-10-19 01:30:00 +05:30
+- Resumed and completed the Qwen3 4B download through the locally installed
+  Ollama application.
+- Expanded the C4 pilot graph beyond heap to include arrays, recursion, stacks,
+  and queues with graph facts and prerequisites.
+- Added target selection to the demo and generated prerequisite paths for
+  selected concepts.
+- Fixed target-aware demo scenarios and singular/plural concept matching.
+- Ran real Ollama-backed C4 generation for arrays and recursion.
+- Configured local Qwen3 generation for non-thinking mode, bounded output, and
+  repetition control.
+- Switched the integration to Ollama's chat endpoint and added response
+  cleanup for planning text and duplicate sentences.
+- Added tests for the new multi-target behavior and model-response cleanup.
+- Current validation: 11 tests pass; the branch is pushed and clean.

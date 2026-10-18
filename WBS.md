@@ -37,10 +37,12 @@ The work was completed in these major steps:
 25. Added optional Ollama integration using the local Qwen3 model.
 26. Documented the Ollama setup and offline fallback.
 27. Installed the Ollama macOS application and confirmed its local API.
-28. Deferred the Qwen3 model download because approximately 2.5 GB of storage
-    was not available.
-29. Validated tests, compilation, demos, JSON output, and Git checks.
-30. Committed each logical change separately and pushed the work to `c4`.
+28. Temporarily deferred, then completed, the Qwen3 4B model download.
+29. Expanded the pilot beyond heap to support arrays, recursion, stacks, and
+    queues with selectable target concepts.
+30. Ran real Ollama-backed demonstrations for multiple targets.
+31. Validated tests, compilation, demos, JSON output, and Git checks.
+32. Committed each logical change separately and pushed the work to `c4`.
 
 ## Current demo commands
 
