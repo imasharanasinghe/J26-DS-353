@@ -16,9 +16,50 @@ from c4.adapters import load_c2_learner, load_json, validate_c3_path
 DATA = ROOT / "c4" / "data"
 
 
+def build_verified_path(target: str, graph: dict) -> dict:
+    concepts = graph.get("concepts", {})
+    if target not in concepts:
+        raise ValueError(f"Unknown target concept: {target}")
+    ordered: list[str] = []
+    visiting: set[str] = set()
+
+    def visit(concept_id: str) -> None:
+        if concept_id in ordered:
+            return
+        if concept_id in visiting:
+            raise ValueError(f"Prerequisite cycle includes {concept_id}")
+        visiting.add(concept_id)
+        for prerequisite in concepts[concept_id].get("prerequisites", []):
+            if prerequisite in concepts:
+                visit(prerequisite)
+        visiting.remove(concept_id)
+        ordered.append(concept_id)
+
+    visit(target)
+    return {
+        "learner_id": "L02_intermediate",
+        "target": target,
+        "verified": True,
+        "source": "pilot",
+        "path": [
+            {
+                "step": index,
+                "kind": "learn",
+                "id": concept_id,
+                "name": concepts[concept_id].get("name", concept_id),
+                "difficulty": concepts[concept_id].get("difficulty", 1),
+                "prerequisites": concepts[concept_id].get("prerequisites", []),
+            }
+            for index, concept_id in enumerate(ordered, 1)
+        ],
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--learner", help="Learner id when using a collection file")
+    parser.add_argument("--target", default="heap",
+                        help="Target concept to explain, for example arrays or recursion")
     parser.add_argument("--generated", action="store_true",
                         help="Generate the input explanation from the C3 path and learner")
     parser.add_argument("--ollama", action="store_true",
@@ -33,8 +74,11 @@ def main() -> None:
 
     pipeline = C4Pipeline.from_files(DATA / "knowledge_graph.json")
     path = load_json(DATA / "verified_path.json")
+    if args.target != path["target"]:
+        path = build_verified_path(args.target, pipeline.kg)
     validate_c3_path(path)
     learner = load_c2_learner(load_json(DATA / "learner_state.json"), args.learner)
+    path["learner_id"] = learner["learner_id"]
     explanation = (DATA / "explanation.txt").read_text(encoding="utf-8")
     if args.scenario == "valid":
         learner = deepcopy(learner)
