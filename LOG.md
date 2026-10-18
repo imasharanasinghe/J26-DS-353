@@ -123,3 +123,12 @@ This log records the work completed for Component 4 and the associated project a
   [PLAN.md](./PLAN.md) as the forward-looking work plan.
 - Validated the repository with 9 passing tests, Python compilation, demo
   execution, JSON validation, and `git diff --check`.
+
+### 15:48:00 +05:30
+- Resumed the interrupted Ollama setup after the network interruption.
+- Installed the official Ollama macOS application and confirmed that its local
+  API responds on `localhost:11434`.
+- Deferred downloading the approximately 2.5 GB Qwen3 model because local
+  storage is currently unavailable.
+- Confirmed that the repository's offline deterministic generator and all C4
+  demos remain usable without the model download.
