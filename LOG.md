@@ -182,3 +182,9 @@ This log records the work completed for Component 4 and the associated project a
 - The shell already calls `/api/meta`, `/api/health`, and `/api/verify`; the full result renderer follows in step 4.
 - Checked the page with headless Chrome (screenshot) and `node --check`.
 - Found by that check that the demo-learner preset contained `linked_list`, which is not in the pilot graph, so the service would have rejected it on Verify. Presets are now restricted to graph concepts and a test verifies that every preset and scenario round-trips through `verify`. 57 tests pass.
+
+### 2026-10-19 03:25:00 +05:30
+- Step 4: added the verification result views to `c4/web/app.js` and `styles.css`: metric tiles (Bloom ceiling, hallucination and cognitive-mismatch rate before and after, rewrite success, new violations, latency), claim cards with factual and cognitive badges, confidence tier, matched concepts, graph evidence and a plain-language reason for each typed violation, a before/after rewrite trace, the re-verification cards, the final explanation, unresolved and review-first notices, and the JSON report with a download button.
+- Unresolved claims are shown in amber and explicitly labelled as not presented as verified, matching the failure policy in [GUIDELINES.md](./GUIDELINES.md).
+- Added a `#run` URL hash that runs the default case on load, used for demos and for headless-Chrome screenshots, which I used to check the layout. Widened the metric tiles after the screenshot showed the rate values crowding.
+- The verifier numbers shown in the UI come from the same `/api/verify` response as the CLI, so both interfaces report identical results.
