@@ -65,9 +65,9 @@ class OllamaExplanationGenerator:
         path = [step.get("id") for step in c3_path.get("path", [])]
         mastery = learner_state.get("mastery", {})
         return (
-            "Write a short, beginner-friendly explanation for one learner. "
-            "Use only the supplied facts; do not invent facts. Return plain text "
-            "with no preamble.\n\n"
+            "Write exactly 2 or 3 concise sentences for one learner. "
+            "Use only the supplied facts; do not invent facts or repeat sentences. "
+            "Return plain text with no preamble.\n\n"
             f"Target concept: {target}\n"
             f"Verified learning path: {path}\n"
             f"Prerequisites: {prerequisites}\n"
@@ -86,6 +86,11 @@ class OllamaExplanationGenerator:
             "prompt": self.build_prompt(c3_path, learner_state, knowledge_graph),
             "stream": False,
             "think": False,
+            "options": {
+                "temperature": 0.2,
+                "num_predict": 120,
+                "repeat_penalty": 1.15,
+            },
         }).encode("utf-8")
         request = Request(
             self.endpoint,
