@@ -26,16 +26,17 @@ def compose_explanation(
     c3_path: dict[str, Any],
     learner_state: dict[str, Any],
     knowledge_graph: dict[str, Any],
-    body: list[str] | None = None,
+    body: list[str],
     config: C4Config | None = None,
 ) -> str:
     """Structured draft: path diagram, the concept, prerequisites, learner status, mistakes.
 
-    ``body`` holds the sentences that explain the target concept (from a language model);
-    without it the graph facts are used. The draft is unverified: it deliberately lists
-    everything relevant to the path, and C4 then removes or rewrites whatever this learner
-    should not be given yet.
+    ``body`` holds the sentences that explain the target concept, written by the language
+    model. The draft is unverified: it deliberately lists everything relevant to the path,
+    and C4 then removes or rewrites whatever this learner should not be given yet.
     """
+    if not body:
+        raise ValueError("compose_explanation needs the model's explanation of the concept")
     pipeline = C4Pipeline(knowledge_graph, config)
     concepts = knowledge_graph.get("concepts", {})
     target = c3_path["target"]
@@ -45,7 +46,7 @@ def compose_explanation(
     status_ids = earlier + [item for item in prerequisites if item not in earlier]
 
     sections: list[tuple[str, list[str]]] = [
-        (f"About {name}", body or list(concepts.get(target, {}).get("facts", []))),
+        (f"About {name}", list(body)),
         ("Before you start", pipeline.prerequisite_sentences(target)),
         ("Where you stand", [pipeline.status_sentence(item, c3_path, learner_state) for item in status_ids]
          + [pipeline.next_sentence(c3_path, learner_state)]),
@@ -73,31 +74,6 @@ def compose_explanation(
         if bullets:
             lines += ["", f"### {title}"] + [f"- {item}" for item in bullets]
     return "\n".join(lines)
-
-
-class TemplateExplanationGenerator:
-    """Offline, deterministic generator used until the team selects an LLM."""
-
-    def generate_body(
-        self,
-        c3_path: dict[str, Any],
-        learner_state: dict[str, Any],
-        knowledge_graph: dict[str, Any],
-    ) -> str:
-        facts = knowledge_graph.get("concepts", {}).get(c3_path["target"], {}).get("facts", [])
-        return " ".join(facts)
-
-    def generate(
-        self,
-        c3_path: dict[str, Any],
-        learner_state: dict[str, Any],
-        knowledge_graph: dict[str, Any],
-        config: C4Config | None = None,
-    ) -> str:
-        return compose_explanation(c3_path, learner_state, knowledge_graph, config=config)
-
-    def build_prompt(self, *_: Any) -> None:
-        return None
 
 
 class OllamaExplanationGenerator:

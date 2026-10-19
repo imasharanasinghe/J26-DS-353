@@ -6,7 +6,7 @@ Serves the static frontend from ``c4/web`` and a small JSON API:
     GET  /api/meta      targets, learner presets, scenarios, config defaults
     GET  /api/results   committed evaluation artefacts
     POST /api/verify    run the C4 pipeline
-    POST /api/generate  draft an explanation (template or Ollama)
+    POST /api/generate  draft an explanation with the language model (Qwen via Ollama)
     POST /api/explain   draft, verify, repair and report in one call
     POST /api/session   one progressive teaching session (explanation + check question)
     POST /api/answer    record a check-question answer; returns the updated learner

@@ -3,11 +3,12 @@ from __future__ import annotations
 import pytest
 
 from c4.service import MAX_EXPLANATION_CHARS, Workbench
+from tests.stubs import StubGenerator
 
 
 @pytest.fixture(scope="module")
 def bench() -> Workbench:
-    return Workbench()
+    return Workbench(generator=StubGenerator())
 
 
 def test_meta_describes_targets_presets_scenarios_and_defaults(bench: Workbench) -> None:
@@ -68,11 +69,10 @@ def test_invalid_requests_are_rejected(bench: Workbench, bad: dict) -> None:
         bench.verify(bad)
 
 
-def test_template_generation_uses_the_learner_and_path(bench: Workbench) -> None:
-    result = bench.generate({"target": "heap", "source": "template"})
-    assert "Heaps" in result["explanation"] and result["prompt"] is None
-    with pytest.raises(ValueError):
-        bench.generate({"target": "heap", "source": "gpt"})
+def test_generation_uses_the_model_body_the_learner_and_the_path(bench: Workbench) -> None:
+    result = bench.generate({"target": "heap"})
+    assert "Heaps" in result["explanation"] and "Binary Trees" in result["explanation"]
+    assert result["source"] == "stub-model" and "Heaps" in result["prompt"]
 
 
 def test_results_returns_committed_artefacts(bench: Workbench) -> None:
@@ -84,9 +84,9 @@ def test_results_returns_committed_artefacts(bench: Workbench) -> None:
 def test_unreachable_ollama_surfaces_as_runtime_error(bench: Workbench) -> None:
     from c4 import OllamaExplanationGenerator
 
-    offline = OllamaExplanationGenerator(endpoint="http://127.0.0.1:1/api/chat", timeout=1.0)
+    offline = Workbench(generator=OllamaExplanationGenerator(endpoint="http://127.0.0.1:1/api/chat", timeout=1.0))
     with pytest.raises(RuntimeError, match="Ollama is unavailable"):
-        bench.generate({"target": "heap", "source": "ollama"}, ollama=offline)
+        offline.generate({"target": "heap"})
 
 
 def test_every_preset_and_scenario_round_trips_through_verify(bench: Workbench) -> None:
@@ -98,8 +98,8 @@ def test_every_preset_and_scenario_round_trips_through_verify(bench: Workbench) 
 
 
 def test_explain_drafts_then_verifies_in_one_call(bench: Workbench) -> None:
-    report = bench.explain({"target": "arrays", "source": "template"})
-    assert report["generator"] == "template"
+    report = bench.explain({"target": "arrays"})
+    assert report["generator"] == "stub-model"
     assert report["original_explanation"].strip() and report["final_explanation"].strip()
     assert report["unresolved_claims"] == []
 
@@ -107,9 +107,9 @@ def test_explain_drafts_then_verifies_in_one_call(bench: Workbench) -> None:
 def test_explain_reports_an_unreachable_generator(bench: Workbench) -> None:
     from c4 import OllamaExplanationGenerator
 
-    offline = OllamaExplanationGenerator(endpoint="http://127.0.0.1:1/api/chat", timeout=1.0)
+    offline = Workbench(generator=OllamaExplanationGenerator(endpoint="http://127.0.0.1:1/api/chat", timeout=1.0))
     with pytest.raises(RuntimeError):
-        bench.explain({"target": "heap", "source": "ollama"}, ollama=offline)
+        offline.explain({"target": "heap"})
 
 
 def test_meta_exposes_the_c3_path_and_c1_context_for_the_inputs_view(bench: Workbench) -> None:
@@ -140,7 +140,7 @@ READY = {"mastery": {"binary_tree": 0.95, "arrays": 0.95}, "uncertainty": {"bina
 
 
 def test_session_returns_a_verified_progressive_explanation_and_a_check_question(bench: Workbench) -> None:
-    report = bench.session({"target": "heap", "source": "template", "learner": READY})
+    report = bench.session({"target": "heap", "learner": READY})
     assert report["schema_version"] == "c4-report/1.2" and report["unresolved_claims"] == []
     assert report["progression"]["target_name"] == "Apply" and report["progression"]["stagnation_after"] is False
     check = report["check"]
@@ -165,7 +165,7 @@ def test_answers_accumulate_across_sessions_and_scaffolding_fades(bench: Workben
     learner = dict(READY)
     for _ in range(2):
         step = bench.answer({"target": "heap", "learner": learner, "level": bench.session(
-            {"target": "heap", "source": "template", "learner": learner})["check"]["level"], "score": 0.9})
+            {"target": "heap", "learner": learner})["check"]["level"], "score": 0.9})
         learner = step["learner"]
     assert learner["bloom"]["heap"]["level"] == 4 and len(learner["bloom"]["heap"]["attempts"]) == 2
     assert step["next"]["scaffold"] == "minimal"

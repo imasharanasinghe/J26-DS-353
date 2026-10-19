@@ -62,7 +62,7 @@ Valid sentences are kept as written. Only bad ones are repaired.
 
 ### Stage 4 — Local LLM draft generation (`c4/explainer.py`)
 - Optional Ollama integration (`qwen3:4b`) to write the draft.
-- A template generator works offline.
+- The template generator that once worked offline was removed (2026-10-20): drafts come only from the language model.
 - Prompts constrain the output, and repetitive model responses are cleaned.
 - The generator can be swapped without touching the verifier.
 

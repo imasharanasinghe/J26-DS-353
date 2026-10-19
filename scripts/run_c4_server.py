@@ -28,7 +28,7 @@ def main() -> None:
     url = f"http://{args.host}:{args.port}/"
     status = ollama_status()
     print(f"C4 workbench running at {url}  (Ctrl+C to stop)")
-    print("Ollama:", "online" if status["online"] else "offline (template generator still works)")
+    print("Ollama:", "online" if status["online"] else "offline (drafting needs it; verifying pasted text still works)")
     if args.open:
         webbrowser.open(url)
     try:

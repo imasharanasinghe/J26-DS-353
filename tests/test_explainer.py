@@ -38,18 +38,19 @@ def test_ollama_prompt_separates_known_from_unmastered_concepts() -> None:
     assert "not mastered yet: binary_tree" in prompt
 
 
-def test_template_draft_is_a_structured_personalised_explanation() -> None:
+def test_draft_is_a_structured_personalised_explanation() -> None:
     import json
     from pathlib import Path
 
-    from c4 import C4Pipeline, TemplateExplanationGenerator
+    from c4 import C4Pipeline
+    from c4.explainer import compose_explanation
     from c4.paths import build_verified_path
 
     data = Path(__file__).resolve().parents[1] / "c4" / "data"
     kg = json.loads((data / "knowledge_graph.json").read_text(encoding="utf-8"))
     learner = json.loads((data / "learner_state.json").read_text(encoding="utf-8"))
     path = build_verified_path("heap", kg, learner["learner_id"])
-    draft = TemplateExplanationGenerator().generate(path, learner, kg)
+    draft = compose_explanation(path, learner, kg, kg["concepts"]["heap"]["facts"])
     assert draft.startswith("## Heaps: your next step") and "\nPath: " in draft
     for heading in ("### About Heaps", "### Before you start", "### Where you stand", "### Common mistakes"):
         assert heading in draft
@@ -58,3 +59,12 @@ def test_template_draft_is_a_structured_personalised_explanation() -> None:
     assert result.unresolved_claims == [] and result.metrics["after"]["cognitive_mismatch_rate"] == 0.0
     assert "A heap is a complete binary tree." not in result.final_explanation  # needs an unmastered concept
     assert "A heap can be stored in an array." in result.final_explanation
+
+
+def test_composing_without_a_model_body_is_refused() -> None:
+    import pytest
+
+    from c4.explainer import compose_explanation
+
+    with pytest.raises(ValueError, match="model's explanation"):
+        compose_explanation({"target": "heap", "path": []}, {}, {"concepts": {"heap": {}}}, [])

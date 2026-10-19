@@ -30,7 +30,8 @@ The work was completed in these major steps:
     formats.
 19. Added C3 hand-off validation before C4 processing.
 20. Added a replaceable explanation-generation interface.
-21. Added an offline path- and learner-aware template generator.
+21. Added an offline path- and learner-aware template generator (removed
+    2026-10-20: drafts now come only from the language model).
 22. Added valid, factual-error, and cognitive-error demo scenarios.
 23. Added a concise human-readable C4 report mode.
 24. Improved factual rewriting using graph evidence.

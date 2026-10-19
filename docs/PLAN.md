@@ -188,15 +188,16 @@ the C3 `PlanResult.to_json` path shape without copying the C3 working folder.
 - Implement the replaceable GPT-4o explanation-generation interface.
 - Assemble C1, C2, and C3 context without unnecessary learner PII.
 - Generate path-oriented explanations under controlled settings.
-- Keep explanation generation replaceable: the offline template generator and
-  local Ollama/Qwen3 generator are both available for demonstration.
+- Keep explanation generation replaceable: the language model is the only draft
+  writer (local Ollama/Qwen3 now, GPT-4o when available); the offline template
+  generator was removed on 2026-10-20.
 - Implement structured, deterministic or constrained atomic-claim
   decomposition.
 - Preserve claim IDs, source context, and provenance across all stages.
 
 Pilot status: deterministic explanation input and atomic sentence claim IDs are
-implemented. A path/learner-aware offline template generator and optional
-local Ollama/Qwen3 generator provide replaceable generation boundaries; real
+implemented. The local Ollama/Qwen3 generator provides the replaceable
+generation boundary (the offline template generator was removed); real
 team-wide LLM configuration remains unintegrated.
 
 ### Milestone 4 — Factual verification

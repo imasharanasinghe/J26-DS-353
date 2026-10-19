@@ -172,12 +172,12 @@ def test_other_targets_get_a_task_for_their_own_concept(pipeline: C4Pipeline) ->
 
 
 def _draft(attempts: list[dict], progressive: bool = True) -> str:
-    from c4 import TemplateExplanationGenerator
+    from c4.explainer import compose_explanation
     learner = ready_learner(level=2)
     learner["bloom"]["heap"]["attempts"] = attempts
-    pipeline = C4Pipeline.from_files(DATA / "knowledge_graph.json")
-    return TemplateExplanationGenerator().generate(
-        load("verified_path.json"), learner, pipeline.kg, C4Config(progressive=progressive))
+    kg = C4Pipeline.from_files(DATA / "knowledge_graph.json").kg
+    return compose_explanation(load("verified_path.json"), learner, kg, kg["concepts"]["heap"]["facts"],
+                               C4Config(progressive=progressive))
 
 
 def test_draft_detail_fades_with_consecutive_passes() -> None:

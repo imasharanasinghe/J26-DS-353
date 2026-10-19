@@ -45,8 +45,10 @@ The draft is a structured document, not a sentence: a path diagram, what the con
 is, what to know first, where the learner stands (from C2 mastery and the C3 path), a
 refresher on concepts the learner has secured, and common mistakes from the graph.
 There is no length limit; Markdown headings and bullets are supported (a heading is
-structure, every sentence under it is a claim). The offline template builds it from
-graph facts; Qwen writes the concept section and the same code writes the rest.
+structure, every sentence under it is a claim). The language model (Qwen via Ollama; GPT-4o
+later) writes the concept section and the same code writes the rest. There is no offline
+draft generator: drafting needs the model, while verifying pasted text and the evaluation
+need nothing.
 
 What the repair writes (only for the violating sentence; valid sentences are kept):
 
@@ -75,7 +77,7 @@ python3 scripts/run_c4_demo.py --scenario factual --pretty    # contradicted cla
 python3 scripts/run_c4_demo.py --scenario cognitive --pretty  # true but unmastered prerequisite
 python3 scripts/run_c4_demo.py --target stack --pretty        # other targets: arrays, recursion, tree, binary_tree, stack, queue
 python3 scripts/run_c4_demo.py                                # full JSON report
-python3 scripts/run_c4_demo.py --generated --pretty           # offline template generator
+python3 scripts/run_c4_demo.py --ollama --pretty              # draft with Qwen, then verify
 ```
 
 Optional local Qwen3 generator (no API key; output is untrusted text that must
@@ -97,13 +99,13 @@ Ollama call):
 python3 scripts/run_c4_server.py --open     # http://127.0.0.1:8765
 ```
 
-- **Fully automatic:** "Draft + verify" (template or Qwen) generates the draft and
+- **Fully automatic:** "Draft + verify (Qwen)" generates the draft and
   runs verify, repair and report in one step (`POST /api/explain`); the draft is
   shown as the original and never delivered unverified.
 - **Inputs tab:** the C3 verified path, C2 learner state, and C1 graph evidence
   used by the current run (fixtures, labelled as such).
 - **Verification tab:** choose a target and learner state (presets or per-concept
-  mastery/uncertainty sliders), load an example or draft with the template or
+  mastery/uncertainty sliders), load an example or draft with
   Qwen, then verify. You see claim cards (factual and cognitive labels, typed
   violations, graph evidence), the before/after rewrite trace, re-verification,
   the final explanation, metrics, and the downloadable `c4-report/1.1` JSON.
@@ -185,7 +187,7 @@ cognitive appropriateness as a trajectory:
   `BLOOM_MISMATCH` and is re-levelled. Questions are tasks, not domain claims: outside the
   hallucination denominator, inside the cognitive-mismatch one.
 - **Contingent scaffolding**: full support at the start and after a failure, partial after one
-  pass, minimal after two; the template draft shrinks accordingly.
+  pass, minimal after two; the drafted explanation shrinks accordingly.
 - The report is `c4-report/1.2` and carries a `progression` block.
 
 ```bash

@@ -14,7 +14,7 @@ from typing import Any
 
 from .adapters import load_c2_learner, load_json, validate_c3_path
 from .evaluation import PROFILES, make_learner
-from .explainer import OllamaExplanationGenerator, TemplateExplanationGenerator
+from .explainer import OllamaExplanationGenerator
 from .paths import build_verified_path
 from .pipeline import C4Config, C4Pipeline
 from .progression import SCAFFOLDS, LearnerProgress
@@ -64,7 +64,11 @@ def scenario_text(pipeline: C4Pipeline, target: str, scenario: str, default_text
 class Workbench:
     """Loads the pilot fixtures once and answers frontend requests."""
 
-    def __init__(self, data_dir: Path = DATA, results_dir: Path = RESULTS) -> None:
+    def __init__(self, data_dir: Path = DATA, results_dir: Path = RESULTS,
+                 generator: OllamaExplanationGenerator | None = None) -> None:
+        # The only draft writer is a language model (Qwen via Ollama today, GPT-4o later);
+        # tests inject a stub with the same interface.
+        self.generator = generator or OllamaExplanationGenerator(timeout=60.0)
         self.data_dir = Path(data_dir)
         self.results_dir = Path(results_dir)
         self.kg = load_json(self.data_dir / "knowledge_graph.json")
@@ -116,7 +120,7 @@ class Workbench:
             "targets": targets,
             "config_defaults": defaults,
             "config_limits": {key: list(value[1:]) for key, value in CONFIG_LIMITS.items()},
-            "generators": ["template", "ollama"],
+            "generator": getattr(self.generator, "model", "custom"),
             "schema_version": "c4-report/1.2",
         }
 
@@ -154,34 +158,27 @@ class Workbench:
         report["visual"] = pipeline.visual(path, learner)
         return report
 
-    def generate(self, payload: dict[str, Any], ollama: OllamaExplanationGenerator | None = None) -> dict[str, Any]:
+    def generate(self, payload: dict[str, Any]) -> dict[str, Any]:
         target = self._target(payload)
         learner = self._learner(payload.get("learner"))
-        source = payload.get("source", "template")
-        if source not in ("template", "ollama"):
-            raise ValueError("source must be 'template' or 'ollama'")
         path = build_verified_path(target, self.kg, learner["learner_id"])
-        generator = TemplateExplanationGenerator() if source == "template" else (
-            ollama or OllamaExplanationGenerator(timeout=60.0)
-        )
-        text = generator.generate(path, learner, self.kg, self._config(payload.get("config")))
-        return {"source": source, "explanation": text, "prompt": (
-            generator.build_prompt(path, learner, self.kg) if source == "ollama" else None
-        )}
+        text = self.generator.generate(path, learner, self.kg, self._config(payload.get("config")))
+        return {"source": getattr(self.generator, "model", "custom"), "explanation": text,
+                "prompt": self.generator.build_prompt(path, learner, self.kg)}
 
-    def explain(self, payload: dict[str, Any], ollama: OllamaExplanationGenerator | None = None) -> dict[str, Any]:
+    def explain(self, payload: dict[str, Any]) -> dict[str, Any]:
         """Fully automatic run: draft an explanation, then verify, repair, and report.
 
         The draft is never delivered on its own; the report carries it as
         ``original_explanation`` next to the verified ``final_explanation``.
         """
-        draft = self.generate(payload, ollama)
+        draft = self.generate(payload)
         report = self.verify({**payload, "explanation": draft["explanation"]})
         report["generator"] = draft["source"]
         report["prompt"] = draft["prompt"]
         return report
 
-    def session(self, payload: dict[str, Any], ollama: OllamaExplanationGenerator | None = None) -> dict[str, Any]:
+    def session(self, payload: dict[str, Any]) -> dict[str, Any]:
         """One teaching session in progressive mode.
 
         The server keeps no learner state: the client sends the learner (including its
@@ -191,7 +188,7 @@ class Workbench:
         config = payload.get("config")
         if config is not None and not isinstance(config, dict):
             raise ValueError("config must be an object")
-        report = self.explain({**payload, "config": {**(config or {}), "progressive": True}}, ollama)
+        report = self.explain({**payload, "config": {**(config or {}), "progressive": True}})
         target = self._target(payload)
         learner = self._learner(payload.get("learner"))
         pipeline = C4Pipeline(self.kg, C4Config(progressive=True))

@@ -9,11 +9,12 @@ import pytest
 
 from c4.server import create_server
 from c4.service import Workbench
+from tests.stubs import StubGenerator
 
 
 @pytest.fixture(scope="module")
 def base_url():
-    server = create_server("127.0.0.1", 0, Workbench())
+    server = create_server("127.0.0.1", 0, Workbench(generator=StubGenerator()))
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     yield f"http://127.0.0.1:{server.server_address[1]}"
@@ -72,8 +73,8 @@ def test_oversized_body_is_rejected(base_url) -> None:
     assert status == 413
 
 
-def test_template_generation_endpoint(base_url) -> None:
-    status, _, body = call(f"{base_url}/api/generate", {"target": "arrays", "source": "template"})
+def test_generation_endpoint(base_url) -> None:
+    status, _, body = call(f"{base_url}/api/generate", {"target": "arrays"})
     assert status == 200 and "Arrays" in json.loads(body)["explanation"]
 
 
@@ -96,14 +97,14 @@ def test_self_hosted_font_is_served_with_a_font_type(base_url) -> None:
 
 
 def test_explain_endpoint_runs_the_whole_pipeline(base_url) -> None:
-    status, _, body = call(f"{base_url}/api/explain", {"target": "arrays", "source": "template"})
+    status, _, body = call(f"{base_url}/api/explain", {"target": "arrays"})
     report = json.loads(body)
-    assert status == 200 and report["generator"] == "template" and report["schema_version"] == "c4-report/1.2"
+    assert status == 200 and report["generator"] == "stub-model" and report["schema_version"] == "c4-report/1.2"
 
 
 def test_session_and_answer_endpoints_round_trip(base_url) -> None:
     learner = {"mastery": {"arrays": 0.95}, "uncertainty": {"arrays": 0.05}}
-    status, _, body = call(f"{base_url}/api/session", {"target": "stack", "source": "template", "learner": learner})
+    status, _, body = call(f"{base_url}/api/session", {"target": "stack", "learner": learner})
     session = json.loads(body)
     assert status == 200 and session["check"]["level"] == 1 and session["progression"]["action"] == "start"
     status, _, body = call(f"{base_url}/api/answer", {

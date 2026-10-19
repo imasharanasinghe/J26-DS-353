@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from c4 import C4Pipeline, OllamaExplanationGenerator, TemplateExplanationGenerator
+from c4 import C4Pipeline, OllamaExplanationGenerator
 from c4.adapters import load_c2_learner, load_json, validate_c3_path
 from c4.paths import build_verified_path
 from c4.service import scenario_text
@@ -58,8 +58,6 @@ def main() -> None:
     parser.add_argument("--learner", help="Learner id when using a collection file")
     parser.add_argument("--target", default="heap",
                         help="Target concept to explain, for example arrays or recursion")
-    parser.add_argument("--generated", action="store_true",
-                        help="Generate the input explanation from the C3 path and learner")
     parser.add_argument("--ollama", action="store_true",
                         help="Generate the input explanation with local Ollama")
     parser.add_argument("--model", default="qwen3:4b", help="Ollama model name")
@@ -82,8 +80,6 @@ def main() -> None:
         explanation = OllamaExplanationGenerator(model=args.model).generate(
             path, learner, pipeline.kg
         )
-    elif args.generated:
-        explanation = TemplateExplanationGenerator().generate(path, learner, pipeline.kg)
     result = pipeline.run(path, learner, explanation)
     if args.pretty:
         print_report(result)

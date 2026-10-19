@@ -190,15 +190,14 @@ function loadScenario(name) {
   updateCount();
 }
 
-async function generate(source) {
+async function generate() {
   showError("");
-  const buttons = [$("#gen-template"), $("#gen-ollama")];
-  const label = $(source === "ollama" ? "#gen-ollama" : "#gen-template");
+  const label = $("#gen-ollama");
   const original = label.textContent;
-  buttons.forEach((b) => { b.disabled = true; });
-  label.textContent = source === "ollama" ? "Writing… (a few seconds)" : "Writing…";
+  label.disabled = true;
+  label.textContent = "Writing… (a few seconds)";
   try {
-    const result = await api("/api/generate", { target: state.target, source, learner: state.learner, config: readConfig() });
+    const result = await api("/api/generate", { target: state.target, learner: state.learner, config: readConfig() });
     $("#explanation").value = result.explanation;
     updateCount();
     $("#prompt-box").hidden = !result.prompt;
@@ -207,24 +206,23 @@ async function generate(source) {
     showError(error.message);
   } finally {
     label.textContent = original;
-    buttons.forEach((b) => { b.disabled = false; });
-    $("#gen-ollama").disabled = !state.ollamaReady;
+    label.disabled = !state.ollamaReady;
   }
 }
 
 /* ---------- run ---------- */
-async function run(source = null) {
+async function run(auto = false) {
   showError("");
   const button = $("#run");
-  const auto = [$("#auto-template"), $("#auto-ollama")];
+  const autoButtons = [$("#auto-ollama")];
   button.disabled = true;
-  auto.forEach((b) => { b.disabled = true; });
-  button.textContent = source ? "Drafting and verifying…" : "Verifying…";
+  autoButtons.forEach((b) => { b.disabled = true; });
+  button.textContent = auto ? "Drafting and verifying…" : "Verifying…";
   $("#results").setAttribute("aria-busy", "true");
   try {
     const body = { target: state.target, learner: state.learner, config: readConfig() };
-    if (source) {
-      state.report = await api("/api/explain", { ...body, source });
+    if (auto) {
+      state.report = await api("/api/explain", body);
       $("#explanation").value = state.report.original_explanation;
       updateCount();
       $("#prompt-box").hidden = !state.report.prompt;
@@ -237,7 +235,7 @@ async function run(source = null) {
     showError(error.message);
   } finally {
     button.disabled = false;
-    auto.forEach((b) => { b.disabled = false; });
+    autoButtons.forEach((b) => { b.disabled = false; });
     $("#auto-ollama").disabled = !state.ollamaReady;
     button.textContent = "Verify and repair";
     $("#results").removeAttribute("aria-busy");
@@ -776,7 +774,7 @@ async function startSession() {
   journey.busy = true; journey.error = "";
   renderProgression();
   try {
-    const report = await api("/api/session", { target: state.target, source: "template", learner: state.learner, config: readConfig() });
+    const report = await api("/api/session", { target: state.target, learner: state.learner, config: readConfig() });
     journey.last = { report, answered: false };
     journey.next = null;
   } catch (error) {
@@ -969,13 +967,11 @@ async function boot() {
   });
   $("#run").addEventListener("click", () => run());
   $("#run-empty").addEventListener("click", () => run());
-  $("#auto-template").addEventListener("click", () => run("template"));
-  $("#auto-ollama").addEventListener("click", () => run("ollama"));
+  $("#auto-ollama").addEventListener("click", () => run(true));
   $("#reset").addEventListener("click", () => { applyTarget(); resetConfig(); showError(""); });
   document.querySelectorAll("[data-scenario]").forEach((b) =>
     b.addEventListener("click", () => loadScenario(b.dataset.scenario)));
-  $("#gen-template").addEventListener("click", () => generate("template"));
-  $("#gen-ollama").addEventListener("click", () => generate("ollama"));
+  $("#gen-ollama").addEventListener("click", () => generate());
   ["#cfg-attempts", "#cfg-mastery", "#cfg-uncertainty"].forEach((id) => $(id).addEventListener("input", syncConfigLabels));
   $("#gen-ollama").disabled = true;
   $("#auto-ollama").disabled = true;
