@@ -78,6 +78,9 @@ The following facts were confirmed on 14 October 2026:
 - No official slide template or slide count is currently confirmed.
 - C1, C2, C3, and C4 had no implementation on 14 October 2026; by 19 October
   each has an incomplete prototype (see [PLAN.md](./PLAN.md)).
+- The proposal panel (PP1 proposal presentation) asked for the research contribution to be
+  strengthened by showing how the student's cognitive level can be raised over time; the
+  response is described in [PLAN.md](./PLAN.md) and the Bloom-level progression section below.
 - Inter-component JSON schemas and implementations have not been finalized.
 - Component datasets or materials may exist individually, but are not officially
   integrated or used yet.
@@ -197,6 +200,59 @@ The safe default is:
 Maximum retries: 3
 After failure: do not present the unresolved claim as verified
 ```
+
+## Bloom-level progression (added 2026-10-20)
+
+The PP1 proposal panel asked for a way to raise the student's cognitive level over time rather
+than only a product. The component therefore also treats cognitive appropriateness as a
+trajectory. The definitions below extend the frozen definitions above; they are pilot
+parameters and must be recorded, justified, and tested like the mastery thresholds.
+
+### Definitions
+
+- **Demonstrated level.** The highest Bloom level (1 Remember to 6 Create) at which the learner
+  passed a check question on a concept; 0 means none yet. Stored per concept in the learner
+  state under `bloom` (a C4-maintained extension; C2 does not provide it, so the field name and
+  update rule need agreement with C2 at integration).
+- **Target level.** Demonstrated level + 1 when every direct prerequisite of the concept is
+  mastered (same mastery rule as above); otherwise the demonstrated level (consolidate). An
+  unseen concept starts at level 1. After a failed attempt at the target level the target is
+  retried with full support. The top level is maintained, not exceeded.
+- **Progressive mode.** In progressive mode the Bloom ceiling used by the verifier is the target
+  level. Static mode (the default) keeps the earlier ceiling rule, so earlier results are unchanged.
+- **`BLOOM_STAGNATION`.** An explanation-level violation: no accepted check question at the
+  target level. It is repaired by appending a "Check yourself" section and, when rewriting is off,
+  reported but not repaired. A claim above the target level is still a `BLOOM_MISMATCH`.
+- **Task claims.** In progressive mode a sentence ending in "?" is a task, not a domain claim: it
+  asserts no fact (so it is outside the hallucination denominator) but it is judged against the
+  Bloom ceiling (so it is in the cognitive-mismatch denominator). Questions, hints, and scaffolds that
+  C4 writes itself are recognised by exact regeneration and marked grounded, like the other grounded
+  sentences; a lookalike is verified as an ordinary claim.
+- **Contingent scaffolding.** Support is full after a failure or at the start, partial after one
+  consecutive pass, minimal after two. Support fades with demonstrated success and returns after a
+  failure.
+- **Demotion.** The demonstrated level drops only after two consecutive failures at a level
+  already demonstrated; failing a stretch task above it never lowers the level.
+- **Pilot thresholds.** Pass score 0.7, fail score 0.4, two failures to demote, scaffold changes
+  after one and two passes. Sensitivity analysis is still required.
+
+### Evaluation rules for progression
+
+- Report RQ4a (faithful and at the target level) on the stress corpus with the same-verifier
+  caveat, and RQ4b (progression across sessions) separately.
+- **A simulation cannot validate the claim about real students.** Simulated learners encode
+  assumptions about how learners learn, so the simulation must include control learner models in
+  which progression has no advantage (a flat model) or a disadvantage (a matched model), report where
+  the mechanism does not help, and state that learner-model parameters are not fitted to data.
+  Paired conditions share random streams. Present simulated results as evidence about the design,
+  never as an effect size for students.
+- Report the ablations that isolate each part of the mechanism (no stretch, no fading) and the
+  sensitivity to study length.
+- Evaluate the Bloom-level estimator against labelled items before relying on it, keep a split
+  that is never used to tune the lexicon, and state that one annotator's labels have no kappa until a
+  second annotator labels the items. Do not present in-vocabulary accuracy as generalisation.
+- The human pilot ([PILOT_STUDY.md](./PILOT_STUDY.md)) is the validation. It needs ethics approval
+  before any recruitment and must not be described as done until it is.
 
 ## Ground truth and evaluation integrity
 
@@ -410,6 +466,12 @@ Include three contrasting examples:
 
 The third example demonstrates the distinctive research contribution.
 
+After the panel comment, add a short progression demonstration in the workbench's Progression tab:
+start a session for a learner whose prerequisites are mastered, show the target level one above the
+demonstrated level, the faded hints and the check question, simulate an answer, and show the next
+session respond (advance after a pass, retry with full support after a failure). Then set a
+prerequisite below the mastery threshold to show the policy consolidate instead of advancing.
+
 ## Reproducibility and engineering practice
 
 - Version schemas, fixtures, prompts, annotations, and evaluation scripts.
@@ -429,4 +491,8 @@ generation, knowledge graphs, or factuality checking. The contribution is the
 inspectable post-generation mechanism that treats an explanation as faithful
 only when its claims are both knowledge-grounded and appropriate for the
 learner's cognitive state, then selectively corrects violations and reports
-the evidence and decisions.
+the evidence and decisions. Following the PP1 panel comment, that appropriateness
+is a trajectory: the mechanism verifies that each explanation targets the learner's
+next Bloom level and records what the learner demonstrates, so the study can ask
+whether verified, level-targeted explanation raises demonstrated cognitive level across
+sessions.
