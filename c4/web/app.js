@@ -515,7 +515,7 @@ function renderReport(report) {
     report.review_first.map((id) => badge("info", "", state.meta.concepts[id] || id)));
 
   const json = JSON.stringify(report, null, 2);
-  const details = el("details", { class: "json" }, el("summary", {}, "Faithfulness report (JSON, schema c4-report/1.1)"),
+  const details = el("details", { class: "json" }, el("summary", {}, "Faithfulness report (JSON, schema c4-report/1.2)"),
     el("pre", {}, json),
     el("div", { class: "json-actions" }, el("button", { type: "button", onclick: () => downloadJson(json) }, "Download JSON")));
 

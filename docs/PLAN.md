@@ -598,7 +598,7 @@ progression across sessions). Design and status are in [PP1.md](./PP1.md).
 - [x] Step 2: per-concept Bloom state in the learner state (`bloom` block), validated by the
   service; fixture extended. C2 does not provide this field yet: C4 keeps it as an
   extension and the shared contract must be agreed.
-- [ ] Step 3: target-level verification (`progressive` mode), `BLOOM_STAGNATION`, task
+- [x] Step 3: target-level verification (`progressive` mode), `BLOOM_STAGNATION`, task
   claims, report schema 1.2.
 - [ ] Step 4: check questions at the target level and scaffold fading in the generator.
 - [ ] Step 5: Bloom-level classifier evaluation against a labelled item set (dev/test split).

@@ -36,7 +36,7 @@ CONFIG_LIMITS: dict[str, tuple[type, float, float]] = {
     "default_bloom_ceiling": (int, 1, 6),
     "mastered_bloom_ceiling": (int, 1, 6),
 }
-CONFIG_FLAGS = ("check_factual", "check_cognitive", "rewrite")
+CONFIG_FLAGS = ("check_factual", "check_cognitive", "rewrite", "progressive", "check_stagnation")
 
 
 def scenario_text(pipeline: C4Pipeline, target: str, scenario: str, default_text: str = "") -> str:
@@ -117,7 +117,7 @@ class Workbench:
             "config_defaults": defaults,
             "config_limits": {key: list(value[1:]) for key, value in CONFIG_LIMITS.items()},
             "generators": ["template", "ollama"],
-            "schema_version": "c4-report/1.1",
+            "schema_version": "c4-report/1.2",
         }
 
     def _learner_payload(self, learner: dict[str, Any], seed_target: str | None = None) -> dict[str, Any]:

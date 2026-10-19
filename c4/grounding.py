@@ -16,6 +16,8 @@ BLOOM_NAMES = {1: "Remember", 2: "Understand", 3: "Apply", 4: "Analyze", 5: "Eva
 SOURCE_PATH = "C3 verified path"
 SOURCE_LEARNER = "C2 learner state"
 SOURCE_GRAPH = "C1 knowledge graph"
+SOURCE_TASK = "C4 check question at the learner's target Bloom level"
+SOURCE_HINT = "C4 scaffold written from the verified path"
 
 
 def concept_name(kg: dict[str, Any], concept_id: str) -> str:
@@ -78,3 +80,28 @@ def prerequisite_sentence(target_name: str, prerequisite_name: str) -> str:
 
 def next_sentence(name: str) -> str:
     return f"Your next step: {name}."
+
+
+# One check question per Bloom level. Each assumes nothing about the domain, so it is a task
+# for the learner and not a claim. The cue verb in each template must make the pilot Bloom
+# estimator (pipeline.BLOOM_CUES) return the same level; tests/test_progressive.py checks it.
+TASK_TEMPLATES = {
+    1: "Recall: what is {name}, and what is it used for?",
+    2: "Can you explain, in your own words, why {name} works the way it does?",
+    3: "Can you apply {name} to a small example and trace each step?",
+    4: "How would you compare {name} with {other} and analyze where each one fits best?",
+    5: "Can you justify when {name} is the better choice and evaluate its trade-offs?",
+    6: "Design a new small problem that {name} helps to solve, and write its solution?",
+}
+
+
+def task_sentence(level: int, name: str, other: str = "a simpler structure") -> str:
+    return TASK_TEMPLATES[max(1, min(level, 6))].format(name=name, other=other)
+
+
+def hint_from_known_sentence(name: str, known_name: str) -> str:
+    return f"Hint: start from what you already know about {known_name} and connect it to {name}."
+
+
+def hint_steps_sentence(name: str) -> str:
+    return f"Hint: break {name} into its smallest steps and take them one at a time."

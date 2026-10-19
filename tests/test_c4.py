@@ -168,7 +168,7 @@ def test_ablation_flags_isolate_each_dimension(pipeline: C4Pipeline) -> None:
 
 def test_report_schema_and_metrics(pipeline: C4Pipeline) -> None:
     report = run(pipeline, "A heap is always fully sorted. A heap can be stored in an array.").to_dict()
-    assert report["schema_version"] == "c4-report/1.1"
+    assert report["schema_version"] == "c4-report/1.2"
     assert report["rewrite_trace"][0]["claim_id"] == "claim-1"
     metrics = report["metrics"]
     assert metrics["before"]["hallucination_rate"] == 50.0

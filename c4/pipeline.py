@@ -17,6 +17,7 @@ from .models import (
     RewriteStep,
     VerifiedClaim,
 )
+from .progression import Decision, LearnerProgress, ProgressionConfig, decide
 
 STOPWORDS = frozenset(
     "a an the is are was were of to in on by at and or it its with for as be can".split()
@@ -68,6 +69,11 @@ class C4Config:
     check_factual: bool = True
     check_cognitive: bool = True
     rewrite: bool = True
+    # Progressive mode (response to the PP1 panel): the Bloom ceiling becomes the learner's
+    # target level (demonstrated level + 1 when ready) and an explanation with no check
+    # question at that level is a BLOOM_STAGNATION violation. Off keeps the static ceiling.
+    progressive: bool = False
+    check_stagnation: bool = True
 
 
 @dataclass
@@ -86,6 +92,7 @@ class C4Result:
     latency_s: float = 0.0
     config: dict[str, Any] = field(default_factory=dict)
     final_layout: list[dict[str, Any]] = field(default_factory=list)
+    progression: dict[str, Any] | None = None
 
     @property
     def metrics(self) -> dict[str, Any]:
@@ -93,13 +100,14 @@ class C4Result:
 
     def to_dict(self) -> dict:
         return {
-            "schema_version": "c4-report/1.1",
+            "schema_version": "c4-report/1.2",
             "learner_id": self.learner_id,
             "target": self.target,
             "verified_path": self.verified_path,
             "original_explanation": self.original_explanation,
             "final_explanation": self.final_explanation,
             "final_layout": self.final_layout,
+            "progression": self.progression,
             "initial_claims": [claim.to_dict() for claim in self.initial_claims],
             "claims": [claim.to_dict() for claim in self.claims],
             "rewrite_attempts": self.rewrite_attempts,
@@ -115,9 +123,15 @@ class C4Result:
 class C4Pipeline:
     """Deterministic C4 proof of concept using C3-compatible JSON inputs."""
 
-    def __init__(self, knowledge_graph: dict[str, Any], config: C4Config | None = None):
+    def __init__(
+        self,
+        knowledge_graph: dict[str, Any],
+        config: C4Config | None = None,
+        progression: ProgressionConfig | None = None,
+    ):
         self.kg = knowledge_graph
         self.config = config or C4Config()
+        self.progression = progression or ProgressionConfig()
 
     @classmethod
     def from_files(
@@ -139,10 +153,12 @@ class C4Pipeline:
             raise ValueError("C4 accepts only verified paths from C3")
 
         started = time.perf_counter()
+        decision = self.progression_decision(c3_path, learner_state) if self.config.progressive else None
         lines = self._parse(explanation, grounding.path_line(c3_path, self.kg))
         sentences = self._flat(lines)
         initial_claims = self._verify_all(sentences, c3_path, learner_state)
         claims = initial_claims
+        stagnation_before = self._stagnating(initial_claims, decision)
         trace: list[RewriteStep] = []
         attempts = 0
         while (
@@ -177,6 +193,15 @@ class C4Pipeline:
             attempts += 1
             claims = self._verify_all(sentences, c3_path, learner_state)
 
+        if self._stagnating(claims, decision) and self.config.rewrite:
+            lines, added = self._add_check(lines, c3_path, learner_state, decision)
+            trace.append(RewriteStep(
+                max(attempts, 1), "explanation", ("BLOOM_STAGNATION",),
+                "(no check question at the target Bloom level)", " ".join(added),
+                "target-level check question added",
+            ))
+            claims = self._verify_all(self._flat(lines), c3_path, learner_state)
+
         lines = self._tidy(lines)
         unresolved = [claim.claim.claim_id for claim in claims if not claim.accepted]
         return C4Result(
@@ -194,6 +219,7 @@ class C4Pipeline:
             latency_s=time.perf_counter() - started,
             config=asdict(self.config),
             final_layout=self._layout(lines),
+            progression=self._progression_report(decision, stagnation_before, claims),
         )
 
     # ------------------------------------------------------- structure and layout
@@ -317,11 +343,14 @@ class C4Pipeline:
         ]
 
     def _build_claim(self, index: int, sentence: str) -> Claim:
+        # In progressive mode a question is a task for the learner, not a domain claim.
+        is_task = self.config.progressive and sentence.rstrip().endswith("?")
         return Claim(
             claim_id=f"claim-{index}",
             text=sentence,
             concept_ids=self._mentioned_concepts(sentence),
             estimated_bloom_level=self._estimate_bloom(sentence),
+            source="task" if is_task else "domain",
         )
 
     def _mentioned_concepts(self, sentence: str) -> tuple[str, ...]:
@@ -355,7 +384,10 @@ class C4Pipeline:
         grounded = self.grounded_texts(c3_path, learner_state).get(claim.text)
         if grounded:
             claim = replace(claim, source="grounded")
-        factual_status, evidence = self._check_factual(claim, grounded)
+        if claim.source == "task":
+            factual_status, evidence = "ENTAILED", ["question: asserts no domain fact"]
+        else:
+            factual_status, evidence = self._check_factual(claim, grounded)
         cognitive_status = self._check_cognitive(claim, c3_path, learner_state, grounded)
         violations: list[str] = []
         if self.config.check_factual:
@@ -473,7 +505,12 @@ class C4Pipeline:
         return "APPROPRIATE"
 
     def _bloom_ceiling(self, c3_path: dict[str, Any], learner_state: dict[str, Any]) -> int:
-        """Ceiling is raised only when every direct prerequisite of the target is mastered."""
+        """Static ceiling: raised only when every direct prerequisite of the target is mastered.
+
+        In progressive mode the ceiling is the learner's target Bloom level instead.
+        """
+        if self.config.progressive:
+            return self.progression_decision(c3_path, learner_state).target_level
         prerequisites = self.kg.get("concepts", {}).get(c3_path["target"], {}).get("prerequisites", [])
         ready = all(self._mastery_state(item, learner_state) == "MASTERED" for item in prerequisites)
         return self.config.mastered_bloom_ceiling if ready else self.config.default_bloom_ceiling
@@ -498,6 +535,10 @@ class C4Pipeline:
         """
         claim, target = verified.claim, c3_path["target"]
         violations = set(verified.violations)
+        if claim.source == "task" and "BLOOM_MISMATCH" in violations:
+            decision = self.progression_decision(c3_path, learner_state)
+            task = self.task_for(decision.target_level, c3_path)
+            return ([task] if task not in others else []), "question re-levelled to the target Bloom level"
         if self.config.check_factual and verified.factual_status != "ENTAILED":
             myth = next((item[len(MISCONCEPTION_PREFIX):] for item in verified.evidence
                          if item.startswith(MISCONCEPTION_PREFIX)), None)
@@ -634,6 +675,12 @@ class C4Pipeline:
         for level in range(ceiling + 1, 7):
             texts[grounding.bloom_sentence(level, ceiling)] = grounding.SOURCE_LEARNER
         texts[self.next_sentence(c3_path, learner_state)] = grounding.SOURCE_PATH
+        if self.config.progressive:
+            decision = self.progression_decision(c3_path, learner_state)
+            for level in range(1, decision.target_level + 1):
+                texts[self.task_for(level, c3_path)] = grounding.SOURCE_TASK
+            for hint in self.hint_candidates(c3_path, learner_state):
+                texts[hint] = grounding.SOURCE_HINT
         self._ground_cache = (c3_path, learner_state, texts)
         return texts
 
@@ -664,6 +711,95 @@ class C4Pipeline:
             "bloom_ceiling_name": grounding.BLOOM_NAMES.get(ceiling, str(ceiling)),
             "mastery_threshold": self.config.mastery_threshold,
             "uncertainty_threshold": self.config.uncertainty_threshold,
+            "progression": (self.progression_decision(c3_path, learner_state).to_dict()
+                            if self.config.progressive else None),
+        }
+
+    # ------------------------------------------------------------ progression
+
+    def target_ready(self, c3_path: dict[str, Any], learner_state: dict[str, Any]) -> bool:
+        """True when every direct prerequisite of the target is mastered (certain and above threshold)."""
+        prerequisites = self.kg.get("concepts", {}).get(c3_path["target"], {}).get("prerequisites", [])
+        return all(self._mastery_state(item, learner_state) == "MASTERED" for item in prerequisites)
+
+    def progression_decision(self, c3_path: dict[str, Any], learner_state: dict[str, Any]) -> Decision:
+        """Target Bloom level, action, and scaffold for this learner's next explanation."""
+        progress = LearnerProgress.from_state(learner_state).get(c3_path["target"])
+        return decide(progress, self.target_ready(c3_path, learner_state), self.progression)
+
+    def task_for(self, level: int, c3_path: dict[str, Any]) -> str:
+        """The check question for one Bloom level on the target concept."""
+        concepts = self.kg.get("concepts", {})
+        target = c3_path["target"]
+        others = [item for item in concepts.get(target, {}).get("prerequisites", []) if item in concepts]
+        other = self.concept_name(others[0]) if others else "a simpler structure"
+        return grounding.task_sentence(level, self.concept_name(target), other)
+
+    def hint_candidates(self, c3_path: dict[str, Any], learner_state: dict[str, Any]) -> list[str]:
+        """Every scaffold hint C4 could write for this path (the verifier recognises all of them)."""
+        name = self.concept_name(c3_path["target"])
+        prerequisites = self.kg.get("concepts", {}).get(c3_path["target"], {}).get("prerequisites", [])
+        hints = [grounding.hint_from_known_sentence(name, self.concept_name(item))
+                 for item in prerequisites if item in self.kg.get("concepts", {})]
+        return hints + [grounding.hint_steps_sentence(name)]
+
+    def scaffold_hints(
+        self, c3_path: dict[str, Any], learner_state: dict[str, Any], decision: Decision
+    ) -> list[str]:
+        """Support that fades with demonstrated success: two hints, one hint, or none."""
+        mastered = [
+            item for item in self.kg.get("concepts", {}).get(c3_path["target"], {}).get("prerequisites", [])
+            if self._mastery_state(item, learner_state) == "MASTERED"
+        ]
+        name = self.concept_name(c3_path["target"])
+        hints = [grounding.hint_from_known_sentence(name, self.concept_name(mastered[0]))] if mastered else []
+        hints.append(grounding.hint_steps_sentence(name))
+        return {"full": hints[:2], "partial": hints[-1:], "minimal": []}[decision.scaffold]
+
+    def check_section(
+        self, c3_path: dict[str, Any], learner_state: dict[str, Any], decision: Decision
+    ) -> list[str]:
+        """Scaffold hints followed by the check question at the target level."""
+        return self.scaffold_hints(c3_path, learner_state, decision) + [
+            self.task_for(decision.target_level, c3_path)]
+
+    def _stagnating(self, claims: list[VerifiedClaim], decision: Decision | None) -> bool | None:
+        """True when no accepted question reaches the target level; None when not applicable."""
+        if decision is None or not self.config.check_stagnation:
+            return None
+        levels = [
+            item.claim.estimated_bloom_level or 1 for item in claims
+            if item.claim.text.rstrip().endswith("?") and item.accepted
+        ]
+        return max(levels, default=0) < decision.target_level
+
+    def _add_check(
+        self, lines: list[_Line], c3_path: dict[str, Any], learner_state: dict[str, Any], decision: Decision
+    ) -> tuple[list[_Line], list[str]]:
+        """Append a 'Check yourself' section: faded hints and the target-level question."""
+        sentences = self.check_section(c3_path, learner_state, decision)
+        existing = set(self._flat(lines))
+        added = [item for item in sentences if item not in existing]
+        if not added:
+            return lines, []
+        extra = [_Line("blank"), _Line("heading", raw="### Check yourself", level=3)]
+        extra += [_Line("bullet", prefix="- ", claims=[item]) for item in added]
+        return lines + extra, added
+
+    def _progression_report(
+        self, decision: Decision | None, stagnation_before: bool | None, claims: list[VerifiedClaim]
+    ) -> dict[str, Any] | None:
+        if decision is None:
+            return None
+        levels = sorted({
+            item.claim.estimated_bloom_level or 1 for item in claims
+            if item.claim.text.rstrip().endswith("?") and item.accepted
+        })
+        return {
+            **decision.to_dict(),
+            "stagnation_before": stagnation_before,
+            "stagnation_after": self._stagnating(claims, decision),
+            "question_levels": levels,
         }
 
     def _review_first(

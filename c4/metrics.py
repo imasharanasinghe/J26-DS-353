@@ -19,9 +19,11 @@ def claim_rates(claims: Sequence[Any]) -> dict[str, Any]:
     Sentences C4 wrote itself from learner, path, or graph data are not model claims, so
     they are excluded from the denominators; counting them would dilute the rates.
     """
-    claims = [c for c in claims if getattr(c.claim, "source", "domain") == "domain"]
-    total = len(claims)
-    factual = sum(c.factual_status in FACTUAL_BAD for c in claims)
+    claims = [c for c in claims if getattr(c.claim, "source", "domain") in ("domain", "task")]
+    # A question asserts no domain fact, so it joins only the cognitive denominator.
+    domain = [c for c in claims if getattr(c.claim, "source", "domain") == "domain"]
+    total = len(domain)
+    factual = sum(c.factual_status in FACTUAL_BAD for c in domain)
     cognitive = sum(c.cognitive_status in COGNITIVE_BAD for c in claims)
     inconclusive = sum(c.cognitive_status == "INCONCLUSIVE" for c in claims)
     return {
@@ -30,7 +32,7 @@ def claim_rates(claims: Sequence[Any]) -> dict[str, Any]:
         "cognitive_violations": cognitive,
         "inconclusive": inconclusive,
         "hallucination_rate": percent(factual, total),
-        "cognitive_mismatch_rate": percent(cognitive, total),
+        "cognitive_mismatch_rate": percent(cognitive, len(claims)),
     }
 
 
@@ -58,6 +60,8 @@ def summarize(result: Any) -> dict[str, Any]:
         "rewrite_success_rate": percent(corrected, len(sent)),
         "new_violations_introduced": new_violations,
         "unresolved": len(result.unresolved_claims),
+        "stagnation_before": (result.progression or {}).get("stagnation_before"),
+        "stagnation_after": (result.progression or {}).get("stagnation_after"),
         "final_confidence": confidence,
         "llm_calls_in_verifier": 0,
     }
