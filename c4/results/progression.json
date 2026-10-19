@@ -1,0 +1,1716 @@
+{
+  "rq1": {
+    "cases": 28,
+    "runs": 84,
+    "learner_starts": [
+      "new_concept",
+      "level_1",
+      "level_2"
+    ],
+    "policy_actions": {
+      "start": 28,
+      "consolidate": 32,
+      "advance": 24
+    },
+    "runs_with_unresolved_claims": 0,
+    "conditions": {
+      "unverified": {
+        "runs": 84,
+        "question_at_target_level_pct": 0.0,
+        "question_at_target_level_ci95": [
+          0.0,
+          4.4
+        ],
+        "runs_with_violation": 84,
+        "hallucination_rate": 25.0,
+        "cognitive_mismatch_rate": 29.76
+      },
+      "static_c4": {
+        "runs": 84,
+        "question_at_target_level_pct": 0.0,
+        "question_at_target_level_ci95": [
+          0.0,
+          4.4
+        ],
+        "runs_with_violation": 0,
+        "hallucination_rate": 0.0,
+        "cognitive_mismatch_rate": 0.0
+      },
+      "progressive_c4": {
+        "runs": 84,
+        "question_at_target_level_pct": 100.0,
+        "question_at_target_level_ci95": [
+          95.6,
+          100.0
+        ],
+        "runs_with_violation": 0,
+        "hallucination_rate": 0.0,
+        "cognitive_mismatch_rate": 0.0
+      }
+    },
+    "caveat": "Measured by the same progressive verifier that performs the repair, so these rates show the repair does what it is specified to do, not independent accuracy. Neither the unverified text nor static C4 ever contains a check question, so the target-level gap is expected by construction."
+  },
+  "rq2": {
+    "config": {
+      "learners": 300,
+      "sessions": 8,
+      "seed": 2026,
+      "target": "heap",
+      "conditions": [
+        "A_unverified",
+        "B_current_c4",
+        "C_progressive"
+      ],
+      "learner_models": [
+        "zpd",
+        "flat",
+        "matched"
+      ]
+    },
+    "assumptions": [
+      "Learner capability is a real number; the true Bloom level is floor(capability + 0.5).",
+      "ZPD model: learning is fastest when the explanation is above capability but within reach (1 level, plus 0.5 / 0.25 / 0 for full / partial / minimal support); too easy gives little; too hard gives none.",
+      "Flat control: learning is independent of the explanation level.",
+      "Matched control: learning is fastest when the explanation is at the learner's level; stretching hurts.",
+      "Learning is halved while the target's prerequisites are not mastered.",
+      "Condition A draws the explanation level uniformly from 1-4; B caps that draw at the static ceiling.",
+      "Conditions A and B receive generic partial support; C receives full, partial or minimal support by policy.",
+      "Check answers are Bernoulli with logistic probability in (capability + support - question level).",
+      "Parameters are pilot values chosen for plausibility, not fitted to data from real learners."
+    ],
+    "models": {
+      "zpd": {
+        "conditions": {
+          "A_unverified": {
+            "learners": 300,
+            "mean_final_level": 2.583,
+            "mean_capability_gain": 1.088,
+            "mean_sessions_to_level_3": 6.013,
+            "share_reaching_level_3_pct": 55.0,
+            "trajectory_mean_true_level": [
+              1.66,
+              1.767,
+              1.873,
+              2.013,
+              2.193,
+              2.303,
+              2.477,
+              2.583
+            ],
+            "sessions_too_hard_pct": 34.0,
+            "sessions_too_easy_pct": 36.5,
+            "tracking_mae_final": null
+          },
+          "B_current_c4": {
+            "learners": 300,
+            "mean_final_level": 2.677,
+            "mean_capability_gain": 1.185,
+            "mean_sessions_to_level_3": 5.81,
+            "share_reaching_level_3_pct": 69.0,
+            "trajectory_mean_true_level": [
+              1.683,
+              1.79,
+              1.953,
+              2.067,
+              2.25,
+              2.393,
+              2.537,
+              2.677
+            ],
+            "sessions_too_hard_pct": 13.5,
+            "sessions_too_easy_pct": 49.3,
+            "tracking_mae_final": null
+          },
+          "C_progressive": {
+            "learners": 300,
+            "mean_final_level": 3.083,
+            "mean_capability_gain": 1.547,
+            "mean_sessions_to_level_3": 5.753,
+            "share_reaching_level_3_pct": 70.3,
+            "trajectory_mean_true_level": [
+              1.66,
+              1.763,
+              1.917,
+              2.107,
+              2.327,
+              2.56,
+              2.823,
+              3.083
+            ],
+            "sessions_too_hard_pct": 24.0,
+            "sessions_too_easy_pct": 34.4,
+            "tracking_mae_final": 0.603
+          },
+          "C_no_fading": {
+            "learners": 300,
+            "mean_final_level": 3.127,
+            "mean_capability_gain": 1.563,
+            "mean_sessions_to_level_3": 5.707,
+            "share_reaching_level_3_pct": 72.3,
+            "trajectory_mean_true_level": [
+              1.66,
+              1.76,
+              1.923,
+              2.117,
+              2.337,
+              2.577,
+              2.847,
+              3.127
+            ],
+            "sessions_too_hard_pct": 24.7,
+            "sessions_too_easy_pct": 34.3,
+            "tracking_mae_final": 0.56
+          },
+          "C_no_stretch": {
+            "learners": 300,
+            "mean_final_level": 1.913,
+            "mean_capability_gain": 0.425,
+            "mean_sessions_to_level_3": 7.2,
+            "share_reaching_level_3_pct": 27.0,
+            "trajectory_mean_true_level": [
+              1.66,
+              1.703,
+              1.74,
+              1.767,
+              1.797,
+              1.833,
+              1.88,
+              1.913
+            ],
+            "sessions_too_hard_pct": 0.0,
+            "sessions_too_easy_pct": 89.7,
+            "tracking_mae_final": 0.913
+          }
+        },
+        "by_profile": {
+          "novice": {
+            "A_unverified": {
+              "learners": 100,
+              "mean_final_level": 1.68,
+              "mean_capability_gain": 1.13,
+              "mean_sessions_to_level_3": 8.78,
+              "share_reaching_level_3_pct": 9.0,
+              "trajectory_mean_true_level": [
+                0.71,
+                0.8,
+                0.92,
+                1.05,
+                1.22,
+                1.33,
+                1.57,
+                1.68
+              ],
+              "sessions_too_hard_pct": 61.1,
+              "sessions_too_easy_pct": 11.1,
+              "tracking_mae_final": null
+            },
+            "B_current_c4": {
+              "learners": 100,
+              "mean_final_level": 2.21,
+              "mean_capability_gain": 1.615,
+              "mean_sessions_to_level_3": 8.28,
+              "share_reaching_level_3_pct": 36.0,
+              "trajectory_mean_true_level": [
+                0.79,
+                0.92,
+                1.14,
+                1.31,
+                1.56,
+                1.75,
+                1.95,
+                2.21
+              ],
+              "sessions_too_hard_pct": 34.9,
+              "sessions_too_easy_pct": 18.4,
+              "tracking_mae_final": null
+            },
+            "C_progressive": {
+              "learners": 100,
+              "mean_final_level": 2.47,
+              "mean_capability_gain": 1.896,
+              "mean_sessions_to_level_3": 7.86,
+              "share_reaching_level_3_pct": 42.0,
+              "trajectory_mean_true_level": [
+                0.88,
+                1.07,
+                1.24,
+                1.47,
+                1.72,
+                1.97,
+                2.19,
+                2.47
+              ],
+              "sessions_too_hard_pct": 32.9,
+              "sessions_too_easy_pct": 12.1,
+              "tracking_mae_final": 0.74
+            }
+          },
+          "intermediate": {
+            "A_unverified": {
+              "learners": 100,
+              "mean_final_level": 2.67,
+              "mean_capability_gain": 1.174,
+              "mean_sessions_to_level_3": 7.02,
+              "share_reaching_level_3_pct": 61.0,
+              "trajectory_mean_true_level": [
+                1.66,
+                1.78,
+                1.86,
+                2.0,
+                2.25,
+                2.36,
+                2.52,
+                2.67
+              ],
+              "sessions_too_hard_pct": 30.9,
+              "sessions_too_easy_pct": 36.5,
+              "tracking_mae_final": null
+            },
+            "B_current_c4": {
+              "learners": 100,
+              "mean_final_level": 2.78,
+              "mean_capability_gain": 1.286,
+              "mean_sessions_to_level_3": 6.42,
+              "share_reaching_level_3_pct": 75.0,
+              "trajectory_mean_true_level": [
+                1.68,
+                1.84,
+                2.01,
+                2.13,
+                2.34,
+                2.52,
+                2.68,
+                2.78
+              ],
+              "sessions_too_hard_pct": 5.8,
+              "sessions_too_easy_pct": 47.8,
+              "tracking_mae_final": null
+            },
+            "C_progressive": {
+              "learners": 100,
+              "mean_final_level": 3.04,
+              "mean_capability_gain": 1.529,
+              "mean_sessions_to_level_3": 6.57,
+              "share_reaching_level_3_pct": 72.0,
+              "trajectory_mean_true_level": [
+                1.53,
+                1.65,
+                1.84,
+                2.01,
+                2.28,
+                2.49,
+                2.81,
+                3.04
+              ],
+              "sessions_too_hard_pct": 22.8,
+              "sessions_too_easy_pct": 38.1,
+              "tracking_mae_final": 0.55
+            }
+          },
+          "advanced": {
+            "A_unverified": {
+              "learners": 100,
+              "mean_final_level": 3.4,
+              "mean_capability_gain": 0.961,
+              "mean_sessions_to_level_3": 2.24,
+              "share_reaching_level_3_pct": 95.0,
+              "trajectory_mean_true_level": [
+                2.61,
+                2.72,
+                2.84,
+                2.99,
+                3.11,
+                3.22,
+                3.34,
+                3.4
+              ],
+              "sessions_too_hard_pct": 9.9,
+              "sessions_too_easy_pct": 61.9,
+              "tracking_mae_final": null
+            },
+            "B_current_c4": {
+              "learners": 100,
+              "mean_final_level": 3.04,
+              "mean_capability_gain": 0.653,
+              "mean_sessions_to_level_3": 2.73,
+              "share_reaching_level_3_pct": 96.0,
+              "trajectory_mean_true_level": [
+                2.58,
+                2.61,
+                2.71,
+                2.76,
+                2.85,
+                2.91,
+                2.98,
+                3.04
+              ],
+              "sessions_too_hard_pct": 0.0,
+              "sessions_too_easy_pct": 81.9,
+              "tracking_mae_final": null
+            },
+            "C_progressive": {
+              "learners": 100,
+              "mean_final_level": 3.74,
+              "mean_capability_gain": 1.216,
+              "mean_sessions_to_level_3": 2.83,
+              "share_reaching_level_3_pct": 97.0,
+              "trajectory_mean_true_level": [
+                2.57,
+                2.57,
+                2.67,
+                2.84,
+                2.98,
+                3.22,
+                3.47,
+                3.74
+              ],
+              "sessions_too_hard_pct": 16.2,
+              "sessions_too_easy_pct": 52.9,
+              "tracking_mae_final": 0.52
+            }
+          }
+        },
+        "paired": {
+          "C_vs_B": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.3623,
+            "ci95_bootstrap": [
+              0.2906,
+              0.4332
+            ],
+            "wilcoxon": {
+              "n": 290,
+              "w_plus": 33646.5,
+              "z": 8.779,
+              "p": 0.0
+            },
+            "cohens_dz": 0.588,
+            "learners_better": 206,
+            "learners_worse": 84,
+            "learners_equal": 10
+          },
+          "C_vs_A": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.459,
+            "ci95_bootstrap": [
+              0.3825,
+              0.5364
+            ],
+            "wilcoxon": {
+              "n": 297,
+              "w_plus": 37344.5,
+              "z": 10.273,
+              "p": 0.0
+            },
+            "cohens_dz": 0.694,
+            "learners_better": 228,
+            "learners_worse": 69,
+            "learners_equal": 3
+          },
+          "B_vs_A": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.0967,
+            "ci95_bootstrap": [
+              0.0249,
+              0.1648
+            ],
+            "wilcoxon": {
+              "n": 297,
+              "w_plus": 25362.5,
+              "z": 2.184,
+              "p": 0.02894
+            },
+            "cohens_dz": 0.16,
+            "learners_better": 163,
+            "learners_worse": 134,
+            "learners_equal": 3
+          },
+          "C_vs_C_no_fading": {
+            "outcome": "capability_gain",
+            "mean_difference": -0.0156,
+            "ci95_bootstrap": [
+              -0.0427,
+              0.0119
+            ],
+            "wilcoxon": {
+              "n": 230,
+              "w_plus": 9573.5,
+              "z": -3.671,
+              "p": 0.0002416
+            },
+            "cohens_dz": -0.065,
+            "learners_better": 83,
+            "learners_worse": 147,
+            "learners_equal": 70
+          },
+          "C_vs_C_no_stretch": {
+            "outcome": "capability_gain",
+            "mean_difference": 1.122,
+            "ci95_bootstrap": [
+              1.0369,
+              1.1986
+            ],
+            "wilcoxon": {
+              "n": 291,
+              "w_plus": 42446.0,
+              "z": 14.758,
+              "p": 0.0
+            },
+            "cohens_dz": 1.631,
+            "learners_better": 286,
+            "learners_worse": 5,
+            "learners_equal": 9
+          },
+          "C_vs_B_sessions_saved_to_level_3": {
+            "learners_started_below_level_3": 245,
+            "outcome": "sessions_saved_to_level_3",
+            "mean_difference": 0.0694,
+            "ci95_bootstrap": [
+              -0.1061,
+              0.2327
+            ],
+            "wilcoxon": {
+              "n": 130,
+              "w_plus": 4506.5,
+              "z": 0.593,
+              "p": 0.5532
+            },
+            "cohens_dz": 0.051,
+            "learners_better": 60,
+            "learners_worse": 70,
+            "learners_equal": 115
+          }
+        },
+        "example_c_history": [
+          {
+            "session": 1,
+            "level": 1,
+            "gap": 0.526,
+            "support": 0.5,
+            "true_level": 1,
+            "cap": 0.7,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "start",
+            "scaffold": "full",
+            "observed_level": 1,
+            "score": 0.822
+          },
+          {
+            "session": 2,
+            "level": 1,
+            "gap": 0.3,
+            "support": 0.25,
+            "true_level": 1,
+            "cap": 0.877,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "consolidate",
+            "scaffold": "partial",
+            "observed_level": 1,
+            "score": 0.989
+          },
+          {
+            "session": 3,
+            "level": 1,
+            "gap": 0.123,
+            "support": 0.0,
+            "true_level": 1,
+            "cap": 1.121,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "consolidate",
+            "scaffold": "minimal",
+            "observed_level": 1,
+            "score": 0.898
+          },
+          {
+            "session": 4,
+            "level": 1,
+            "gap": -0.121,
+            "support": 0.0,
+            "true_level": 1,
+            "cap": 1.197,
+            "too_hard": false,
+            "too_easy": true,
+            "action": "consolidate",
+            "scaffold": "minimal",
+            "observed_level": 1,
+            "score": 0.981
+          },
+          {
+            "session": 5,
+            "level": 1,
+            "gap": -0.197,
+            "support": 0.0,
+            "true_level": 1,
+            "cap": 1.24,
+            "too_hard": false,
+            "too_easy": true,
+            "action": "consolidate",
+            "scaffold": "minimal",
+            "observed_level": 1,
+            "score": 0.774
+          },
+          {
+            "session": 6,
+            "level": 2,
+            "gap": 0.76,
+            "support": 0.0,
+            "true_level": 2,
+            "cap": 1.583,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "advance",
+            "scaffold": "minimal",
+            "observed_level": 1,
+            "score": 0.211
+          },
+          {
+            "session": 7,
+            "level": 2,
+            "gap": 0.417,
+            "support": 0.5,
+            "true_level": 2,
+            "cap": 2.132,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "retry",
+            "scaffold": "full",
+            "observed_level": 2,
+            "score": 0.831
+          },
+          {
+            "session": 8,
+            "level": 3,
+            "gap": 0.868,
+            "support": 0.25,
+            "true_level": 3,
+            "cap": 2.644,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "advance",
+            "scaffold": "partial",
+            "observed_level": 3,
+            "score": 0.839
+          }
+        ]
+      },
+      "flat": {
+        "conditions": {
+          "A_unverified": {
+            "learners": 300,
+            "mean_final_level": 2.79,
+            "mean_capability_gain": 1.222,
+            "mean_sessions_to_level_3": 5.977,
+            "share_reaching_level_3_pct": 59.3,
+            "trajectory_mean_true_level": [
+              1.663,
+              1.803,
+              1.913,
+              2.057,
+              2.217,
+              2.407,
+              2.583,
+              2.79
+            ],
+            "sessions_too_hard_pct": 32.1,
+            "sessions_too_easy_pct": 37.8,
+            "tracking_mae_final": null
+          },
+          "B_current_c4": {
+            "learners": 300,
+            "mean_final_level": 2.79,
+            "mean_capability_gain": 1.222,
+            "mean_sessions_to_level_3": 5.977,
+            "share_reaching_level_3_pct": 59.3,
+            "trajectory_mean_true_level": [
+              1.663,
+              1.803,
+              1.913,
+              2.057,
+              2.217,
+              2.407,
+              2.583,
+              2.79
+            ],
+            "sessions_too_hard_pct": 16.7,
+            "sessions_too_easy_pct": 47.7,
+            "tracking_mae_final": null
+          },
+          "C_progressive": {
+            "learners": 300,
+            "mean_final_level": 2.79,
+            "mean_capability_gain": 1.222,
+            "mean_sessions_to_level_3": 5.977,
+            "share_reaching_level_3_pct": 59.3,
+            "trajectory_mean_true_level": [
+              1.663,
+              1.803,
+              1.913,
+              2.057,
+              2.217,
+              2.407,
+              2.583,
+              2.79
+            ],
+            "sessions_too_hard_pct": 25.1,
+            "sessions_too_easy_pct": 35.4,
+            "tracking_mae_final": 0.69
+          },
+          "C_no_fading": {
+            "learners": 300,
+            "mean_final_level": 2.79,
+            "mean_capability_gain": 1.222,
+            "mean_sessions_to_level_3": 5.977,
+            "share_reaching_level_3_pct": 59.3,
+            "trajectory_mean_true_level": [
+              1.663,
+              1.803,
+              1.913,
+              2.057,
+              2.217,
+              2.407,
+              2.583,
+              2.79
+            ],
+            "sessions_too_hard_pct": 27.2,
+            "sessions_too_easy_pct": 35.4,
+            "tracking_mae_final": 0.567
+          },
+          "C_no_stretch": {
+            "learners": 300,
+            "mean_final_level": 2.79,
+            "mean_capability_gain": 1.222,
+            "mean_sessions_to_level_3": 5.977,
+            "share_reaching_level_3_pct": 59.3,
+            "trajectory_mean_true_level": [
+              1.663,
+              1.803,
+              1.913,
+              2.057,
+              2.217,
+              2.407,
+              2.583,
+              2.79
+            ],
+            "sessions_too_hard_pct": 0.0,
+            "sessions_too_easy_pct": 84.6,
+            "tracking_mae_final": 1.797
+          }
+        },
+        "by_profile": {
+          "novice": {
+            "A_unverified": {
+              "learners": 100,
+              "mean_final_level": 1.87,
+              "mean_capability_gain": 1.283,
+              "mean_sessions_to_level_3": 8.87,
+              "share_reaching_level_3_pct": 9.0,
+              "trajectory_mean_true_level": [
+                0.77,
+                0.9,
+                0.98,
+                1.09,
+                1.3,
+                1.51,
+                1.71,
+                1.87
+              ],
+              "sessions_too_hard_pct": 58.2,
+              "sessions_too_easy_pct": 13.2,
+              "tracking_mae_final": null
+            },
+            "B_current_c4": {
+              "learners": 100,
+              "mean_final_level": 1.87,
+              "mean_capability_gain": 1.283,
+              "mean_sessions_to_level_3": 8.87,
+              "share_reaching_level_3_pct": 9.0,
+              "trajectory_mean_true_level": [
+                0.77,
+                0.9,
+                0.98,
+                1.09,
+                1.3,
+                1.51,
+                1.71,
+                1.87
+              ],
+              "sessions_too_hard_pct": 43.0,
+              "sessions_too_easy_pct": 13.4,
+              "tracking_mae_final": null
+            },
+            "C_progressive": {
+              "learners": 100,
+              "mean_final_level": 1.87,
+              "mean_capability_gain": 1.283,
+              "mean_sessions_to_level_3": 8.87,
+              "share_reaching_level_3_pct": 9.0,
+              "trajectory_mean_true_level": [
+                0.77,
+                0.9,
+                0.98,
+                1.09,
+                1.3,
+                1.51,
+                1.71,
+                1.87
+              ],
+              "sessions_too_hard_pct": 36.1,
+              "sessions_too_easy_pct": 6.8,
+              "tracking_mae_final": 0.79
+            }
+          },
+          "intermediate": {
+            "A_unverified": {
+              "learners": 100,
+              "mean_final_level": 2.77,
+              "mean_capability_gain": 1.204,
+              "mean_sessions_to_level_3": 7.02,
+              "share_reaching_level_3_pct": 70.0,
+              "trajectory_mean_true_level": [
+                1.63,
+                1.78,
+                1.87,
+                2.04,
+                2.19,
+                2.38,
+                2.56,
+                2.77
+              ],
+              "sessions_too_hard_pct": 29.5,
+              "sessions_too_easy_pct": 37.5,
+              "tracking_mae_final": null
+            },
+            "B_current_c4": {
+              "learners": 100,
+              "mean_final_level": 2.77,
+              "mean_capability_gain": 1.204,
+              "mean_sessions_to_level_3": 7.02,
+              "share_reaching_level_3_pct": 70.0,
+              "trajectory_mean_true_level": [
+                1.63,
+                1.78,
+                1.87,
+                2.04,
+                2.19,
+                2.38,
+                2.56,
+                2.77
+              ],
+              "sessions_too_hard_pct": 7.1,
+              "sessions_too_easy_pct": 42.2,
+              "tracking_mae_final": null
+            },
+            "C_progressive": {
+              "learners": 100,
+              "mean_final_level": 2.77,
+              "mean_capability_gain": 1.204,
+              "mean_sessions_to_level_3": 7.02,
+              "share_reaching_level_3_pct": 70.0,
+              "trajectory_mean_true_level": [
+                1.63,
+                1.78,
+                1.87,
+                2.04,
+                2.19,
+                2.38,
+                2.56,
+                2.77
+              ],
+              "sessions_too_hard_pct": 23.2,
+              "sessions_too_easy_pct": 41.2,
+              "tracking_mae_final": 0.63
+            }
+          },
+          "advanced": {
+            "A_unverified": {
+              "learners": 100,
+              "mean_final_level": 3.73,
+              "mean_capability_gain": 1.178,
+              "mean_sessions_to_level_3": 2.04,
+              "share_reaching_level_3_pct": 99.0,
+              "trajectory_mean_true_level": [
+                2.59,
+                2.73,
+                2.89,
+                3.04,
+                3.16,
+                3.33,
+                3.48,
+                3.73
+              ],
+              "sessions_too_hard_pct": 8.6,
+              "sessions_too_easy_pct": 62.6,
+              "tracking_mae_final": null
+            },
+            "B_current_c4": {
+              "learners": 100,
+              "mean_final_level": 3.73,
+              "mean_capability_gain": 1.178,
+              "mean_sessions_to_level_3": 2.04,
+              "share_reaching_level_3_pct": 99.0,
+              "trajectory_mean_true_level": [
+                2.59,
+                2.73,
+                2.89,
+                3.04,
+                3.16,
+                3.33,
+                3.48,
+                3.73
+              ],
+              "sessions_too_hard_pct": 0.0,
+              "sessions_too_easy_pct": 87.5,
+              "tracking_mae_final": null
+            },
+            "C_progressive": {
+              "learners": 100,
+              "mean_final_level": 3.73,
+              "mean_capability_gain": 1.178,
+              "mean_sessions_to_level_3": 2.04,
+              "share_reaching_level_3_pct": 99.0,
+              "trajectory_mean_true_level": [
+                2.59,
+                2.73,
+                2.89,
+                3.04,
+                3.16,
+                3.33,
+                3.48,
+                3.73
+              ],
+              "sessions_too_hard_pct": 16.0,
+              "sessions_too_easy_pct": 58.1,
+              "tracking_mae_final": 0.65
+            }
+          }
+        },
+        "paired": {
+          "C_vs_B": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.0,
+            "ci95_bootstrap": [
+              0.0,
+              0.0
+            ],
+            "wilcoxon": {
+              "n": 0,
+              "w_plus": null,
+              "z": null,
+              "p": null
+            },
+            "cohens_dz": null,
+            "learners_better": 0,
+            "learners_worse": 0,
+            "learners_equal": 300
+          },
+          "C_vs_A": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.0,
+            "ci95_bootstrap": [
+              0.0,
+              0.0
+            ],
+            "wilcoxon": {
+              "n": 0,
+              "w_plus": null,
+              "z": null,
+              "p": null
+            },
+            "cohens_dz": null,
+            "learners_better": 0,
+            "learners_worse": 0,
+            "learners_equal": 300
+          },
+          "B_vs_A": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.0,
+            "ci95_bootstrap": [
+              0.0,
+              0.0
+            ],
+            "wilcoxon": {
+              "n": 0,
+              "w_plus": null,
+              "z": null,
+              "p": null
+            },
+            "cohens_dz": null,
+            "learners_better": 0,
+            "learners_worse": 0,
+            "learners_equal": 300
+          },
+          "C_vs_C_no_fading": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.0,
+            "ci95_bootstrap": [
+              0.0,
+              0.0
+            ],
+            "wilcoxon": {
+              "n": 0,
+              "w_plus": null,
+              "z": null,
+              "p": null
+            },
+            "cohens_dz": null,
+            "learners_better": 0,
+            "learners_worse": 0,
+            "learners_equal": 300
+          },
+          "C_vs_C_no_stretch": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.0,
+            "ci95_bootstrap": [
+              0.0,
+              0.0
+            ],
+            "wilcoxon": {
+              "n": 0,
+              "w_plus": null,
+              "z": null,
+              "p": null
+            },
+            "cohens_dz": null,
+            "learners_better": 0,
+            "learners_worse": 0,
+            "learners_equal": 300
+          },
+          "C_vs_B_sessions_saved_to_level_3": {
+            "learners_started_below_level_3": 245,
+            "outcome": "sessions_saved_to_level_3",
+            "mean_difference": 0.0,
+            "ci95_bootstrap": [
+              0.0,
+              0.0
+            ],
+            "wilcoxon": {
+              "n": 0,
+              "w_plus": null,
+              "z": null,
+              "p": null
+            },
+            "cohens_dz": null,
+            "learners_better": 0,
+            "learners_worse": 0,
+            "learners_equal": 245
+          }
+        },
+        "example_c_history": [
+          {
+            "session": 1,
+            "level": 1,
+            "gap": 0.526,
+            "support": 0.5,
+            "true_level": 1,
+            "cap": 0.589,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "start",
+            "scaffold": "full",
+            "observed_level": 0,
+            "score": 0.1
+          },
+          {
+            "session": 2,
+            "level": 1,
+            "gap": 0.411,
+            "support": 0.5,
+            "true_level": 1,
+            "cap": 0.653,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "consolidate",
+            "scaffold": "full",
+            "observed_level": 1,
+            "score": 0.989
+          },
+          {
+            "session": 3,
+            "level": 1,
+            "gap": 0.347,
+            "support": 0.25,
+            "true_level": 1,
+            "cap": 0.785,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "consolidate",
+            "scaffold": "partial",
+            "observed_level": 1,
+            "score": 0.898
+          },
+          {
+            "session": 4,
+            "level": 1,
+            "gap": 0.215,
+            "support": 0.0,
+            "true_level": 1,
+            "cap": 0.951,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "consolidate",
+            "scaffold": "minimal",
+            "observed_level": 1,
+            "score": 0.981
+          },
+          {
+            "session": 5,
+            "level": 1,
+            "gap": 0.049,
+            "support": 0.0,
+            "true_level": 1,
+            "cap": 1.173,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "consolidate",
+            "scaffold": "minimal",
+            "observed_level": 1,
+            "score": 0.774
+          },
+          {
+            "session": 6,
+            "level": 2,
+            "gap": 0.827,
+            "support": 0.0,
+            "true_level": 1,
+            "cap": 1.293,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "advance",
+            "scaffold": "minimal",
+            "observed_level": 1,
+            "score": 0.211
+          },
+          {
+            "session": 7,
+            "level": 2,
+            "gap": 0.707,
+            "support": 0.5,
+            "true_level": 2,
+            "cap": 1.617,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "retry",
+            "scaffold": "full",
+            "observed_level": 2,
+            "score": 0.831
+          },
+          {
+            "session": 8,
+            "level": 3,
+            "gap": 1.383,
+            "support": 0.25,
+            "true_level": 2,
+            "cap": 1.906,
+            "too_hard": true,
+            "too_easy": false,
+            "action": "advance",
+            "scaffold": "partial",
+            "observed_level": 3,
+            "score": 0.839
+          }
+        ]
+      },
+      "matched": {
+        "conditions": {
+          "A_unverified": {
+            "learners": 300,
+            "mean_final_level": 2.563,
+            "mean_capability_gain": 1.051,
+            "mean_sessions_to_level_3": 5.96,
+            "share_reaching_level_3_pct": 54.7,
+            "trajectory_mean_true_level": [
+              1.61,
+              1.707,
+              1.81,
+              1.977,
+              2.1,
+              2.26,
+              2.407,
+              2.563
+            ],
+            "sessions_too_hard_pct": 34.8,
+            "sessions_too_easy_pct": 35.8,
+            "tracking_mae_final": null
+          },
+          "B_current_c4": {
+            "learners": 300,
+            "mean_final_level": 2.787,
+            "mean_capability_gain": 1.279,
+            "mean_sessions_to_level_3": 5.38,
+            "share_reaching_level_3_pct": 62.7,
+            "trajectory_mean_true_level": [
+              1.67,
+              1.813,
+              1.953,
+              2.137,
+              2.287,
+              2.48,
+              2.66,
+              2.787
+            ],
+            "sessions_too_hard_pct": 19.0,
+            "sessions_too_easy_pct": 51.1,
+            "tracking_mae_final": null
+          },
+          "C_progressive": {
+            "learners": 300,
+            "mean_final_level": 2.807,
+            "mean_capability_gain": 1.295,
+            "mean_sessions_to_level_3": 5.637,
+            "share_reaching_level_3_pct": 65.0,
+            "trajectory_mean_true_level": [
+              1.717,
+              1.87,
+              2.047,
+              2.197,
+              2.34,
+              2.51,
+              2.683,
+              2.807
+            ],
+            "sessions_too_hard_pct": 24.9,
+            "sessions_too_easy_pct": 37.5,
+            "tracking_mae_final": 0.8
+          },
+          "C_no_fading": {
+            "learners": 300,
+            "mean_final_level": 2.77,
+            "mean_capability_gain": 1.267,
+            "mean_sessions_to_level_3": 5.613,
+            "share_reaching_level_3_pct": 65.7,
+            "trajectory_mean_true_level": [
+              1.717,
+              1.87,
+              2.05,
+              2.197,
+              2.33,
+              2.493,
+              2.66,
+              2.77
+            ],
+            "sessions_too_hard_pct": 25.5,
+            "sessions_too_easy_pct": 37.3,
+            "tracking_mae_final": 0.72
+          },
+          "C_no_stretch": {
+            "learners": 300,
+            "mean_final_level": 2.333,
+            "mean_capability_gain": 0.9,
+            "mean_sessions_to_level_3": 6.847,
+            "share_reaching_level_3_pct": 34.3,
+            "trajectory_mean_true_level": [
+              1.717,
+              1.837,
+              1.96,
+              2.07,
+              2.19,
+              2.24,
+              2.313,
+              2.333
+            ],
+            "sessions_too_hard_pct": 0.0,
+            "sessions_too_easy_pct": 90.0,
+            "tracking_mae_final": 1.333
+          }
+        },
+        "by_profile": {
+          "novice": {
+            "A_unverified": {
+              "learners": 100,
+              "mean_final_level": 1.32,
+              "mean_capability_gain": 0.749,
+              "mean_sessions_to_level_3": 8.9,
+              "share_reaching_level_3_pct": 4.0,
+              "trajectory_mean_true_level": [
+                0.65,
+                0.72,
+                0.8,
+                0.89,
+                0.97,
+                1.07,
+                1.16,
+                1.32
+              ],
+              "sessions_too_hard_pct": 66.0,
+              "sessions_too_easy_pct": 8.0,
+              "tracking_mae_final": null
+            },
+            "B_current_c4": {
+              "learners": 100,
+              "mean_final_level": 1.51,
+              "mean_capability_gain": 0.946,
+              "mean_sessions_to_level_3": 8.85,
+              "share_reaching_level_3_pct": 8.0,
+              "trajectory_mean_true_level": [
+                0.66,
+                0.68,
+                0.79,
+                0.99,
+                1.04,
+                1.2,
+                1.4,
+                1.51
+              ],
+              "sessions_too_hard_pct": 50.2,
+              "sessions_too_easy_pct": 9.6,
+              "tracking_mae_final": null
+            },
+            "C_progressive": {
+              "learners": 100,
+              "mean_final_level": 1.76,
+              "mean_capability_gain": 1.213,
+              "mean_sessions_to_level_3": 8.45,
+              "share_reaching_level_3_pct": 24.0,
+              "trajectory_mean_true_level": [
+                0.82,
+                0.99,
+                1.19,
+                1.32,
+                1.46,
+                1.56,
+                1.67,
+                1.76
+              ],
+              "sessions_too_hard_pct": 38.5,
+              "sessions_too_easy_pct": 13.4,
+              "tracking_mae_final": 1.05
+            }
+          },
+          "intermediate": {
+            "A_unverified": {
+              "learners": 100,
+              "mean_final_level": 2.73,
+              "mean_capability_gain": 1.245,
+              "mean_sessions_to_level_3": 6.8,
+              "share_reaching_level_3_pct": 62.0,
+              "trajectory_mean_true_level": [
+                1.6,
+                1.71,
+                1.8,
+                2.04,
+                2.18,
+                2.42,
+                2.59,
+                2.73
+              ],
+              "sessions_too_hard_pct": 29.8,
+              "sessions_too_easy_pct": 37.2,
+              "tracking_mae_final": null
+            },
+            "B_current_c4": {
+              "learners": 100,
+              "mean_final_level": 3.08,
+              "mean_capability_gain": 1.6,
+              "mean_sessions_to_level_3": 5.62,
+              "share_reaching_level_3_pct": 81.0,
+              "trajectory_mean_true_level": [
+                1.69,
+                1.9,
+                2.05,
+                2.26,
+                2.51,
+                2.78,
+                2.95,
+                3.08
+              ],
+              "sessions_too_hard_pct": 6.8,
+              "sessions_too_easy_pct": 53.1,
+              "tracking_mae_final": null
+            },
+            "C_progressive": {
+              "learners": 100,
+              "mean_final_level": 2.9,
+              "mean_capability_gain": 1.455,
+              "mean_sessions_to_level_3": 5.97,
+              "share_reaching_level_3_pct": 73.0,
+              "trajectory_mean_true_level": [
+                1.77,
+                1.98,
+                2.14,
+                2.3,
+                2.45,
+                2.63,
+                2.82,
+                2.9
+              ],
+              "sessions_too_hard_pct": 22.6,
+              "sessions_too_easy_pct": 43.9,
+              "tracking_mae_final": 0.76
+            }
+          },
+          "advanced": {
+            "A_unverified": {
+              "learners": 100,
+              "mean_final_level": 3.64,
+              "mean_capability_gain": 1.159,
+              "mean_sessions_to_level_3": 2.18,
+              "share_reaching_level_3_pct": 98.0,
+              "trajectory_mean_true_level": [
+                2.58,
+                2.69,
+                2.83,
+                3.0,
+                3.15,
+                3.29,
+                3.47,
+                3.64
+              ],
+              "sessions_too_hard_pct": 8.6,
+              "sessions_too_easy_pct": 62.1,
+              "tracking_mae_final": null
+            },
+            "B_current_c4": {
+              "learners": 100,
+              "mean_final_level": 3.77,
+              "mean_capability_gain": 1.29,
+              "mean_sessions_to_level_3": 1.67,
+              "share_reaching_level_3_pct": 99.0,
+              "trajectory_mean_true_level": [
+                2.66,
+                2.86,
+                3.02,
+                3.16,
+                3.31,
+                3.46,
+                3.63,
+                3.77
+              ],
+              "sessions_too_hard_pct": 0.0,
+              "sessions_too_easy_pct": 90.6,
+              "tracking_mae_final": null
+            },
+            "C_progressive": {
+              "learners": 100,
+              "mean_final_level": 3.76,
+              "mean_capability_gain": 1.215,
+              "mean_sessions_to_level_3": 2.49,
+              "share_reaching_level_3_pct": 98.0,
+              "trajectory_mean_true_level": [
+                2.56,
+                2.64,
+                2.81,
+                2.97,
+                3.11,
+                3.34,
+                3.56,
+                3.76
+              ],
+              "sessions_too_hard_pct": 13.5,
+              "sessions_too_easy_pct": 55.4,
+              "tracking_mae_final": 0.59
+            }
+          }
+        },
+        "paired": {
+          "C_vs_B": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.016,
+            "ci95_bootstrap": [
+              -0.0501,
+              0.0852
+            ],
+            "wilcoxon": {
+              "n": 299,
+              "w_plus": 21448.0,
+              "z": -0.653,
+              "p": 0.514
+            },
+            "cohens_dz": 0.026,
+            "learners_better": 130,
+            "learners_worse": 169,
+            "learners_equal": 1
+          },
+          "C_vs_A": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.2437,
+            "ci95_bootstrap": [
+              0.1708,
+              0.3176
+            ],
+            "wilcoxon": {
+              "n": 300,
+              "w_plus": 31552.0,
+              "z": 5.969,
+              "p": 2.381e-09
+            },
+            "cohens_dz": 0.383,
+            "learners_better": 197,
+            "learners_worse": 103,
+            "learners_equal": 0
+          },
+          "B_vs_A": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.2278,
+            "ci95_bootstrap": [
+              0.1629,
+              0.2945
+            ],
+            "wilcoxon": {
+              "n": 300,
+              "w_plus": 33385.5,
+              "z": 7.189,
+              "p": 6.541e-13
+            },
+            "cohens_dz": 0.385,
+            "learners_better": 206,
+            "learners_worse": 94,
+            "learners_equal": 0
+          },
+          "C_vs_C_no_fading": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.0274,
+            "ci95_bootstrap": [
+              -0.0034,
+              0.0579
+            ],
+            "wilcoxon": {
+              "n": 72,
+              "w_plus": 1650.0,
+              "z": 1.883,
+              "p": 0.05974
+            },
+            "cohens_dz": 0.1,
+            "learners_better": 40,
+            "learners_worse": 32,
+            "learners_equal": 228
+          },
+          "C_vs_C_no_stretch": {
+            "outcome": "capability_gain",
+            "mean_difference": 0.3951,
+            "ci95_bootstrap": [
+              0.2899,
+              0.5041
+            ],
+            "wilcoxon": {
+              "n": 300,
+              "w_plus": 32687.0,
+              "z": 6.724,
+              "p": 1.766e-11
+            },
+            "cohens_dz": 0.424,
+            "learners_better": 218,
+            "learners_worse": 82,
+            "learners_equal": 0
+          },
+          "C_vs_B_sessions_saved_to_level_3": {
+            "learners_started_below_level_3": 245,
+            "outcome": "sessions_saved_to_level_3",
+            "mean_difference": -0.3102,
+            "ci95_bootstrap": [
+              -0.5143,
+              -0.102
+            ],
+            "wilcoxon": {
+              "n": 114,
+              "w_plus": 2216.5,
+              "z": -3.042,
+              "p": 0.002352
+            },
+            "cohens_dz": -0.192,
+            "learners_better": 42,
+            "learners_worse": 72,
+            "learners_equal": 131
+          }
+        },
+        "example_c_history": [
+          {
+            "session": 1,
+            "level": 1,
+            "gap": 0.526,
+            "support": 0.5,
+            "true_level": 1,
+            "cap": 0.695,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "start",
+            "scaffold": "full",
+            "observed_level": 1,
+            "score": 0.822
+          },
+          {
+            "session": 2,
+            "level": 1,
+            "gap": 0.305,
+            "support": 0.25,
+            "true_level": 1,
+            "cap": 0.871,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "consolidate",
+            "scaffold": "partial",
+            "observed_level": 1,
+            "score": 0.989
+          },
+          {
+            "session": 3,
+            "level": 1,
+            "gap": 0.129,
+            "support": 0.0,
+            "true_level": 1,
+            "cap": 1.115,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "consolidate",
+            "scaffold": "minimal",
+            "observed_level": 1,
+            "score": 0.898
+          },
+          {
+            "session": 4,
+            "level": 1,
+            "gap": -0.115,
+            "support": 0.0,
+            "true_level": 1,
+            "cap": 1.393,
+            "too_hard": false,
+            "too_easy": true,
+            "action": "consolidate",
+            "scaffold": "minimal",
+            "observed_level": 1,
+            "score": 0.981
+          },
+          {
+            "session": 5,
+            "level": 1,
+            "gap": -0.393,
+            "support": 0.0,
+            "true_level": 2,
+            "cap": 1.838,
+            "too_hard": false,
+            "too_easy": true,
+            "action": "consolidate",
+            "scaffold": "minimal",
+            "observed_level": 1,
+            "score": 0.774
+          },
+          {
+            "session": 6,
+            "level": 2,
+            "gap": 0.162,
+            "support": 0.0,
+            "true_level": 2,
+            "cap": 2.181,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "advance",
+            "scaffold": "minimal",
+            "observed_level": 1,
+            "score": 0.211
+          },
+          {
+            "session": 7,
+            "level": 2,
+            "gap": -0.181,
+            "support": 0.5,
+            "true_level": 3,
+            "cap": 2.73,
+            "too_hard": false,
+            "too_easy": true,
+            "action": "retry",
+            "scaffold": "full",
+            "observed_level": 2,
+            "score": 0.831
+          },
+          {
+            "session": 8,
+            "level": 3,
+            "gap": 0.27,
+            "support": 0.25,
+            "true_level": 3,
+            "cap": 3.242,
+            "too_hard": false,
+            "too_easy": false,
+            "action": "advance",
+            "scaffold": "partial",
+            "observed_level": 3,
+            "score": 0.839
+          }
+        ]
+      }
+    },
+    "sensitivity_sessions": {
+      "4": {
+        "zpd": {
+          "mean_difference": 0.0219,
+          "ci95_bootstrap": [
+            -0.0192,
+            0.063
+          ],
+          "cohens_dz": 0.061
+        },
+        "flat": {
+          "mean_difference": 0.0,
+          "ci95_bootstrap": [
+            0.0,
+            0.0
+          ],
+          "cohens_dz": null
+        },
+        "matched": {
+          "mean_difference": 0.0917,
+          "ci95_bootstrap": [
+            0.0469,
+            0.1378
+          ],
+          "cohens_dz": 0.222
+        }
+      },
+      "8": {
+        "zpd": {
+          "mean_difference": 0.3623,
+          "ci95_bootstrap": [
+            0.2906,
+            0.4332
+          ],
+          "cohens_dz": 0.588
+        },
+        "flat": {
+          "mean_difference": 0.0,
+          "ci95_bootstrap": [
+            0.0,
+            0.0
+          ],
+          "cohens_dz": null
+        },
+        "matched": {
+          "mean_difference": 0.016,
+          "ci95_bootstrap": [
+            -0.0501,
+            0.0852
+          ],
+          "cohens_dz": 0.026
+        }
+      },
+      "12": {
+        "zpd": {
+          "mean_difference": 0.8981,
+          "ci95_bootstrap": [
+            0.7838,
+            1.0118
+          ],
+          "cohens_dz": 0.922
+        },
+        "flat": {
+          "mean_difference": 0.0,
+          "ci95_bootstrap": [
+            0.0,
+            0.0
+          ],
+          "cohens_dz": null
+        },
+        "matched": {
+          "mean_difference": -0.291,
+          "ci95_bootstrap": [
+            -0.384,
+            -0.1907
+          ],
+          "cohens_dz": -0.334
+        }
+      }
+    },
+    "caveat": "Simulated learners are not students. Under the ZPD model the advantage of condition C follows partly from the model's own assumption; the flat and matched controls show where the mechanism does not help. The result supports the design and its limits, not a claim about real learners. The human pilot (docs/PILOT_STUDY.md) is the validation."
+  }
+}

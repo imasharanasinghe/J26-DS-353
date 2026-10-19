@@ -76,3 +76,32 @@ def test_statistics_helpers() -> None:
     assert wilcoxon_signed_rank([0.5] * 12)["p"] < 0.01
     assert wilcoxon_signed_rank([1, -1] * 10)["p"] > 0.5
     assert cohens_dz([1.0, 1.0, 1.0]) is None and cohens_dz([1.0, 2.0, 3.0]) == 2.0
+
+
+def test_rq1_progressive_repair_hits_the_target_level_without_new_violations() -> None:
+    from c4.evaluation import evaluate_progressive_stress
+
+    result = evaluate_progressive_stress(KG)
+    table = result["conditions"]
+    assert result["runs"] == 84 and result["runs_with_unresolved_claims"] == 0
+    assert table["unverified"]["question_at_target_level_pct"] == 0.0
+    assert table["static_c4"]["question_at_target_level_pct"] == 0.0
+    assert table["progressive_c4"]["question_at_target_level_pct"] == 100.0
+    assert table["progressive_c4"]["runs_with_violation"] == 0
+    assert table["progressive_c4"]["hallucination_rate"] == 0.0
+    assert set(result["policy_actions"]) == {"start", "consolidate", "advance"}
+
+
+def test_progression_report_renders_every_section() -> None:
+    import importlib.util
+
+    from c4.evaluation import evaluate_progressive_stress
+
+    path = Path(__file__).resolve().parents[1] / "scripts" / "run_c4_progression.py"
+    spec = importlib.util.spec_from_file_location("run_c4_progression", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    text = module.render(evaluate_progressive_stress(KG), small())
+    for heading in ("## RQ1", "## RQ2", "### Assumptions", "Flat control", "Matched control",
+                    "Sensitivity to study length", "Reading the results honestly"):
+        assert heading in text

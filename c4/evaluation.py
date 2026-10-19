@@ -363,3 +363,67 @@ def evaluate_bloom(items_path: str | Path) -> dict[str, Any]:
                    "test score measures in-vocabulary coverage, not generalisation. The hard split shows the limit of "
                    "any verb-cue matcher. A second annotator and a learned classifier are still required."),
     }
+
+
+PROGRESSIVE_SEEDS = {"new_concept": None, "level_1": 1, "level_2": 2}
+
+
+def evaluate_progressive_stress(kg: dict[str, Any]) -> dict[str, Any]:
+    """RQ1 on the stress corpus: does level-targeted repair keep faithfulness and hit the target level?
+
+    Each stress case is run with the learner starting a new concept, at demonstrated level 1,
+    and at level 2. Three texts are measured by the same progressive verifier without
+    rewriting: the original (unverified) explanation, the final text of static C4, and the
+    final text of progressive C4. ``question at target level`` is the share of runs whose
+    text contains an accepted check question at the learner's target Bloom level.
+    """
+    cases = build_stress_corpus(kg)
+    static = C4Config()
+    progressive = C4Config(progressive=True)
+    measure = C4Config(progressive=True, rewrite=False)
+    texts: dict[str, list[dict[str, Any]]] = {"unverified": [], "static_c4": [], "progressive_c4": []}
+    actions: dict[str, int] = {}
+    unresolved = 0
+    for case in cases:
+        path = build_verified_path(case["target"], kg, case["learner"]["learner_id"])
+        for seed_name, level in PROGRESSIVE_SEEDS.items():
+            learner = dict(case["learner"])
+            if level is not None:
+                learner["bloom"] = {case["target"]: {"level": level, "attempts": [
+                    {"session": 1, "level": level, "score": 0.9, "scaffold": "full"}]}}
+            final_static = C4Pipeline(kg, static).run(path, learner, case["explanation"]).final_explanation
+            run = C4Pipeline(kg, progressive).run(path, learner, case["explanation"])
+            actions[run.progression["action"]] = actions.get(run.progression["action"], 0) + 1
+            unresolved += bool(run.unresolved_claims)
+            for name, text in (("unverified", case["explanation"]), ("static_c4", final_static),
+                               ("progressive_c4", run.final_explanation)):
+                measured = C4Pipeline(kg, measure).run(path, learner, text)
+                # Static C4 wrote its sentences for the static ceiling, so its faithfulness is
+                # measured with the static verifier; the target-level question check is always
+                # the progressive one.
+                judged = C4Pipeline(kg, replace(static, rewrite=False)).run(path, learner, text) \
+                    if name == "static_c4" else measured
+                texts[name].append({
+                    "stagnating": bool(measured.progression["stagnation_after"]),
+                    "violation": _has_violation(judged.claims),
+                    "rates": claim_rates(judged.claims),
+                })
+    runs = len(texts["unverified"])
+    table: dict[str, Any] = {}
+    for name, rows in texts.items():
+        claims = sum(r["rates"]["claims"] for r in rows)
+        table[name] = {
+            "runs": runs,
+            "question_at_target_level_pct": percent(sum(not r["stagnating"] for r in rows), runs),
+            "question_at_target_level_ci95": wilson_interval(sum(not r["stagnating"] for r in rows), runs),
+            "runs_with_violation": sum(r["violation"] for r in rows),
+            "hallucination_rate": percent(sum(r["rates"]["factual_violations"] for r in rows), claims),
+            "cognitive_mismatch_rate": percent(sum(r["rates"]["cognitive_violations"] for r in rows), claims),
+        }
+    return {
+        "cases": len(cases), "runs": runs, "learner_starts": list(PROGRESSIVE_SEEDS),
+        "policy_actions": actions, "runs_with_unresolved_claims": unresolved, "conditions": table,
+        "caveat": ("Measured by the same progressive verifier that performs the repair, so these rates show the "
+                   "repair does what it is specified to do, not independent accuracy. Neither the unverified text "
+                   "nor static C4 ever contains a check question, so the target-level gap is expected by construction."),
+    }
