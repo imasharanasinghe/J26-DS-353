@@ -34,7 +34,7 @@ async function api(path, body) {
 }
 
 /* ---------- state ---------- */
-const state = { meta: null, target: null, preset: null, learner: null, report: null, ollamaReady: false };
+const state = { meta: null, target: null, preset: null, learner: null, report: null, ollamaReady: false, journey: null };
 
 const targetInfo = () => state.meta.targets.find((item) => item.id === state.target);
 
@@ -126,6 +126,8 @@ function applyPreset() {
   if ($("#preset").value === "custom") return;  // edited learner stays as typed
   state.preset = $("#preset").value;
   state.learner = JSON.parse(JSON.stringify(targetInfo().learner_presets[state.preset]));
+  state.journey = freshJourney();
+  refreshProgressionView();
   renderLearnerSummary();
   renderLearnerEditor();
 }
@@ -573,6 +575,7 @@ const num = (value) => (value === null || value === undefined ? "n/a" : value);
 function renderEvaluation(results) {
   const view = $("#view-eval");
   const { stress, natural, sensitivity } = results;
+  const extra = progressionEvidence(results);
   if (!stress) {
     view.replaceChildren(el("div", { class: "empty" }, el("h2", {}, "No evaluation results found"),
       el("p", {}, "Run python3 scripts/run_c4_eval.py to generate them.")));
@@ -638,9 +641,11 @@ function renderEvaluation(results) {
   sections.push(block("Known limitations", null, el("ul", { class: "limits" },
     el("li", {}, "Factual checking is rule-based graph-statement matching, not NLI; it cannot separate a faithful paraphrase from an invention."),
     el("li", {}, "A claim is a whole sentence, not an atomic proposition."),
-    el("li", {}, "The Bloom estimator is a verb-cue heuristic and has not been evaluated against manual labels."),
+    el("li", {}, "The Bloom estimator is a verb-cue heuristic; it was scored against 90 items labelled by one annotator, so agreement with independent annotators is unknown."),
+    el("li", {}, "The progression results come from simulated learners whose parameters are assumptions; a human pilot is still required."),
     el("li", {}, "No independent human annotation or Cohen's kappa yet; post-repair rates reuse the same verifier."),
     el("li", {}, "C1, C2 and C3 outputs are mocked with compatible fixtures; real integration is pending."))));
+  sections.splice(sections.length - 1, 0, ...extra);
   view.replaceChildren(...sections);
 }
 
@@ -698,10 +703,253 @@ function renderInputs() {
       `Statements for the concepts on the path; the factual check matches claims against these. ${FIXTURE_NOTE}`, c1));
 }
 
+
+/* ---------- Bloom progression tab ---------- */
+const BLOOM_NAMES = ["Remember", "Understand", "Apply", "Analyze", "Evaluate", "Create"];
+const SESSION_ERROR = "Could not run the session.";
+
+function freshJourney() { return { history: [], last: null, next: null, busy: false, error: "" }; }
+
+function conceptBloom() { return (state.learner.bloom || {})[state.target] || { level: 0, attempts: [] }; }
+
+function svgEl(tag, attrs, text) {
+  const node = document.createElementNS(SVG_NS, tag);
+  for (const [key, value] of Object.entries(attrs || {})) node.setAttribute(key, value);
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+/* Line chart: series = [{ name, cls, values }]; every series shares the x labels. */
+function lineChart(series, xLabels, { min = 0, max = 6, label = "" } = {}) {
+  const W = 560, H = 250, L = 34, R = 86, T = 14, B = 30;
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "chart", role: "img", "aria-label": label });
+  const x = (i) => L + (xLabels.length > 1 ? (i * (W - L - R)) / (xLabels.length - 1) : (W - L - R) / 2);
+  const y = (v) => T + ((max - v) * (H - T - B)) / (max - min);
+  for (let v = Math.ceil(min); v <= max; v += 1) {
+    svg.append(svgEl("line", { class: v === min ? "axis" : "grid", x1: L, x2: W - R, y1: y(v), y2: y(v) }),
+      svgEl("text", { x: L - 7, y: y(v) + 4, "text-anchor": "end" }, v));
+  }
+  xLabels.forEach((text, i) => {
+    if (xLabels.length > 10 && i % 2 === 1) return;
+    svg.append(svgEl("text", { x: x(i), y: H - 9, "text-anchor": "middle" }, text));
+  });
+  const ends = [];
+  for (const line of series) {
+    const points = line.values.map((v, i) => [x(i), y(v)]);
+    svg.append(svgEl("path", { class: `ln ${line.cls}`, d: points.map(([px, py], i) => `${i ? "L" : "M"}${px.toFixed(1)} ${py.toFixed(1)}`).join(" ") }));
+    points.forEach(([px, py]) => svg.append(svgEl("circle", { class: `pt ${line.cls}`, cx: px, cy: py, r: xLabels.length > 12 ? 2 : 3.5 })));
+    const [lx, ly] = points[points.length - 1];
+    ends.push({ x: lx + 8, y: ly + 4, name: line.name });
+  }
+  // End labels keep their vertical order and are pushed apart when the lines finish close together.
+  ends.sort((a, b) => a.y - b.y).forEach((end, i, all) => {
+    if (i && end.y < all[i - 1].y + 13) end.y = all[i - 1].y + 13;
+    svg.append(svgEl("text", { x: end.x, y: end.y }, end.name));
+  });
+  return svg;
+}
+
+function levelBar(level, target) {
+  return el("div", { class: "journey", role: "list", "aria-label": "Bloom levels" }, BLOOM_NAMES.map((name, index) => {
+    const n = index + 1;
+    const done = n <= level, isTarget = n === target;
+    return el("div", { class: `lvl${done ? " done" : ""}${isTarget ? " target" : ""}`, role: "listitem" },
+      el("b", {}, name), el("small", {}, done ? "demonstrated" : isTarget ? "target" : " "));
+  }));
+}
+
+function decisionLine(decision, prefix) {
+  if (!decision) return null;
+  return el("div", { class: "decision" }, prefix ? el("b", {}, prefix) : null,
+    badge("info", "action", decision.action),
+    badge("info", "aim", `${decision.target_name} (${decision.target_level})`),
+    badge("", "support", decision.scaffold, "Scaffolding fades with consecutive passes and returns after a failure."),
+    el("span", { class: "hint" }, decision.reason));
+}
+
+function refreshProgressionView() {
+  if (state.journey && $("#view-progress") && !$("#view-progress").hidden) renderProgression();
+}
+
+async function startSession() {
+  const journey = state.journey;
+  journey.busy = true; journey.error = "";
+  renderProgression();
+  try {
+    const report = await api("/api/session", { target: state.target, source: "template", learner: state.learner, config: readConfig() });
+    journey.last = { report, answered: false };
+    journey.next = null;
+  } catch (error) {
+    journey.error = error.message || SESSION_ERROR;
+  } finally {
+    journey.busy = false;
+    renderProgression();
+  }
+}
+
+async function answerCheck(score) {
+  const journey = state.journey;
+  const report = journey.last.report;
+  journey.busy = true; journey.error = "";
+  renderProgression();
+  try {
+    const result = await api("/api/answer", {
+      target: state.target, learner: state.learner, level: report.check.level, score,
+      scaffold: report.check.scaffold, session: report.session,
+    });
+    state.learner = { ...state.learner, ...result.learner };
+    journey.history.push({
+      session: report.session, asked: report.check.level, score, action: report.progression.action,
+      scaffold: report.check.scaffold, demonstrated: result.concept_progress.level,
+    });
+    journey.last.answered = true;
+    journey.next = result.next;
+    renderLearnerSummary();
+  } catch (error) {
+    journey.error = error.message || SESSION_ERROR;
+  } finally {
+    journey.busy = false;
+    renderProgression();
+  }
+}
+
+function renderProgression() {
+  const view = $("#view-progress");
+  if (!state.meta || !state.journey) return;
+  const journey = state.journey;
+  const target = targetInfo();
+  const record = conceptBloom();
+  const live = journey.last && !journey.last.answered ? journey.last.report.check : null;
+  const aim = journey.next ? journey.next.target_level : live ? live.level : 0;
+  const blocks = [];
+
+  const sessionNo = journey.last && !journey.last.answered ? journey.last.report.session : record.attempts.length + 1;
+  const controls = el("div", { class: "row" },
+    el("button", { type: "button", class: "primary", disabled: journey.busy || (journey.last && !journey.last.answered),
+      onclick: startSession }, journey.busy ? "Working…" : `Start session ${sessionNo}`),
+    el("button", { type: "button", class: "ghost", disabled: journey.busy, onclick: () => {
+      delete state.learner.bloom?.[state.target];
+      state.journey = freshJourney();
+      renderLearnerSummary();
+      renderProgression();
+    } }, "Reset this concept"));
+  blocks.push(block(`Bloom journey: ${target.name}`,
+    "Progression adds time to the check: C4 aims one Bloom level above what the learner has shown, but only when the " +
+    "prerequisites are mastered. Edit mastery in the left panel (for example set a prerequisite below 0.7) to watch the policy " +
+    "switch between advancing and consolidating.",
+    el("div", {}, levelBar(record.level, aim),
+      decisionLine(journey.next, "Next:") || decisionLine(journey.last && !journey.last.answered ? journey.last.report.progression : null, "This session:"),
+      controls, journey.error ? el("p", { class: "error" }, journey.error) : null)));
+
+  if (journey.last) {
+    const report = journey.last.report;
+    const clean = report.unresolved_claims.length === 0;
+    const question = el("div", { class: "qcard" },
+      el("div", { class: "qhead" }, badge("info", "check question", `${report.check.level_name} (level ${report.check.level})`),
+        badge("", "support", report.check.scaffold)),
+      el("p", { class: "qtext" }, report.check.question),
+      report.check.hints.length ? el("ul", { class: "hints" }, report.check.hints.map((hint) => el("li", {}, hint))) : null,
+      journey.last.answered ? el("p", { class: "hint" }, "Answer recorded. Start the next session to see the policy respond.")
+        : el("div", { class: "answers" }, el("span", { class: "lab" }, "Simulate the learner's answer:"),
+            el("button", { type: "button", class: "good", disabled: journey.busy, onclick: () => answerCheck(0.9) }, "Answered well"),
+            el("button", { type: "button", class: "mid", disabled: journey.busy, onclick: () => answerCheck(0.55) }, "Partly"),
+            el("button", { type: "button", class: "low", disabled: journey.busy, onclick: () => answerCheck(0.2) }, "Not yet")));
+    blocks.push(block(`Session ${report.session}: verified explanation`,
+      "Drafted for the target level, then verified and repaired. Detail fades as the learner keeps passing.",
+      el("div", {}, finalDocument(report, clean), question)));
+  }
+
+  if (journey.history.length) {
+    const labels = journey.history.map((row) => `S${row.session}`);
+    const chart = lineChart([
+      { name: "asked", cls: "t", values: journey.history.map((row) => row.asked) },
+      { name: "demonstrated", cls: "d", values: journey.history.map((row) => row.demonstrated) },
+    ], labels, { label: "Asked and demonstrated Bloom level by session" });
+    blocks.push(block("Trajectory this run", "The level C4 asked at, and the level the learner has demonstrated after each answer.",
+      el("div", { class: "timeline" },
+        el("div", { class: "legend" }, el("span", {}, el("i", { class: "t" }), "asked (target)"), el("span", {}, el("i", { class: "d" }), "demonstrated")),
+        chart,
+        table(["Session", "Action", "Support", "Asked", "Score", "Demonstrated after"],
+          journey.history.map((row) => [row.session, row.action, row.scaffold,
+            BLOOM_NAMES[row.asked - 1], row.score.toFixed(2), BLOOM_NAMES[row.demonstrated - 1] || "none"])))));
+  }
+  view.replaceChildren(...blocks);
+}
+
+/* ---------- progression evidence (Evaluation tab) ---------- */
+const MODEL_LABELS = {
+  zpd: "ZPD learner (design hypothesis)", flat: "Flat control", matched: "Matched control",
+};
+const COND_STYLE = { A_unverified: ["A: unverified", "a"], B_current_c4: ["B: current C4", "b"], C_progressive: ["C: progressive", "c"] };
+const signed = (value) => (value > 0 ? `+${value}` : String(value));
+const pText = (p) => (p === null || p === undefined ? "n/a" : p < 0.0001 ? "<0.0001" : String(p));
+
+function progressionEvidence(results) {
+  const data = results.progression;
+  if (!data) return [];
+  const { rq1, rq2 } = data;
+  const names = { unverified: "Unverified explanation", static_c4: "Static C4 (current)", progressive_c4: "Progressive C4" };
+  const out = [];
+  out.push(el("div", { class: "banner" }, el("b", {}, "Progression evidence: "), rq2.caveat));
+  out.push(block("RQ1: faithful and at the target Bloom level",
+    `${rq1.cases} stress cases × ${rq1.learner_starts.length} learner starts = ${rq1.runs} runs. ${rq1.caveat}`,
+    table(["Text", "Question at target level", "95% CI", "Runs with a violation", "Halluc. %", "Cog. mismatch %"],
+      Object.entries(rq1.conditions).map(([key, row]) => [names[key], pct(row.question_at_target_level_pct), ci(row.question_at_target_level_ci95),
+        `${row.runs_with_violation}/${row.runs}`, row.hallucination_rate, row.cognitive_mismatch_rate]))));
+
+  const holder = el("div");
+  let model = "zpd";
+  const paint = () => {
+    const entry = rq2.models[model];
+    const sessions = rq2.config.sessions;
+    const labels = Array.from({ length: sessions }, (_, i) => `S${i + 1}`);
+    const series = Object.entries(COND_STYLE).map(([key, [name, cls]]) => ({
+      name, cls, values: entry.conditions[key].trajectory_mean_true_level }));
+    const all = series.flatMap((line) => line.values);
+    const low = Math.max(0, Math.floor(Math.min(...all)) - 0), high = Math.min(6, Math.ceil(Math.max(...all)));
+    const pairedRows = Object.entries(entry.paired).map(([key, row]) => [key.replaceAll("_", " "),
+      signed(row.mean_difference), row.ci95_bootstrap ? `${row.ci95_bootstrap[0]} to ${row.ci95_bootstrap[1]}` : "n/a",
+      pText(row.wilcoxon.p), row.cohens_dz ?? "n/a", `${row.learners_better} / ${row.learners_worse} / ${row.learners_equal}`]);
+    holder.replaceChildren(
+      el("div", { class: "seg", role: "group", "aria-label": "Learner model" }, Object.entries(MODEL_LABELS).map(([key, text]) =>
+        el("button", { type: "button", "aria-pressed": String(key === model), onclick: () => { model = key; paint(); } }, text))),
+      el("div", { class: "legend" }, Object.values(COND_STYLE).map(([name, cls]) => el("span", {}, el("i", { class: cls }), name))),
+      lineChart(series, labels, { min: low, max: Math.max(high, low + 1), label: "Mean true Bloom level by session" }),
+      table(["Condition", "Final level", "Capability gain", "Reached level 3", "Too hard %", "Too easy %"],
+        Object.keys(entry.conditions).map((key) => { const row = entry.conditions[key];
+          return [key.replaceAll("_", " "), row.mean_final_level, row.mean_capability_gain, pct(row.share_reaching_level_3_pct),
+            row.sessions_too_hard_pct, row.sessions_too_easy_pct]; })),
+      el("h4", { class: "ctx" }, "Paired comparisons (capability gain, positive favours the first)"),
+      table(["Comparison", "Mean diff.", "95% bootstrap CI", "Wilcoxon p", "Cohen's dz", "Better / worse / equal"], pairedRows));
+  };
+  paint();
+  out.push(block("RQ2: does progression raise the demonstrated level across sessions?",
+    `${rq2.config.learners} simulated learners, ${rq2.config.sessions} sessions, seeded and paired. The flat and matched controls show where the mechanism does not help.`,
+    holder));
+
+  out.push(block("Sensitivity to study length (C minus B)", "Capability gain difference with a 95% bootstrap interval.",
+    table(["Sessions", "ZPD", "Flat", "Matched"], Object.entries(rq2.sensitivity_sessions).map(([n, row]) => [n,
+      ...["zpd", "flat", "matched"].map((m) => `${signed(row[m].mean_difference)} (${row[m].ci95_bootstrap[0]} to ${row[m].ci95_bootstrap[1]})`)]))));
+
+  if (results.bloom) {
+    const rows = [];
+    for (const [split, entry] of Object.entries(results.bloom.splits)) {
+      for (const version of ["v1", "v2"]) {
+        const r = entry[version];
+        rows.push([`${split} · ${version}`, r.items, pct(r.accuracy), ci(r.accuracy_ci95), pct(r.within_one), r.mean_abs_error, r.macro_f1]);
+      }
+    }
+    out.push(block("Bloom-level estimator against labelled items", results.bloom.caveat,
+      table(["Split · estimator", "Items", "Accuracy", "95% CI", "Within one level", "Mean abs. error", "Macro-F1"], rows)));
+  }
+  return out;
+}
+
 /* ---------- tabs and boot ---------- */
 function selectTab(name) {
   if (name === "inputs") renderInputs();
-  for (const id of ["verify", "inputs", "eval"]) {
+  if (name === "progress") renderProgression();
+  for (const id of ["verify", "progress", "inputs", "eval"]) {
     $(`#tab-${id}`).setAttribute("aria-selected", String(id === name));
     $(`#view-${id}`).hidden = id !== name;
   }
@@ -710,6 +958,7 @@ function selectTab(name) {
 
 async function boot() {
   $("#tab-verify").addEventListener("click", () => selectTab("verify"));
+  $("#tab-progress").addEventListener("click", () => selectTab("progress"));
   $("#tab-inputs").addEventListener("click", () => selectTab("inputs"));
   $("#tab-eval").addEventListener("click", () => selectTab("eval"));
   $("#target").addEventListener("change", applyTarget);
@@ -746,6 +995,7 @@ async function boot() {
   resetConfig();
   if (location.hash === "#run") run();
   if (location.hash === "#eval") selectTab("eval");  // deep link used for demos and screenshots
+  if (location.hash === "#progress") selectTab("progress");
   api("/api/health").then((health) => {
     const { online, model_installed: installed, model } = health.ollama;
     state.ollamaReady = online && installed;

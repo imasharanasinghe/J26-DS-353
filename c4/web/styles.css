@@ -100,7 +100,7 @@ button.ghost { border-color: transparent; background: transparent; color: var(--
 }
 .tabs button:hover { background: rgba(255, 255, 255, .5); border-color: transparent; color: var(--ink); }
 .tabs button[aria-selected="true"] { background: var(--panel); border-color: var(--line); color: var(--accent-strong); box-shadow: var(--shadow); }
-#view-verify, #view-eval { padding: 0; }
+#view-verify, #view-eval, #view-progress { padding: 0; }
 .pipeline { display: flex; flex-wrap: wrap; list-style: none; margin: 0 0 16px; padding: 0; font-size: 14px; counter-reset: stage; }
 .pipeline li { counter-increment: stage; display: flex; align-items: center; gap: 8px; color: var(--faint); }
 .pipeline li::before {
@@ -281,3 +281,39 @@ ul.plain li.false { color: var(--bad); }
 .legend i.ok { background: var(--ok); } .legend i.bad { background: var(--bad); }
 .legend i.warn { background: #d0a020; } .legend i.target { background: var(--accent); }
 .legend .ceiling { margin-left: auto; font-weight: 600; color: var(--ink); }
+
+
+/* ---------- Bloom progression ---------- */
+:root { --series-a: #8592ac; --series-b: #d08a1e; --series-c: #213f8f; }
+.journey { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin: 4px 0 12px; }
+.lvl { padding: 9px 8px 8px; border-radius: 8px; border: 1px solid var(--line); background: #fff; text-align: center; color: var(--faint); }
+.lvl b { display: block; font: 600 13px/1.2 var(--font); letter-spacing: .04em; text-transform: uppercase; }
+.lvl small { font-size: 12.5px; }
+.lvl.done { background: var(--ok-bg); border-color: #a9d3b6; color: var(--ok); }
+.lvl.target { border: 2px solid var(--accent); background: var(--accent-soft); color: var(--accent-strong); }
+.decision { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 14.5px; margin-top: 6px; }
+.qcard { margin-top: 14px; padding: 16px 18px; border-radius: var(--radius); border: 2px solid var(--accent); background: #fff; }
+.qcard .qhead { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+.qcard .qtext { font: 400 20px/1.45 var(--font); color: var(--head); }
+.qcard .hints { margin: 8px 0 0; padding-left: 20px; color: var(--muted); font-size: 15px; }
+.answers { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
+.answers .lab { font-size: 13px; font-weight: 600; color: var(--muted); }
+.answers button.good { border-color: #a9d3b6; background: var(--ok-bg); color: var(--ok); }
+.answers button.mid { border-color: #e1cd93; background: var(--warn-bg); color: var(--warn); }
+.answers button.low { border-color: #e3b3aa; background: var(--bad-bg); color: var(--bad); }
+.timeline { margin-top: 10px; }
+.chart { width: 100%; height: auto; display: block; }
+.chart .axis, .chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .grid { stroke: var(--line-soft); }
+.chart text { font: 400 12px var(--font); fill: var(--muted); }
+.chart .ln { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.chart .ln.a { stroke: var(--series-a); stroke-dasharray: 5 4; } .chart .ln.b { stroke: var(--series-b); } .chart .ln.c { stroke: var(--series-c); }
+.chart .ln.t { stroke: var(--series-c); stroke-dasharray: 5 4; } .chart .ln.d { stroke: var(--ok); }
+.chart .pt.a { fill: var(--series-a); } .chart .pt.b { fill: var(--series-b); } .chart .pt.c { fill: var(--series-c); }
+.chart .pt.t { fill: var(--series-c); } .chart .pt.d { fill: var(--ok); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin: 4px 0 10px; }
+.seg button { border: 0; border-radius: 0; padding: 6px 14px; font-weight: 500; background: #fff; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.legend i.a { background: var(--series-a); } .legend i.b { background: var(--series-b); } .legend i.c { background: var(--series-c); }
+.legend i.d { background: var(--ok); } .legend i.t { background: var(--series-c); opacity: .55; }
+@media (max-width: 920px) { .journey { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
