@@ -268,3 +268,8 @@ This log records the work completed for Component 4 and the associated project a
 
 ### 2026-10-19 15:30:00 +05:30
 - Fixed the alignment of the final-explanation document in the workbench: wrapped sentences no longer flow back under their status icon. Each sentence is now a two-column grid (fixed icon column, text column), section-heading icons share the same 24 px column and a 12 px gap so their centres line up with the sentence icons, and the top bar groups the counts on the left and the copy button on the right. CSS and markup only; no behaviour change. Checked in a headless-Chrome screenshot at 1300 px; 76 tests pass.
+
+### 2026-10-19 20:45:00 +05:30
+- Wrote `C4PP1.md`, a short viva-ready summary of the work done on the `c4` branch (stages, results table, limitations, next steps), taken from the commit history and `c4/results/RESULTS.md`.
+- Moved `C1.md`-`C4.md`, `GUIDELINES.md`, `LOG.md`, `PLAN.md`, `PP1MARKS.md`, and `WBS.md` into `docs/`; only `C4PP1.md` and `README.md` remain at the root. Updated the two code comments that cited `GUIDELINES.md` (`c4/metrics.py`, `c4/evaluation.py`). Links between the moved files are relative and still resolve. Earlier entries above still use the old root paths and are left as the historical record.
+- Missed the required change sequence on the first pass (LOG update, validation, commit); done now. 76 tests pass.

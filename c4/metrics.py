@@ -1,4 +1,4 @@
-"""Metric definitions frozen in GUIDELINES.md, computed from verifier output."""
+"""Metric definitions frozen in docs/GUIDELINES.md, computed from verifier output."""
 
 from __future__ import annotations
 

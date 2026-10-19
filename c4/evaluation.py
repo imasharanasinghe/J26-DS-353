@@ -1,6 +1,6 @@
 """Preliminary C4 evaluation: controlled violation stress test and natural generations.
 
-Honest scope (see GUIDELINES.md): the stress-test reference labels are assigned by
+Honest scope (see docs/GUIDELINES.md): the stress-test reference labels are assigned by
 construction from the case recipe and a hand-written mention table, NOT by two
 independent human annotators, so no Cohen's kappa exists yet. Post-repair rates are
 measured by the same verifier and are therefore not independent evidence.
