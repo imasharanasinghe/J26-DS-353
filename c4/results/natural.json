@@ -12,7 +12,7 @@
     "cognitive_mismatch_rate": 23.53
   },
   "after": {
-    "claims": 49,
+    "claims": 37,
     "factual_violations": 0,
     "cognitive_violations": 0,
     "inconclusive": 0,
@@ -31,22 +31,22 @@
     {
       "case_id": "tree/all_mastered",
       "original": "A tree is a hierarchical data structure where each node connects to zero or more child nodes. Since you know recursion, you can traverse trees by recursively visiting each node's children.",
-      "final": "Trees are hierarchical data structures. Tree nodes can be traversed using recursion."
+      "final": "Trees are hierarchical data structures. Recursion solves a problem by calling a function on smaller input."
     },
     {
       "case_id": "tree/missing_prereq",
       "original": "A tree is a hierarchical data structure where each node connects to zero or more child nodes. You can traverse trees using recursion because each subtree mirrors the entire tree's recursive pattern.",
-      "final": "Trees are hierarchical data structures. Tree nodes can be traversed using recursion."
+      "final": "Trees are hierarchical data structures. Recursion solves a problem by calling a function on smaller input."
     },
     {
       "case_id": "tree/several_low",
       "original": "A tree is a hierarchical structure where each node connects to zero or more child nodes. You can traverse it using recursion because each subtree follows the same pattern as the whole tree.",
-      "final": "Trees are hierarchical data structures. For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing."
+      "final": "Trees are hierarchical data structures. Review Recursion first: your mastery is 0.35, below the 0.70 this path needs, and it is a prerequisite of Trees."
     },
     {
       "case_id": "tree/uncertain",
       "original": "A tree is a hierarchical data structure where each node connects to zero or more child nodes. Since you know recursion, you can traverse trees by recursively visiting each node's children.",
-      "final": "Trees are hierarchical data structures. For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing."
+      "final": "Trees are hierarchical data structures. Take a quick check on Recursion first: the model is unsure how well you know it (mastery 0.85, uncertainty 0.40)."
     }
   ]
 }

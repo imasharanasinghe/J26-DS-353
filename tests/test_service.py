@@ -17,7 +17,7 @@ def test_meta_describes_targets_presets_scenarios_and_defaults(bench: Workbench)
     assert {"demo_learner", "all_mastered", "missing_prereq", "several_low", "uncertain"} <= set(
         heap["learner_presets"])
     assert meta["config_defaults"]["max_rewrite_attempts"] == 3
-    assert meta["schema_version"] == "c4-report/1.0"
+    assert meta["schema_version"] == "c4-report/1.1"
 
 
 def test_every_target_has_a_usable_scenario_for_each_case(bench: Workbench) -> None:

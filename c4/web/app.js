@@ -149,7 +149,7 @@ function refreshInputsView() {
 }
 
 function updateCount() {
-  $("#char-count").textContent = `${$("#explanation").value.length} / 2000`;
+  $("#char-count").textContent = `${$("#explanation").value.length} / 20000`;
 }
 
 /* ---------- verifier settings ---------- */
@@ -196,7 +196,7 @@ async function generate(source) {
   buttons.forEach((b) => { b.disabled = true; });
   label.textContent = source === "ollama" ? "Writing… (a few seconds)" : "Writing…";
   try {
-    const result = await api("/api/generate", { target: state.target, source, learner: state.learner });
+    const result = await api("/api/generate", { target: state.target, source, learner: state.learner, config: readConfig() });
     $("#explanation").value = result.explanation;
     updateCount();
     $("#prompt-box").hidden = !result.prompt;
@@ -337,6 +337,150 @@ function verdict(report) {
     el("div", {}, el("strong", {}, title), el("small", {}, note)));
 }
 
+
+/* ---------- final explanation document ---------- */
+const SVG_NS = "http://www.w3.org/2000/svg";
+const ICONS = {
+  check: ["M5 12.5l4.5 4.5L19 7.5"],
+  rewrite: ["M4 12a8 8 0 0114-5.3L20 9", "M20 4v5h-5", "M20 12a8 8 0 01-14 5.3L4 15", "M4 20v-5h5"],
+  alert: ["M12 3.5l9.5 16.5h-19z", "M12 10v4.5", "M12 17.5v.1"],
+  info: ["M12 21a9 9 0 100-18 9 9 0 000 18z", "M12 11v5", "M12 8v.1"],
+  book: ["M4 4.5h6a2 2 0 012 2V20a2 2 0 00-2-2H4z", "M20 4.5h-6a2 2 0 00-2 2V20a2 2 0 012-2h6z"],
+  link: ["M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1", "M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"],
+  compass: ["M12 21a9 9 0 100-18 9 9 0 000 18z", "M15.5 8.5l-2 5-5 2 2-5z"],
+  layers: ["M12 3l9 5-9 5-9-5z", "M3 13l9 5 9-5"],
+  question: ["M12 21a9 9 0 100-18 9 9 0 000 18z", "M9.6 9.6a2.5 2.5 0 114 2c-1 .8-1.6 1.2-1.6 2.4", "M12 17v.1"],
+  target: ["M12 21a9 9 0 100-18 9 9 0 000 18z", "M12 16a4 4 0 100-8 4 4 0 000 8z", "M12 12v.01"],
+  flag: ["M5 21V4", "M5 4h11l-2 4 2 4H5"],
+  copy: ["M9 9h10v11H9z", "M5 15V4h10"],
+};
+
+function icon(name, size = 18) {
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("width", size);
+  svg.setAttribute("height", size);
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "2");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  svg.setAttribute("aria-hidden", "true");
+  for (const d of ICONS[name] || ICONS.info) {
+    const path = document.createElementNS(SVG_NS, "path");
+    path.setAttribute("d", d);
+    svg.append(path);
+  }
+  return svg;
+}
+
+const SECTION_ICONS = [
+  [/mistake/i, "alert"], [/before/i, "link"], [/stand/i, "compass"],
+  [/refresher/i, "layers"], [/about|what/i, "book"],
+];
+const sectionIcon = (title) => (SECTION_ICONS.find(([pattern]) => pattern.test(title)) || [null, "info"])[1];
+
+const NODE_STATES = {
+  MASTERED: ["ok", "check", "secure"], UNMASTERED: ["bad", "alert", "review"],
+  UNKNOWN: ["warn", "question", "check"], TARGET: ["target", "target", "this step"], FIX: ["info", "alert", "fix"],
+};
+
+function pathFlow(visual) {
+  const flow = el("div", { class: "flow", role: "list", "aria-label": "Verified learning path" });
+  visual.nodes.forEach((node, index) => {
+    const [tone, glyph, label] = NODE_STATES[node.state] || NODE_STATES.UNKNOWN;
+    const detail = node.state === "TARGET" ? label
+      : node.state === "FIX" ? label
+      : node.mastery === null || node.mastery === undefined ? "no history"
+      : `${label} · ${node.mastery.toFixed(2)}`;
+    if (index) flow.append(el("span", { class: "arr", "aria-hidden": "true" }, "→"));
+    flow.append(el("div", { class: `node ${tone}`, role: "listitem",
+      title: node.kind === "probe" ? "Quick check before learning" : null },
+      icon(glyph, 17), el("b", {}, node.name.replace(/^Fix: /, "")),
+      el("small", {}, node.kind === "probe" ? `check · ${detail}` : detail)));
+  });
+  const legend = el("div", { class: "legend" },
+    ...[["ok", "secure"], ["bad", "review first"], ["warn", "quick check"], ["target", "this step"]]
+      .map(([tone, text]) => el("span", {}, el("i", { class: tone }), text)),
+    el("span", { class: "ceiling" }, `Bloom ceiling: ${visual.bloom_ceiling_name}`));
+  return el("div", { class: "pathbox" }, flow, legend);
+}
+
+function finalDocument(report, clean) {
+  const layout = report.final_layout;
+  if (!layout || !layout.length) {
+    return el("div", { class: `final${clean ? "" : " unresolved"}` }, report.final_explanation || "(empty)");
+  }
+  const claims = new Map(report.claims.map((claim) => [claim.claim_id, claim]));
+  const rewritten = report.rewrite_trace.map((step) => step.after).filter(Boolean);
+  const sources = [];
+  const cite = (evidence) => {
+    let index = sources.indexOf(evidence);
+    if (index < 0) { sources.push(evidence); index = sources.length - 1; }
+    return index + 1;
+  };
+  const counts = { verified: 0, rewritten: 0, grounded: 0, open: 0 };
+  const removed = report.rewrite_trace.filter((step) => !step.after).length;
+
+  const sentence = (id) => {
+    const claim = claims.get(id);
+    if (!claim) return null;
+    const note = claim.evidence[0] || "";
+    let kind = "verified", glyph = "check", help = `Verified against the knowledge graph (${claim.confidence.toLowerCase()} confidence).`;
+    if (!claim.accepted) { kind = "open"; glyph = "alert"; help = "Not verified: " + claim.violations.map(pretty).join(", "); }
+    else if (claim.source === "grounded") { kind = "grounded"; glyph = "info"; help = note; }
+    else if (rewritten.some((after) => after.includes(claim.text))) { kind = "rewritten"; glyph = "rewrite"; help = "Rewritten by C4, then re-verified."; }
+    counts[kind] += 1;
+    const number = kind === "verified" && note ? cite(note) : null;
+    return el("span", { class: `sent ${kind}`, title: help },
+      el("span", { class: "gut" }, icon(glyph, 15)), claim.text,
+      number ? el("sup", { class: "cite", title: note }, `[${number}]`) : null);
+  };
+
+  const body = [];
+  let list = null;
+  for (const line of layout) {
+    if (line.kind === "heading") {
+      list = null;
+      body.push(el(`h${Math.min(4, line.level + 1)}`, { class: `dh dh${line.level}` },
+        line.level >= 3 ? el("span", { class: "hi" }, icon(sectionIcon(line.text), 17)) : null, line.text));
+    } else if (line.kind === "path") {
+      list = null;
+      body.push(report.visual ? pathFlow(report.visual) : el("p", { class: "plainpath" }, line.text));
+    } else if (line.kind === "bullet") {
+      if (!list) { list = el("ul", { class: "dl" }); body.push(list); }
+      list.append(el("li", {}, line.claim_ids.map(sentence)));
+    } else {
+      list = null;
+      body.push(el("p", { class: "dp" }, line.claim_ids.map(sentence)));
+    }
+  }
+  const footnotes = sources.length
+    ? el("div", { class: "sources" }, el("b", {}, "Graph evidence"),
+        el("ol", {}, sources.map((text) => el("li", {}, text))))
+    : null;
+  const summary = el("div", { class: "docbar" },
+    el("span", {}, `${counts.verified} verified against the graph`),
+    el("span", {}, `${counts.rewritten} rewritten`),
+    removed ? el("span", {}, `${removed} draft sentence${removed === 1 ? "" : "s"} dropped (covered elsewhere)`) : null,
+    el("span", {}, `${counts.grounded} written from your learner data`),
+    counts.open ? el("span", { class: "open" }, `${counts.open} not verified`) : null,
+    el("button", { type: "button", class: "ghost copy", onclick: (event) => copyText(report.final_explanation, event.currentTarget) },
+      icon("copy", 15), "Copy as Markdown"));
+  return el("article", { class: `doc${clean ? "" : " unresolved"}` }, summary, ...body, footnotes);
+}
+
+async function copyText(text, button) {
+  const label = button.lastChild.textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    button.lastChild.textContent = "Copied";
+  } catch (error) {
+    button.lastChild.textContent = "Copy not available";
+  }
+  setTimeout(() => { button.lastChild.textContent = label; }, 1600);
+}
+
 function renderReport(report) {
   const m = report.metrics;
   const clean = report.unresolved_claims.length === 0;
@@ -359,7 +503,7 @@ function renderReport(report) {
             step.violations.map((v) => badge("bad", "", pretty(v))), badge("info", "via", step.strategy)),
           el("div", { class: "diff" },
             el("p", { class: "del" }, step.before),
-            el("p", { class: "add" }, step.after || "(sentence removed — its content is already stated)")))))
+            el("p", { class: "add" }, step.after || "(sentence removed — its content is already stated elsewhere)")))))
     : el("p", { class: "lede" }, "No claim violated a rule, so nothing was rewritten.");
 
   const notice = el("div", { class: "notice" },
@@ -369,20 +513,20 @@ function renderReport(report) {
     report.review_first.map((id) => badge("info", "", state.meta.concepts[id] || id)));
 
   const json = JSON.stringify(report, null, 2);
-  const details = el("details", { class: "json" }, el("summary", {}, "Faithfulness report (JSON, schema c4-report/1.0)"),
+  const details = el("details", { class: "json" }, el("summary", {}, "Faithfulness report (JSON, schema c4-report/1.1)"),
     el("pre", {}, json),
     el("div", { class: "json-actions" }, el("button", { type: "button", onclick: () => downloadJson(json) }, "Download JSON")));
 
   $("#results").replaceChildren(
     verdict(report),
+    block("Final explanation", "Every sentence below passed both checks. Hover a sentence for how it was verified.",
+      finalDocument(report, clean)),
     tiles,
     block("Initial verification", "Every sentence is one claim, labelled on two independent dimensions.",
       el("div", { class: "claims" }, report.initial_claims.map(claimCard))),
     block("Targeted rewrites", "Only violating claims are changed; valid claims are left exactly as written.", trace),
     block("Re-verification", "Rewritten text passes through the same checks before it is accepted.",
       el("div", { class: "claims" }, report.claims.map(claimCard))),
-    block("Final explanation", null,
-      el("div", { class: `final${clean ? "" : " unresolved"}` }, report.final_explanation || "(empty)")),
     notice, details);
 
   const stages = { decompose: true, verify: true, rewrite: report.rewrite_trace.length > 0,

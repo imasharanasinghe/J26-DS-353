@@ -75,9 +75,9 @@
   },
   "conditions_after_repair": {
     "factual_only": {
-      "claims_after": 84,
+      "claims_after": 64,
       "hallucination_rate": 0.0,
-      "cognitive_mismatch_rate": 21.43,
+      "cognitive_mismatch_rate": 28.12,
       "cases_with_violation": 12,
       "cases_with_violation_ci95": [
         26.5,
@@ -88,11 +88,11 @@
         "worsened": 0,
         "p_exact": 3.052e-05
       },
-      "mean_latency_ms": 0.387
+      "mean_latency_ms": 0.404
     },
     "cognitive_only": {
-      "claims_after": 73,
-      "hallucination_rate": 17.81,
+      "claims_after": 53,
+      "hallucination_rate": 24.53,
       "cognitive_mismatch_rate": 0.0,
       "cases_with_violation": 13,
       "cases_with_violation_ci95": [
@@ -104,10 +104,10 @@
         "worsened": 0,
         "p_exact": 6.104e-05
       },
-      "mean_latency_ms": 0.336
+      "mean_latency_ms": 0.425
     },
     "full_c4": {
-      "claims_after": 68,
+      "claims_after": 40,
       "hallucination_rate": 0.0,
       "cognitive_mismatch_rate": 0.0,
       "cases_with_violation": 0,
@@ -120,18 +120,30 @@
         "worsened": 0,
         "p_exact": 1e-08
       },
-      "mean_latency_ms": 0.392
+      "mean_latency_ms": 0.469
     }
   },
   "caveat": "Post-repair rates use the same verifier as the repair loop (not independent). Detection scores on a recipe-built corpus show the rules behave as specified; they are not generalisation evidence.",
   "sample_reports": {
     "tree/all_mastered": {
-      "schema_version": "c4-report/1.0",
+      "schema_version": "c4-report/1.1",
       "learner_id": "all_mastered:tree",
       "target": "tree",
       "verified_path": true,
       "original_explanation": "Trees are hierarchical data structures. A tree is a linear data structure. Tree nodes can be traversed using recursion.",
-      "final_explanation": "Trees are hierarchical data structures. For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing. Tree nodes can be traversed using recursion.",
+      "final_explanation": "Trees are hierarchical data structures. Common mistake: \"A tree is a linear data structure\" is false. Tree nodes can be traversed using recursion.",
+      "final_layout": [
+        {
+          "kind": "text",
+          "level": 0,
+          "text": "",
+          "claim_ids": [
+            "claim-1",
+            "claim-2",
+            "claim-3"
+          ]
+        }
+      ],
       "initial_claims": [
         {
           "claim_id": "claim-1",
@@ -140,6 +152,7 @@
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "ENTAILED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
@@ -157,6 +170,7 @@
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "CONTRADICTED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
@@ -167,7 +181,7 @@
           ],
           "confidence": "MEDIUM",
           "accepted": false,
-          "rewritten_text": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing."
+          "rewritten_text": "Common mistake: \"A tree is a linear data structure\" is false."
         },
         {
           "claim_id": "claim-3",
@@ -177,6 +191,7 @@
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "ENTAILED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
@@ -196,6 +211,7 @@
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "ENTAILED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
@@ -208,15 +224,16 @@
         },
         {
           "claim_id": "claim-2",
-          "text": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
+          "text": "Common mistake: \"A tree is a linear data structure\" is false.",
           "concept_ids": [
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "grounded",
           "factual_status": "ENTAILED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
-            "pipeline guidance sentence; asserts no domain fact"
+            "written by C4 from the C1 knowledge graph; asserts no unverified domain fact"
           ],
           "violations": [],
           "confidence": "MEDIUM",
@@ -231,6 +248,7 @@
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "ENTAILED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
@@ -251,8 +269,8 @@
             "CONTRADICTED_CLAIM"
           ],
           "before": "A tree is a linear data structure.",
-          "after": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
-          "strategy": "prerequisite-review guidance"
+          "after": "Common mistake: \"A tree is a linear data structure\" is false.",
+          "strategy": "misconception correction"
         }
       ],
       "unresolved_claims": [],
@@ -267,7 +285,7 @@
           "cognitive_mismatch_rate": 0.0
         },
         "after": {
-          "claims": 3,
+          "claims": 2,
           "factual_violations": 0,
           "cognitive_violations": 0,
           "inconclusive": 0,
@@ -302,12 +320,23 @@
       }
     },
     "tree/missing_prereq": {
-      "schema_version": "c4-report/1.0",
+      "schema_version": "c4-report/1.1",
       "learner_id": "missing_prereq:tree",
       "target": "tree",
       "verified_path": true,
       "original_explanation": "Trees are hierarchical data structures. Trees always takes constant time for every operation. Tree nodes can be traversed using recursion.",
-      "final_explanation": "Trees are hierarchical data structures. For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing. Tree nodes can be traversed using recursion.",
+      "final_explanation": "Trees are hierarchical data structures. Tree nodes can be traversed using recursion.",
+      "final_layout": [
+        {
+          "kind": "text",
+          "level": 0,
+          "text": "",
+          "claim_ids": [
+            "claim-1",
+            "claim-2"
+          ]
+        }
+      ],
       "initial_claims": [
         {
           "claim_id": "claim-1",
@@ -316,6 +345,7 @@
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "ENTAILED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
@@ -333,6 +363,7 @@
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "UNSUPPORTED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [],
@@ -341,7 +372,7 @@
           ],
           "confidence": "LOW",
           "accepted": false,
-          "rewritten_text": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing."
+          "rewritten_text": ""
         },
         {
           "claim_id": "claim-3",
@@ -351,6 +382,7 @@
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "ENTAILED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
@@ -370,6 +402,7 @@
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "ENTAILED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
@@ -382,29 +415,13 @@
         },
         {
           "claim_id": "claim-2",
-          "text": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
-          "concept_ids": [
-            "tree"
-          ],
-          "estimated_bloom_level": 1,
-          "factual_status": "ENTAILED",
-          "cognitive_status": "APPROPRIATE",
-          "evidence": [
-            "pipeline guidance sentence; asserts no domain fact"
-          ],
-          "violations": [],
-          "confidence": "MEDIUM",
-          "accepted": true,
-          "rewritten_text": null
-        },
-        {
-          "claim_id": "claim-3",
           "text": "Tree nodes can be traversed using recursion.",
           "concept_ids": [
             "recursion",
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "ENTAILED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
@@ -425,8 +442,8 @@
             "UNSUPPORTED_CLAIM"
           ],
           "before": "Trees always takes constant time for every operation.",
-          "after": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
-          "strategy": "prerequisite-review guidance"
+          "after": "",
+          "strategy": "removed (no verified replacement available)"
         }
       ],
       "unresolved_claims": [],
@@ -441,7 +458,7 @@
           "cognitive_mismatch_rate": 0.0
         },
         "after": {
-          "claims": 3,
+          "claims": 2,
           "factual_violations": 0,
           "cognitive_violations": 0,
           "inconclusive": 0,
@@ -455,7 +472,7 @@
         "unresolved": 0,
         "final_confidence": {
           "HIGH": 2,
-          "MEDIUM": 1,
+          "MEDIUM": 0,
           "LOW": 0
         },
         "llm_calls_in_verifier": 0
@@ -476,12 +493,24 @@
       }
     },
     "tree/several_low": {
-      "schema_version": "c4-report/1.0",
+      "schema_version": "c4-report/1.1",
       "learner_id": "several_low:tree",
       "target": "tree",
       "verified_path": true,
       "original_explanation": "Trees are hierarchical data structures. Analyze and compare Trees against every alternative data structure. Tree nodes can be traversed using recursion.",
-      "final_explanation": "Trees are hierarchical data structures. For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
+      "final_explanation": "Trees are hierarchical data structures. This asks for Analyze-level thinking, but your current ceiling is Understand-level, so it is saved for later. Review Recursion first: your mastery is 0.35, below the 0.70 this path needs, and it is a prerequisite of Trees.",
+      "final_layout": [
+        {
+          "kind": "text",
+          "level": 0,
+          "text": "",
+          "claim_ids": [
+            "claim-1",
+            "claim-2",
+            "claim-3"
+          ]
+        }
+      ],
       "initial_claims": [
         {
           "claim_id": "claim-1",
@@ -490,6 +519,7 @@
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "ENTAILED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
@@ -507,6 +537,7 @@
             "tree"
           ],
           "estimated_bloom_level": 4,
+          "source": "domain",
           "factual_status": "UNSUPPORTED",
           "cognitive_status": "BLOOM_MISMATCH",
           "evidence": [],
@@ -516,7 +547,7 @@
           ],
           "confidence": "LOW",
           "accepted": false,
-          "rewritten_text": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing."
+          "rewritten_text": "This asks for Analyze-level thinking, but your current ceiling is Understand-level, so it is saved for later."
         },
         {
           "claim_id": "claim-3",
@@ -526,6 +557,7 @@
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "ENTAILED",
           "cognitive_status": "UNMASTERED_PREREQUISITE",
           "evidence": [
@@ -536,7 +568,7 @@
           ],
           "confidence": "MEDIUM",
           "accepted": false,
-          "rewritten_text": ""
+          "rewritten_text": "Review Recursion first: your mastery is 0.35, below the 0.70 this path needs, and it is a prerequisite of Trees."
         }
       ],
       "claims": [
@@ -547,6 +579,7 @@
             "tree"
           ],
           "estimated_bloom_level": 1,
+          "source": "domain",
           "factual_status": "ENTAILED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
@@ -559,15 +592,33 @@
         },
         {
           "claim_id": "claim-2",
-          "text": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
-          "concept_ids": [
-            "tree"
-          ],
-          "estimated_bloom_level": 1,
+          "text": "This asks for Analyze-level thinking, but your current ceiling is Understand-level, so it is saved for later.",
+          "concept_ids": [],
+          "estimated_bloom_level": 4,
+          "source": "grounded",
           "factual_status": "ENTAILED",
           "cognitive_status": "APPROPRIATE",
           "evidence": [
-            "pipeline guidance sentence; asserts no domain fact"
+            "written by C4 from the C2 learner state; asserts no unverified domain fact"
+          ],
+          "violations": [],
+          "confidence": "MEDIUM",
+          "accepted": true,
+          "rewritten_text": null
+        },
+        {
+          "claim_id": "claim-3",
+          "text": "Review Recursion first: your mastery is 0.35, below the 0.70 this path needs, and it is a prerequisite of Trees.",
+          "concept_ids": [
+            "recursion",
+            "tree"
+          ],
+          "estimated_bloom_level": 1,
+          "source": "grounded",
+          "factual_status": "ENTAILED",
+          "cognitive_status": "APPROPRIATE",
+          "evidence": [
+            "written by C4 from the C2 learner state; asserts no unverified domain fact"
           ],
           "violations": [],
           "confidence": "MEDIUM",
@@ -585,8 +636,8 @@
             "BLOOM_MISMATCH"
           ],
           "before": "Analyze and compare Trees against every alternative data structure.",
-          "after": "For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.",
-          "strategy": "prerequisite-review guidance"
+          "after": "This asks for Analyze-level thinking, but your current ceiling is Understand-level, so it is saved for later.",
+          "strategy": "bloom deferral + graph fact"
         },
         {
           "attempt": 1,
@@ -595,8 +646,8 @@
             "UNMASTERED_PREREQUISITE"
           ],
           "before": "Tree nodes can be traversed using recursion.",
-          "after": "",
-          "strategy": "removed (replacement already stated)"
+          "after": "Review Recursion first: your mastery is 0.35, below the 0.70 this path needs, and it is a prerequisite of Trees.",
+          "strategy": "prerequisite-review guidance"
         }
       ],
       "unresolved_claims": [],
@@ -613,7 +664,7 @@
           "cognitive_mismatch_rate": 66.67
         },
         "after": {
-          "claims": 2,
+          "claims": 1,
           "factual_violations": 0,
           "cognitive_violations": 0,
           "inconclusive": 0,
@@ -627,12 +678,12 @@
         "unresolved": 0,
         "final_confidence": {
           "HIGH": 1,
-          "MEDIUM": 1,
+          "MEDIUM": 2,
           "LOW": 0
         },
         "llm_calls_in_verifier": 0
       },
-      "latency_s": 0.0003,
+      "latency_s": 0.0005,
       "config": {
         "mastery_threshold": 0.7,
         "uncertainty_threshold": 0.25,

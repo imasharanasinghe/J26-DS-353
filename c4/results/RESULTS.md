@@ -24,12 +24,12 @@ Baseline = original explanations, rates from the reference labels. Repaired rate
 | Condition | Hallucination rate % | Cognitive-mismatch rate % | Cases with violation | 95% CI | McNemar fixed/worsened, p |
 |---|---|---|---|---|---|
 | Unverified baseline | 25.0 | 29.76 | 28/28 | (87.9, 100.0) | - |
-| factual_only | 0.0 | 21.43 | 12/28 | (26.5, 60.9) | 16/0, p=3.052e-05 |
-| cognitive_only | 17.81 | 0.0 | 13/28 | (29.5, 64.2) | 15/0, p=6.104e-05 |
+| factual_only | 0.0 | 28.12 | 12/28 | (26.5, 60.9) | 16/0, p=3.052e-05 |
+| cognitive_only | 24.53 | 0.0 | 13/28 | (29.5, 64.2) | 15/0, p=6.104e-05 |
 | full_c4 | 0.0 | 0.0 | 0/28 | (0.0, 12.1) | 28/0, p=1e-08 |
 
 Rewrite (full C4): 44/44 violating claims corrected (success 100.0%); new violations introduced: 0.
-Mean full-C4 latency per case: 0.392 ms (verifier only; 0 LLM calls).
+Mean full-C4 latency per case: 0.469 ms (verifier only; 0 LLM calls).
 
 **Caveat.** Post-repair rates use the same verifier as the repair loop (not independent). Detection scores on a recipe-built corpus show the rules behave as specified; they are not generalisation evidence.
 
@@ -55,13 +55,13 @@ Reading: the strict rule (default 0.6) cannot distinguish a faithful paraphrase 
 ### Examples
 - `tree/all_mastered`
   - original: A tree is a hierarchical data structure where each node connects to zero or more child nodes. Since you know recursion, you can traverse trees by recursively visiting each node's children.
-  - final: Trees are hierarchical data structures. Tree nodes can be traversed using recursion.
+  - final: Trees are hierarchical data structures. Recursion solves a problem by calling a function on smaller input.
 - `tree/missing_prereq`
   - original: A tree is a hierarchical data structure where each node connects to zero or more child nodes. You can traverse trees using recursion because each subtree mirrors the entire tree's recursive pattern.
-  - final: Trees are hierarchical data structures. Tree nodes can be traversed using recursion.
+  - final: Trees are hierarchical data structures. Recursion solves a problem by calling a function on smaller input.
 - `tree/several_low`
   - original: A tree is a hierarchical structure where each node connects to zero or more child nodes. You can traverse it using recursion because each subtree follows the same pattern as the whole tree.
-  - final: Trees are hierarchical data structures. For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.
+  - final: Trees are hierarchical data structures. Review Recursion first: your mastery is 0.35, below the 0.70 this path needs, and it is a prerequisite of Trees.
 - `tree/uncertain`
   - original: A tree is a hierarchical data structure where each node connects to zero or more child nodes. Since you know recursion, you can traverse trees by recursively visiting each node's children.
-  - final: Trees are hierarchical data structures. For Trees, review the earlier concepts on your verified learning path that are not yet secure before continuing.
+  - final: Trees are hierarchical data structures. Take a quick check on Recursion first: the model is unsure how well you know it (mastery 0.85, uncertainty 0.40).

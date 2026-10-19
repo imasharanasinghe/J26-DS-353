@@ -8,39 +8,78 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 from typing import Any
 
+from . import grounding
+from .pipeline import C4Config, C4Pipeline
+
 
 GENERATION_OPTIONS = {"temperature": 0.2, "num_predict": 200, "repeat_penalty": 1.1}
 
 
+def compose_explanation(
+    c3_path: dict[str, Any],
+    learner_state: dict[str, Any],
+    knowledge_graph: dict[str, Any],
+    body: list[str] | None = None,
+    config: C4Config | None = None,
+) -> str:
+    """Structured draft: path diagram, the concept, prerequisites, learner status, mistakes.
+
+    ``body`` holds the sentences that explain the target concept (from a language model);
+    without it the graph facts are used. The draft is unverified: it deliberately lists
+    everything relevant to the path, and C4 then removes or rewrites whatever this learner
+    should not be given yet.
+    """
+    pipeline = C4Pipeline(knowledge_graph, config)
+    concepts = knowledge_graph.get("concepts", {})
+    target = c3_path["target"]
+    name = pipeline.concept_name(target)
+    earlier = pipeline.path_concepts(c3_path)
+    prerequisites = [item for item in concepts.get(target, {}).get("prerequisites", []) if item in concepts]
+    status_ids = earlier + [item for item in prerequisites if item not in earlier]
+
+    sections: list[tuple[str, list[str]]] = [
+        (f"About {name}", body or list(concepts.get(target, {}).get("facts", []))),
+        ("Before you start", pipeline.prerequisite_sentences(target)),
+        ("Where you stand", [pipeline.status_sentence(item, c3_path, learner_state) for item in status_ids]
+         + [pipeline.next_sentence(c3_path, learner_state)]),
+        ("Refresher on earlier concepts",
+         [fact for item in status_ids for fact in concepts.get(item, {}).get("facts", [])]),
+        ("Common mistakes",
+         pipeline.misconception_sentences(target) + [
+             sentence for item in earlier if pipeline._mastery_state(item, learner_state) == "MASTERED"
+             for sentence in pipeline.misconception_sentences(item)]),
+    ]
+    lines = [f"## {name}: your next step", "", grounding.path_line(c3_path, knowledge_graph)]
+    for title, bullets in sections:
+        bullets = list(dict.fromkeys(bullets))
+        if bullets:
+            lines += ["", f"### {title}"] + [f"- {item}" for item in bullets]
+    return "\n".join(lines)
+
+
 class TemplateExplanationGenerator:
     """Offline, deterministic generator used until the team selects an LLM."""
+
+    def generate_body(
+        self,
+        c3_path: dict[str, Any],
+        learner_state: dict[str, Any],
+        knowledge_graph: dict[str, Any],
+    ) -> str:
+        facts = knowledge_graph.get("concepts", {}).get(c3_path["target"], {}).get("facts", [])
+        return " ".join(facts)
 
     def generate(
         self,
         c3_path: dict[str, Any],
         learner_state: dict[str, Any],
         knowledge_graph: dict[str, Any],
+        config: C4Config | None = None,
     ) -> str:
-        target = c3_path["target"]
-        concept = knowledge_graph.get("concepts", {}).get(target, {})
-        name = concept.get("name", target.replace("_", " ").title())
-        prerequisites = concept.get("prerequisites", [])
-        prerequisite_names = [
-            knowledge_graph.get("concepts", {}).get(item, {}).get(
-                "name", item.replace("_", " ").title()
-            )
-            for item in prerequisites
-        ]
-        path_context = " -> ".join(
-            step.get("name", step.get("id", "")) for step in c3_path.get("path", [])
-        )
-        learner_id = learner_state.get("learner_id", c3_path["learner_id"])
-        text = f"For learner {learner_id}, {name} is introduced through the verified path"
-        if path_context:
-            text += f" ({path_context})"
-        if prerequisite_names:
-            text += f" after considering {', '.join(prerequisite_names)}"
-        return text + "."
+        return compose_explanation(c3_path, learner_state, knowledge_graph, config=config)
+
+    def build_prompt(self, *_: Any) -> None:
+        return None
 
 
 class OllamaExplanationGenerator:
@@ -73,7 +112,7 @@ class OllamaExplanationGenerator:
         mastery = learner_state.get("mastery", {})
         known = [c for c in path if c != target and float(mastery.get(c, 0.0)) >= mastery_threshold]
         unknown = [c for c in path if c != target and c not in known]
-        lines = [f"Explain {name} to a student in exactly 2 short sentences."]
+        lines = [f"Explain {name} to a student in 3 or 4 short sentences."]
         lines.append("Only use these facts:")
         lines += [f"- {fact}" for fact in facts]
         lines.append(f"Learning path (verified): {' -> '.join(path)}")
@@ -87,7 +126,20 @@ class OllamaExplanationGenerator:
         c3_path: dict[str, Any],
         learner_state: dict[str, Any],
         knowledge_graph: dict[str, Any],
+        config: C4Config | None = None,
     ) -> str:
+        """Structured draft whose concept explanation is written by the local model."""
+        body = self.generate_body(c3_path, learner_state, knowledge_graph)
+        sentences = [item for item in re.split(r"(?<=[.!?])\s+", body) if item.strip()]
+        return compose_explanation(c3_path, learner_state, knowledge_graph, sentences, config)
+
+    def generate_body(
+        self,
+        c3_path: dict[str, Any],
+        learner_state: dict[str, Any],
+        knowledge_graph: dict[str, Any],
+    ) -> str:
+        """Raw model explanation of the concept (what the natural-generation cache stores)."""
         payload = json.dumps({
             "model": self.model,
             "messages": [

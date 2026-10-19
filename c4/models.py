@@ -18,6 +18,9 @@ class Claim:
     text: str
     concept_ids: tuple[str, ...] = ()
     estimated_bloom_level: int | None = None
+    # "domain" claims are checked against the graph; "grounded" sentences were written by
+    # C4 from learner/path/graph data and are excluded from the hallucination denominators.
+    source: str = "domain"
 
 
 @dataclass
@@ -40,6 +43,7 @@ class VerifiedClaim:
             "text": self.claim.text,
             "concept_ids": list(self.claim.concept_ids),
             "estimated_bloom_level": self.claim.estimated_bloom_level,
+            "source": self.claim.source,
             "factual_status": self.factual_status,
             "cognitive_status": self.cognitive_status,
             "evidence": self.evidence,

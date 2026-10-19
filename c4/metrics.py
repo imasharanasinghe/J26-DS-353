@@ -14,7 +14,12 @@ def percent(numerator: float, denominator: float) -> float | None:
 
 
 def claim_rates(claims: Sequence[Any]) -> dict[str, Any]:
-    """Hallucination and cognitive-mismatch rates over VerifiedClaim objects."""
+    """Hallucination and cognitive-mismatch rates over VerifiedClaim objects.
+
+    Sentences C4 wrote itself from learner, path, or graph data are not model claims, so
+    they are excluded from the denominators; counting them would dilute the rates.
+    """
+    claims = [c for c in claims if getattr(c.claim, "source", "domain") == "domain"]
     total = len(claims)
     factual = sum(c.factual_status in FACTUAL_BAD for c in claims)
     cognitive = sum(c.cognitive_status in COGNITIVE_BAD for c in claims)

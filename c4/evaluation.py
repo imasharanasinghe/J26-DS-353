@@ -265,7 +265,7 @@ def evaluate_natural(kg: dict[str, Any], cache_path: Path, generator=None) -> di
                 if generator is None:
                     continue
                 try:
-                    entries[key] = generator.generate(path, learner, kg)
+                    entries[key] = generator.generate_body(path, learner, kg)
                 except RuntimeError as exc:
                     failures.append({"case_id": key, "error": str(exc)})
                     continue

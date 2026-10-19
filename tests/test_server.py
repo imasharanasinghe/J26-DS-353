@@ -63,7 +63,7 @@ def test_bad_requests_return_400_with_error_message(base_url, payload, raw, expe
 
 
 def test_oversized_body_is_rejected(base_url) -> None:
-    status, _, _ = call(f"{base_url}/api/verify", raw=b"{" + b" " * (70 * 1024) + b"}")
+    status, _, _ = call(f"{base_url}/api/verify", raw=b"{" + b" " * (300 * 1024) + b"}")
     assert status == 413
 
 
@@ -93,4 +93,4 @@ def test_self_hosted_font_is_served_with_a_font_type(base_url) -> None:
 def test_explain_endpoint_runs_the_whole_pipeline(base_url) -> None:
     status, _, body = call(f"{base_url}/api/explain", {"target": "arrays", "source": "template"})
     report = json.loads(body)
-    assert status == 200 and report["generator"] == "template" and report["schema_version"] == "c4-report/1.0"
+    assert status == 200 and report["generator"] == "template" and report["schema_version"] == "c4-report/1.1"

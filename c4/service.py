@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "c4" / "data"
 RESULTS = ROOT / "c4" / "results"
 
-MAX_EXPLANATION_CHARS = 2000
+MAX_EXPLANATION_CHARS = 20000
 SCENARIOS = ("mixed", "valid", "factual", "cognitive")
 
 # Config keys a client may override, with their expected type and allowed range.
@@ -116,7 +116,7 @@ class Workbench:
             "config_defaults": defaults,
             "config_limits": {key: list(value[1:]) for key, value in CONFIG_LIMITS.items()},
             "generators": ["template", "ollama"],
-            "schema_version": "c4-report/1.0",
+            "schema_version": "c4-report/1.1",
         }
 
     def _learner_payload(self, learner: dict[str, Any]) -> dict[str, Any]:
@@ -139,6 +139,7 @@ class Workbench:
         validate_c3_path(path)
         report = pipeline.run(path, learner, explanation).to_dict()
         report["bloom_ceiling"] = pipeline._bloom_ceiling(path, learner)
+        report["visual"] = pipeline.visual(path, learner)
         return report
 
     def generate(self, payload: dict[str, Any], ollama: OllamaExplanationGenerator | None = None) -> dict[str, Any]:
@@ -151,7 +152,7 @@ class Workbench:
         generator = TemplateExplanationGenerator() if source == "template" else (
             ollama or OllamaExplanationGenerator(timeout=60.0)
         )
-        text = generator.generate(path, learner, self.kg)
+        text = generator.generate(path, learner, self.kg, self._config(payload.get("config")))
         return {"source": source, "explanation": text, "prompt": (
             generator.build_prompt(path, learner, self.kg) if source == "ollama" else None
         )}

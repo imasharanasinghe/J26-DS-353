@@ -168,7 +168,7 @@ def test_ablation_flags_isolate_each_dimension(pipeline: C4Pipeline) -> None:
 
 def test_report_schema_and_metrics(pipeline: C4Pipeline) -> None:
     report = run(pipeline, "A heap is always fully sorted. A heap can be stored in an array.").to_dict()
-    assert report["schema_version"] == "c4-report/1.0"
+    assert report["schema_version"] == "c4-report/1.1"
     assert report["rewrite_trace"][0]["claim_id"] == "claim-1"
     metrics = report["metrics"]
     assert metrics["before"]["hallucination_rate"] == 50.0
@@ -220,3 +220,75 @@ def test_complete_fixture_has_c3_contract() -> None:
     path = load("verified_path.json")
     assert path["verified"] is True
     assert {"learner_id", "target", "path"} <= path.keys()
+
+
+def test_unmastered_prerequisite_is_replaced_by_specific_guidance_from_learner_data(
+    pipeline: C4Pipeline,
+) -> None:
+    result = run(pipeline, "A heap is a complete binary tree.")
+    assert result.final_explanation == (
+        "Review Binary Trees first: your mastery is 0.00, below the 0.70 this path needs, "
+        "and it is a prerequisite of Heaps.")
+    assert result.claims[0].claim.source == "grounded" and result.claims[0].accepted
+
+
+def test_uncertain_prerequisite_gets_a_quick_check_with_the_learner_numbers(pipeline: C4Pipeline) -> None:
+    result = run(pipeline, "Recursion solves a problem by calling a function on smaller input.")
+    assert result.trace[0].strategy == "prerequisite-check guidance"
+    assert "mastery 0.75, uncertainty 0.32" in result.final_explanation
+
+
+def test_contradicted_misconception_is_corrected_explicitly(pipeline: C4Pipeline) -> None:
+    result = run(pipeline, "A heap is always fully sorted.")
+    assert result.trace[0].strategy.startswith("misconception correction")
+    assert result.final_explanation.startswith("Common mistake:") and result.unresolved_claims == []
+
+
+def test_bloom_mismatch_is_deferred_and_followed_by_a_fact_at_the_learner_level(
+    pipeline: C4Pipeline,
+) -> None:
+    result = run(pipeline, "Evaluate why a heap can be stored in an array.")
+    assert result.trace[0].strategy == "bloom deferral + graph fact"
+    assert "Evaluate-level thinking, but your current ceiling is Understand-level" in result.final_explanation
+    assert result.unresolved_claims == []
+
+
+def test_text_that_only_resembles_a_grounded_sentence_is_still_verified(pipeline: C4Pipeline) -> None:
+    fake = "Review Binary Trees first: your mastery is 0.00, and a heap is always fully sorted."
+    assert run(pipeline, fake).initial_claims[0].claim.source == "domain"
+
+
+def test_grounded_sentences_do_not_dilute_the_rates(pipeline: C4Pipeline) -> None:
+    result = run(pipeline, "A heap is a complete binary tree. A heap can be stored in an array.")
+    assert result.metrics["before"]["claims"] == 2
+    assert result.metrics["after"]["claims"] == 1  # the guidance sentence is not a model claim
+
+
+def test_structure_is_preserved_and_only_claims_are_rewritten(pipeline: C4Pipeline) -> None:
+    text = "\n".join([
+        "## Heaps", "", "### About Heaps", "- A heap can be stored in an array.",
+        "- A heap is a complete binary tree.", "", "### Empty section", "- A heap is a complete binary tree.",
+    ])
+    result = run(pipeline, text)
+    lines = result.final_explanation.splitlines()
+    assert lines[0] == "## Heaps" and "- A heap can be stored in an array." in lines
+    assert sum(line.startswith("- Review Binary Trees first") for line in lines) == 1
+    assert "### Empty section" not in lines  # its only bullet duplicated an earlier sentence
+    kinds = [item["kind"] for item in result.final_layout]
+    assert kinds[:2] == ["heading", "heading"] and "bullet" in kinds
+
+
+def test_layout_claim_ids_point_at_the_final_claims(pipeline: C4Pipeline) -> None:
+    result = run(pipeline, "- A heap can be stored in an array.\n- A heap is always fully sorted.")
+    ids = [claim_id for item in result.final_layout for claim_id in item["claim_ids"]]
+    assert ids == [claim.claim.claim_id for claim in result.claims]
+
+
+def test_path_line_is_static_only_when_it_matches_the_verified_path(pipeline: C4Pipeline) -> None:
+    from c4 import grounding
+
+    path = load("verified_path.json")
+    real = grounding.path_line(path, pipeline.kg)
+    assert [item["kind"] for item in run(pipeline, real).final_layout] == ["path"]
+    forged = real.replace("Heaps", "Heaps are always fully sorted")
+    assert run(pipeline, forged).initial_claims  # treated as a claim, so it is verified

@@ -573,6 +573,12 @@ interactively (standard-library server + vanilla HTML/CSS/JS; no npm, no cloud).
   flow (2026-10-19).
 - [x] "Inputs (C1, C2, C3)" tab showing the path, learner state, and graph
   evidence behind a run, labelled as fixtures (2026-10-19).
+- [x] Structured explanation and concrete repair (path diagram, learner-specific
+  review/check guidance, misconception correction, Bloom deferral); grounded
+  sentences excluded from rate denominators; report schema 1.1; document-style
+  UI (2026-10-19).
+- [ ] Replace the rule-based word matching with an NLI second stage so faithful
+  paraphrases are not flagged unsupported; re-measure against human labels.
 - [ ] GPT-4o generator (`c4/explainer.py`, key via environment variable) for the
   primary baseline and experiments; Qwen is the PP1 stand-in.
 - [x] Typography (2026-10-19): Josefin Sans everywhere, self-hosted under

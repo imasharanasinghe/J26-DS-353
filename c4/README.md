@@ -31,13 +31,37 @@ verified C3 path + C2 learner + C1 graph + explanation
   -> typed violations + confidence tier
   -> rewrite ONLY violating sentences (graph fact that itself verifies, else review guidance)
   -> re-verify, bounded to 3 rounds, unresolved claims reported
-  -> final explanation + report (c4-report/1.0): trace, review_first, metrics
+  -> final explanation + report (c4-report/1.1): trace, review_first, metrics
 ```
 
 Modules: `pipeline.py` (verify/repair), `service.py` and `server.py` (web API),
 `web/` (frontend), `metrics.py` (frozen metric definitions),
 `evaluation.py` (stress test, natural set, threshold sensitivity), `explainer.py`
 (replaceable generators), `adapters.py`, `paths.py`, `models.py`.
+
+## The explanation
+
+The draft is a structured document, not a sentence: a path diagram, what the concept
+is, what to know first, where the learner stands (from C2 mastery and the C3 path), a
+refresher on concepts the learner has secured, and common mistakes from the graph.
+There is no length limit; Markdown headings and bullets are supported (a heading is
+structure, every sentence under it is a claim). The offline template builds it from
+graph facts; Qwen writes the concept section and the same code writes the rest.
+
+What the repair writes (only for the violating sentence; valid sentences are kept):
+
+| Violation | Replacement |
+|---|---|
+| Contradicts a graph misconception | `Common mistake: "..." is false.` plus a graph fact that verifies for this learner |
+| Unsupported claim | the closest graph fact that verifies for this learner |
+| Relies on an unmastered prerequisite | `Review Binary Trees first: your mastery is 0.00, below the 0.70 this path needs, and it is a prerequisite of Heaps.` |
+| Prerequisite with uncertain or missing history | `Take a quick check on Recursion first: ... (mastery 0.75, uncertainty 0.32).` |
+| Above the Bloom ceiling | a sentence saying it is saved for later, then a graph fact at the learner's level |
+
+Sentences C4 writes from C2/C3/C1 data (`c4/grounding.py`) are recognised by exact
+regeneration and marked `source: "grounded"` in the report. They are excluded from the
+hallucination and mismatch denominators so they cannot dilute the rates; a model
+sentence that merely resembles one is verified like any other claim.
 
 ## Run the demo
 
@@ -82,7 +106,7 @@ python3 scripts/run_c4_server.py --open     # http://127.0.0.1:8765
   mastery/uncertainty sliders), load an example or draft with the template or
   Qwen, then verify. You see claim cards (factual and cognitive labels, typed
   violations, graph evidence), the before/after rewrite trace, re-verification,
-  the final explanation, metrics, and the downloadable `c4-report/1.0` JSON.
+  the final explanation, metrics, and the downloadable `c4-report/1.1` JSON.
 - **Settings:** toggle factual verification, cognitive verification, or the
   rewrite loop to reproduce the ablations interactively.
 - **Evaluation tab:** the committed stress-test and Qwen results with their caveats.
