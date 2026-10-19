@@ -14,5 +14,36 @@
     "tree": 0.3,
     "binary_tree": 0.5
   },
-  "misconceptions": ["recursion_no_base_case"]
+  "misconceptions": [
+    "recursion_no_base_case"
+  ],
+  "bloom": {
+    "arrays": {
+      "level": 3,
+      "attempts": []
+    },
+    "linked_list": {
+      "level": 2,
+      "attempts": []
+    },
+    "recursion": {
+      "level": 2,
+      "attempts": []
+    },
+    "tree": {
+      "level": 1,
+      "attempts": []
+    },
+    "heap": {
+      "level": 1,
+      "attempts": [
+        {
+          "session": 1,
+          "level": 1,
+          "score": 0.85,
+          "scaffold": "full"
+        }
+      ]
+    }
+  }
 }

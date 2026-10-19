@@ -30,3 +30,10 @@ def test_c1_csv_adapter_marks_relations_as_candidates(tmp_path: Path) -> None:
     graph = load_c1_csv_graph(concepts, relations)
     assert graph["concepts"]["heap"]["prerequisites"] == ["binary_tree"]
     assert "unverified candidates" in graph["_note"]
+
+
+def test_c2_adapter_keeps_the_c4_bloom_block_and_works_without_it() -> None:
+    with_bloom = {"learner_id": "L1", "mastery": {}, "uncertainty": {}, "bloom": {"heap": {"level": 2}}}
+    assert load_c2_learner(with_bloom)["bloom"]["heap"]["level"] == 2
+    collection = {"learners": [{"learner_id": "L2", "mastery": {}, "uncertainty": {}}]}
+    assert "bloom" not in load_c2_learner(collection, "L2")

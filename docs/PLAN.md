@@ -595,7 +595,7 @@ progression across sessions). Design and status are in [PP1.md](./PP1.md).
 
 - [x] Step 1: progression policy (`c4/progression.py`): demonstrated level, target level
   (current + 1 when prerequisites are mastered), contingent scaffolding, demotion rule.
-- [ ] Step 2: per-concept Bloom state in the learner state (`bloom` block), validated by the
+- [x] Step 2: per-concept Bloom state in the learner state (`bloom` block), validated by the
   service; fixture extended. C2 does not provide this field yet: C4 keeps it as an
   extension and the shared contract must be agreed.
 - [ ] Step 3: target-level verification (`progressive` mode), `BLOOM_STAGNATION`, task

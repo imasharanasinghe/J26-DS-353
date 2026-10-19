@@ -117,3 +117,19 @@ def test_meta_exposes_the_c3_path_and_c1_context_for_the_inputs_view(bench: Work
     assert heap["path"]["verified"] is True and heap["path"]["target"] == "heap"
     assert [step["id"] for step in heap["graph_context"]] == [step["id"] for step in heap["path"]["path"]]
     assert all(item["facts"] for item in heap["graph_context"])
+
+
+def test_demo_learner_carries_a_bloom_record_and_presets_are_seeded(bench: Workbench) -> None:
+    heap = next(item for item in bench.meta()["targets"] if item["id"] == "heap")
+    assert heap["learner_presets"]["demo_learner"]["bloom"]["arrays"]["level"] == 3
+    seeded = heap["learner_presets"]["all_mastered"]["bloom"]["heap"]
+    assert seeded["level"] == 1 and len(seeded["attempts"]) == 1
+
+
+def test_bloom_state_is_validated_and_normalised(bench: Workbench) -> None:
+    good = {"target": "heap", "explanation": "A heap can be stored in an array.",
+            "learner": {"bloom": {"heap": {"level": 2}}}}
+    assert bench.verify(good)["verified_path"] is True
+    for bad in ({"ghost": {"level": 1}}, {"heap": {"level": 9}}, {"heap": "x"}, []):
+        with pytest.raises(ValueError, match="bloom"):
+            bench.verify({**good, "learner": {"bloom": bad}})

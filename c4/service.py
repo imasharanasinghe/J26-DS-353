@@ -17,6 +17,7 @@ from .evaluation import PROFILES, make_learner
 from .explainer import OllamaExplanationGenerator, TemplateExplanationGenerator
 from .paths import build_verified_path
 from .pipeline import C4Config, C4Pipeline
+from .progression import LearnerProgress
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "c4" / "data"
@@ -78,10 +79,10 @@ class Workbench:
         concepts = self.kg["concepts"]
         targets = []
         for target_id, concept in concepts.items():
-            presets = {"demo_learner": self._learner_payload(self.fixture_learner)}
+            presets = {"demo_learner": self._learner_payload(self.fixture_learner, target_id)}
             for profile in PROFILES:
                 learner, _ = make_learner(self.kg, target_id, profile)
-                presets[profile] = self._learner_payload(learner)
+                presets[profile] = self._learner_payload(learner, target_id)
             path = build_verified_path(target_id, self.kg, self.fixture_learner["learner_id"])
             targets.append({
                 "id": target_id,
@@ -119,14 +120,25 @@ class Workbench:
             "schema_version": "c4-report/1.1",
         }
 
-    def _learner_payload(self, learner: dict[str, Any]) -> dict[str, Any]:
-        """Learner state restricted to concepts present in the graph (C2 may know more)."""
+    def _learner_payload(self, learner: dict[str, Any], seed_target: str | None = None) -> dict[str, Any]:
+        """Learner state restricted to concepts present in the graph (C2 may know more).
+
+        ``bloom`` is the C4-maintained demonstrated-level record. When a preset has none and
+        ``seed_target`` is given, the target starts at Remember with one passing attempt so
+        the progression view has a history to show (a demo seed, not learner data).
+        """
         known = self.kg["concepts"]
-        return {
+        payload = {
             "learner_id": learner.get("learner_id", "custom"),
             "mastery": {k: v for k, v in learner.get("mastery", {}).items() if k in known},
             "uncertainty": {k: v for k, v in learner.get("uncertainty", {}).items() if k in known},
         }
+        bloom = {k: v for k, v in (learner.get("bloom") or {}).items() if k in known}
+        if not bloom and seed_target:
+            bloom = LearnerProgress().with_attempt(seed_target, 1, 1, 0.85).to_state()
+        if bloom:
+            payload["bloom"] = bloom
+        return payload
 
     # ---------------------------------------------------------------- verify
 
@@ -215,6 +227,15 @@ class Workbench:
                     raise ValueError(f"learner.{key}.{concept} must be a number between 0 and 1")
                 clean[concept] = float(value)
             learner[key] = clean
+        if raw.get("bloom") is not None:
+            try:
+                progress = LearnerProgress.from_state(raw)
+            except (ValueError, TypeError, KeyError, AttributeError) as exc:
+                raise ValueError(f"learner.bloom is invalid: {exc}") from None
+            for concept in progress.concepts:
+                if concept not in self.kg["concepts"]:
+                    raise ValueError(f"Unknown concept in learner.bloom: {concept!r}")
+            learner["bloom"] = progress.to_state()
         return learner
 
     @staticmethod
