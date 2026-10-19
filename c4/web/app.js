@@ -811,6 +811,27 @@ async function answerCheck(score) {
   }
 }
 
+/* Prerequisites that keep the policy from advancing (same rule as the server: mastery clearly above the
+   threshold and uncertainty low). */
+function prerequisiteBlockers() {
+  const defaults = state.meta.config_defaults;
+  return targetInfo().prerequisites.filter((id) => {
+    const mastery = state.learner.mastery[id], spread = state.learner.uncertainty[id];
+    return mastery === undefined || mastery < defaults.mastery_threshold + defaults.threshold_margin
+      || (spread ?? 1) > defaults.uncertainty_threshold;
+  });
+}
+
+function masterPrerequisites() {
+  for (const id of prerequisiteBlockers()) {
+    state.learner.mastery[id] = 0.9;
+    state.learner.uncertainty[id] = 0.1;
+  }
+  renderLearnerSummary();
+  renderLearnerEditor();
+  renderProgression();
+}
+
 function renderProgression() {
   const view = $("#view-progress");
   if (!state.meta || !state.journey) return;
@@ -831,13 +852,28 @@ function renderProgression() {
       renderLearnerSummary();
       renderProgression();
     } }, "Reset this concept"));
+  const blockers = prerequisiteBlockers();
+  const stuck = blockers.length
+    ? el("div", { class: "banner" }, el("b", {}, "Why the level will not move: "),
+        `${blockers.map((id) => state.meta.concepts[id] || id).join(" and ")} ${blockers.length === 1 ? "is" : "are"} not mastered yet ` +
+        "(mastery below 0.75 or uncertain), so C4 consolidates: it keeps asking at the level the learner already has, " +
+        "and passing that same level changes nothing. Raise the prerequisite in the left panel, or ",
+        el("button", { type: "button", class: "chipbtn", disabled: journey.busy, onclick: masterPrerequisites },
+          "let the learner master the prerequisites"), ".")
+    : null;
+  const guide = el("details", { class: "editor" }, el("summary", {}, "How a session works"),
+    el("ol", { class: "limits" },
+      el("li", {}, "Press Start session: C4 writes an explanation aimed at the target level (outlined box above) and ends it with one check question."),
+      el("li", {}, "You must answer that question (the three buttons simulate the learner). Start session stays disabled until you do."),
+      el("li", {}, "A pass at the target level raises the demonstrated level; the next session aims one level higher. A fail repeats the level with full hints."),
+      el("li", {}, "The target only rises when the prerequisites are mastered; otherwise C4 stays at the same level and the same question returns.")));
   blocks.push(block(`Bloom journey: ${target.name}`,
     "Progression adds time to the check: C4 aims one Bloom level above what the learner has shown, but only when the " +
     "prerequisites are mastered. Edit mastery in the left panel (for example set a prerequisite below 0.7) to watch the policy " +
     "switch between advancing and consolidating.",
     el("div", {}, levelBar(record.level, aim),
       decisionLine(journey.next, "Next:") || decisionLine(journey.last && !journey.last.answered ? journey.last.report.progression : null, "This session:"),
-      controls, journey.error ? el("p", { class: "error" }, journey.error) : null)));
+      stuck, controls, guide, journey.error ? el("p", { class: "error" }, journey.error) : null)));
 
   if (journey.last) {
     const report = journey.last.report;
