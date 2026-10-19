@@ -433,8 +433,9 @@ function finalDocument(report, clean) {
     counts[kind] += 1;
     const number = kind === "verified" && note ? cite(note) : null;
     return el("span", { class: `sent ${kind}`, title: help },
-      el("span", { class: "gut" }, icon(glyph, 15)), claim.text,
-      number ? el("sup", { class: "cite", title: note }, `[${number}]`) : null);
+      el("span", { class: "gut" }, icon(glyph, 14)),
+      el("span", { class: "txt" }, claim.text,
+        number ? el("sup", { class: "cite", title: note }, `[${number}]`) : null));
   };
 
   const body = [];
@@ -443,7 +444,7 @@ function finalDocument(report, clean) {
     if (line.kind === "heading") {
       list = null;
       body.push(el(`h${Math.min(4, line.level + 1)}`, { class: `dh dh${line.level}` },
-        line.level >= 3 ? el("span", { class: "hi" }, icon(sectionIcon(line.text), 17)) : null, line.text));
+        line.level >= 3 ? el("span", { class: "hi" }, icon(sectionIcon(line.text), 14)) : null, line.text));
     } else if (line.kind === "path") {
       list = null;
       body.push(report.visual ? pathFlow(report.visual) : el("p", { class: "plainpath" }, line.text));
@@ -460,11 +461,12 @@ function finalDocument(report, clean) {
         el("ol", {}, sources.map((text) => el("li", {}, text))))
     : null;
   const summary = el("div", { class: "docbar" },
-    el("span", {}, `${counts.verified} verified against the graph`),
-    el("span", {}, `${counts.rewritten} rewritten`),
-    removed ? el("span", {}, `${removed} draft sentence${removed === 1 ? "" : "s"} dropped (covered elsewhere)`) : null,
-    el("span", {}, `${counts.grounded} written from your learner data`),
-    counts.open ? el("span", { class: "open" }, `${counts.open} not verified`) : null,
+    el("div", { class: "stats" },
+      el("span", {}, `${counts.verified} verified against the graph`),
+      el("span", {}, `${counts.grounded} written from your learner data`),
+      counts.rewritten ? el("span", {}, `${counts.rewritten} rewritten`) : null,
+      removed ? el("span", {}, `${removed} draft sentence${removed === 1 ? "" : "s"} dropped (covered elsewhere)`) : null,
+      counts.open ? el("span", { class: "open" }, `${counts.open} not verified`) : null),
     el("button", { type: "button", class: "ghost copy", onclick: (event) => copyText(report.final_explanation, event.currentTarget) },
       icon("copy", 15), "Copy as Markdown"));
   return el("article", { class: `doc${clean ? "" : " unresolved"}` }, summary, ...body, footnotes);
