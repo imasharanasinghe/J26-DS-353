@@ -339,3 +339,6 @@ This log records the work completed for Component 4 and the associated project a
 
 ### 2026-10-20 09:25:00 +05:30
 - Step 10b (plan, WBS, README): [PLAN.md](./PLAN.md) status lines updated (160 tests), a results summary and an outstanding list added to the progression section, step 10 marked done; [WBS.md](./WBS.md) gains items 52 to 64 and the progression command and limitation; [c4/README.md](./c4/README.md) gains a "Bloom-level progression" section with the demo run-sheet addition.
+
+### 2026-10-20 09:40:00 +05:30
+- Step 10c (PP1 summaries): rewrote [PP1.md](../PP1.md) (panel comment, response, implemented pieces, results, limitations, status, slide text, demo flow, likely questions) to match what is now implemented, and corrected the earlier draft, which described LLM-driven simulated learners (the simulated learners are parametric models) and called the research questions RQ1 and RQ2 (now RQ4a and RQ4b). Updated [COMP4.md](../COMP4.md) (the PP1 viva summary) with the panel response, a Stage 9, the progression results, limitations, and next steps. `C4PP1.md` had been renamed to `COMP4.md` in the working tree; the commit records that rename.
