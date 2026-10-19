@@ -78,7 +78,7 @@ def test_statistics_helpers() -> None:
     assert cohens_dz([1.0, 1.0, 1.0]) is None and cohens_dz([1.0, 2.0, 3.0]) == 2.0
 
 
-def test_rq1_progressive_repair_hits_the_target_level_without_new_violations() -> None:
+def test_rq4a_progressive_repair_hits_the_target_level_without_new_violations() -> None:
     from c4.evaluation import evaluate_progressive_stress
 
     result = evaluate_progressive_stress(KG)
@@ -102,6 +102,6 @@ def test_progression_report_renders_every_section() -> None:
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     text = module.render(evaluate_progressive_stress(KG), small())
-    for heading in ("## RQ1", "## RQ2", "### Assumptions", "Flat control", "Matched control",
+    for heading in ("## RQ4a", "## RQ4b", "### Assumptions", "Flat control", "Matched control",
                     "Sensitivity to study length", "Reading the results honestly"):
         assert heading in text

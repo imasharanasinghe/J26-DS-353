@@ -891,7 +891,7 @@ function progressionEvidence(results) {
   const names = { unverified: "Unverified explanation", static_c4: "Static C4 (current)", progressive_c4: "Progressive C4" };
   const out = [];
   out.push(el("div", { class: "banner" }, el("b", {}, "Progression evidence: "), rq2.caveat));
-  out.push(block("RQ1: faithful and at the target Bloom level",
+  out.push(block("RQ4a: faithful and at the target Bloom level",
     `${rq1.cases} stress cases × ${rq1.learner_starts.length} learner starts = ${rq1.runs} runs. ${rq1.caveat}`,
     table(["Text", "Question at target level", "95% CI", "Runs with a violation", "Halluc. %", "Cog. mismatch %"],
       Object.entries(rq1.conditions).map(([key, row]) => [names[key], pct(row.question_at_target_level_pct), ci(row.question_at_target_level_ci95),
@@ -923,7 +923,7 @@ function progressionEvidence(results) {
       table(["Comparison", "Mean diff.", "95% bootstrap CI", "Wilcoxon p", "Cohen's dz", "Better / worse / equal"], pairedRows));
   };
   paint();
-  out.push(block("RQ2: does progression raise the demonstrated level across sessions?",
+  out.push(block("RQ4b: does progression raise the demonstrated level across sessions?",
     `${rq2.config.learners} simulated learners, ${rq2.config.sessions} sessions, seeded and paired. The flat and matched controls show where the mechanism does not help.`,
     holder));
 

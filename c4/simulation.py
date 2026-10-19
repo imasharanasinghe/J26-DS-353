@@ -1,4 +1,4 @@
-"""Multi-session simulated-learner experiment for Bloom-level progression (RQ2).
+"""Multi-session simulated-learner experiment for Bloom-level progression (RQ4b).
 
 Honest scope. A simulation cannot show that real students learn better; it can show whether
 the *mechanism* (target level, contingent scaffolding, demotion rule, check-question update)

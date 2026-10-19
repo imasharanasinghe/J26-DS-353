@@ -9,7 +9,7 @@ study is the validation it cannot provide. It follows the learner-evaluation saf
 
 ## 1. Purpose and hypotheses
 
-Answer RQ2 with real learners: **does explanation that targets the learner's next Bloom level
+Answer RQ4b with real learners: **does explanation that targets the learner's next Bloom level
 (progressive C4) raise the Bloom level of what learners can demonstrate over several sessions,
 compared with matched-level explanation (current C4) and an unverified LLM baseline?**
 

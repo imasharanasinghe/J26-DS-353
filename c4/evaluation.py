@@ -369,7 +369,7 @@ PROGRESSIVE_SEEDS = {"new_concept": None, "level_1": 1, "level_2": 2}
 
 
 def evaluate_progressive_stress(kg: dict[str, Any]) -> dict[str, Any]:
-    """RQ1 on the stress corpus: does level-targeted repair keep faithfulness and hit the target level?
+    """RQ4a on the stress corpus: does level-targeted repair keep faithfulness and hit the target level?
 
     Each stress case is run with the learner starting a new concept, at demonstrated level 1,
     and at level 2. Three texts are measured by the same progressive verifier without
