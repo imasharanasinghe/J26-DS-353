@@ -583,3 +583,28 @@ interactively (standard-library server + vanilla HTML/CSS/JS; no npm, no cloud).
   primary baseline and experiments; Qwen is the PP1 stand-in.
 - [x] Typography (2026-10-19): Josefin Sans everywhere, self-hosted under
   `c4/web/fonts/` with its SIL OFL licence (no external font requests).
+
+## Bloom-level progression (response to the PP1 proposal-panel comment) - added 2026-10-20
+
+Panel comment: strengthen the research contribution and suggest how the student's
+cognitive level can be raised over time, rather than only building a product. Response:
+cognitive appropriateness becomes a **trajectory**. C4 verifies that an explanation is
+faithful *and* targets the learner's next Bloom level, and the study asks whether this
+raises demonstrated levels across sessions (RQ1 faithfulness at the target level; RQ2
+progression across sessions). Design and status are in [PP1.md](./PP1.md).
+
+- [x] Step 1: progression policy (`c4/progression.py`): demonstrated level, target level
+  (current + 1 when prerequisites are mastered), contingent scaffolding, demotion rule.
+- [ ] Step 2: per-concept Bloom state in the learner state (`bloom` block), validated by the
+  service; fixture extended. C2 does not provide this field yet: C4 keeps it as an
+  extension and the shared contract must be agreed.
+- [ ] Step 3: target-level verification (`progressive` mode), `BLOOM_STAGNATION`, task
+  claims, report schema 1.2.
+- [ ] Step 4: check questions at the target level and scaffold fading in the generator.
+- [ ] Step 5: Bloom-level classifier evaluation against a labelled item set (dev/test split).
+- [ ] Step 6: simulated-learner multi-session experiment (conditions A, B, C) with paired
+  statistics and learner-model sensitivity.
+- [ ] Step 7: result files and `RESULTS.md` section from a reproducible script.
+- [ ] Step 8: service and API support for sessions; workbench Progression tab.
+- [ ] Step 9: human pilot-study protocol (cannot run without ethics approval).
+- [ ] Step 10: update the proposal (`docs/C4.md`), WBS, guidelines, README, and PP1 summaries.

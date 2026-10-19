@@ -273,3 +273,9 @@ This log records the work completed for Component 4 and the associated project a
 - Wrote `C4PP1.md`, a short viva-ready summary of the work done on the `c4` branch (stages, results table, limitations, next steps), taken from the commit history and `c4/results/RESULTS.md`.
 - Moved `C1.md`-`C4.md`, `GUIDELINES.md`, `LOG.md`, `PLAN.md`, `PP1MARKS.md`, and `WBS.md` into `docs/`; only `C4PP1.md` and `README.md` remain at the root. Updated the two code comments that cited `GUIDELINES.md` (`c4/metrics.py`, `c4/evaluation.py`). Links between the moved files are relative and still resolve. Earlier entries above still use the old root paths and are left as the historical record.
 - Missed the required change sequence on the first pass (LOG update, validation, commit); done now. 76 tests pass.
+
+### 2026-10-20 00:55:00 +05:30
+- Started the response to the PP1 proposal-panel comment ("raise the student's cognitive level over time"). Read [GUIDELINES.md](./GUIDELINES.md), the C4 pipeline, service, evaluation, and fixtures first.
+- Step 1: added `c4/progression.py`, a pure-function Bloom progression policy: per-concept demonstrated level (0-6) with an attempt history; target level = demonstrated level + 1 when the concept's prerequisites are mastered, otherwise consolidate; retry with full support after a failed stretch task; contingent scaffolding (full, partial, minimal) that fades with consecutive passes and returns after a failure; demotion only after two consecutive failures on an already demonstrated level (a failed stretch task never lowers the level).
+- Added `tests/test_progression.py` (20 tests). 96 tests pass. The thresholds (pass 0.7, fail 0.4, two failures to demote, scaffold fading after one and two passes) are pilot parameters, not validated values.
+- Added the "Bloom-level progression" section to [PLAN.md](./PLAN.md) with the ten steps and their status. Nothing in the pipeline uses the policy yet.
