@@ -133,3 +133,54 @@ def test_bloom_state_is_validated_and_normalised(bench: Workbench) -> None:
     for bad in ({"ghost": {"level": 1}}, {"heap": {"level": 9}}, {"heap": "x"}, []):
         with pytest.raises(ValueError, match="bloom"):
             bench.verify({**good, "learner": {"bloom": bad}})
+
+
+READY = {"mastery": {"binary_tree": 0.95, "arrays": 0.95}, "uncertainty": {"binary_tree": 0.05, "arrays": 0.05},
+         "bloom": {"heap": {"level": 2}}}
+
+
+def test_session_returns_a_verified_progressive_explanation_and_a_check_question(bench: Workbench) -> None:
+    report = bench.session({"target": "heap", "source": "template", "learner": READY})
+    assert report["schema_version"] == "c4-report/1.2" and report["unresolved_claims"] == []
+    assert report["progression"]["target_name"] == "Apply" and report["progression"]["stagnation_after"] is False
+    check = report["check"]
+    assert check["level"] == 3 and check["question"] in report["final_explanation"]
+    assert len(check["hints"]) == 2 and report["session"] == 1
+
+
+def test_answer_updates_the_bloom_record_and_previews_the_next_decision(bench: Workbench) -> None:
+    result = bench.answer({"target": "heap", "learner": READY, "level": 3, "score": 0.9, "scaffold": "full"})
+    assert result["learner"]["bloom"]["heap"]["level"] == 3
+    assert result["next"]["target_level"] == 4 and result["next"]["action"] == "advance"
+    assert result["concept_progress"]["attempts"][0]["session"] == 1
+
+
+def test_a_failed_stretch_is_retried_with_full_support(bench: Workbench) -> None:
+    result = bench.answer({"target": "heap", "learner": READY, "level": 3, "score": 0.1})
+    assert result["learner"]["bloom"]["heap"]["level"] == 2
+    assert (result["next"]["action"], result["next"]["scaffold"]) == ("retry", "full")
+
+
+def test_answers_accumulate_across_sessions_and_scaffolding_fades(bench: Workbench) -> None:
+    learner = dict(READY)
+    for _ in range(2):
+        step = bench.answer({"target": "heap", "learner": learner, "level": bench.session(
+            {"target": "heap", "source": "template", "learner": learner})["check"]["level"], "score": 0.9})
+        learner = step["learner"]
+    assert learner["bloom"]["heap"]["level"] == 4 and len(learner["bloom"]["heap"]["attempts"]) == 2
+    assert step["next"]["scaffold"] == "minimal"
+
+
+@pytest.mark.parametrize("bad", [
+    {"level": 0, "score": 0.5}, {"level": 7, "score": 0.5}, {"level": "2", "score": 0.5},
+    {"level": 2, "score": 1.5}, {"level": 2, "score": True}, {"level": 2, "score": 0.5, "scaffold": "huge"},
+    {"level": 2, "score": 0.5, "session": 0},
+])
+def test_answer_rejects_invalid_input(bench: Workbench, bad: dict) -> None:
+    with pytest.raises(ValueError):
+        bench.answer({"target": "heap", "learner": READY, **bad})
+
+
+def test_results_include_the_progression_and_bloom_evaluations(bench: Workbench) -> None:
+    results = bench.results()
+    assert set(results["progression"]) == {"rq1", "rq2"} and results["bloom"]["splits"]["test"]

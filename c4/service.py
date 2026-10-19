@@ -17,7 +17,7 @@ from .evaluation import PROFILES, make_learner
 from .explainer import OllamaExplanationGenerator, TemplateExplanationGenerator
 from .paths import build_verified_path
 from .pipeline import C4Config, C4Pipeline
-from .progression import LearnerProgress
+from .progression import SCAFFOLDS, LearnerProgress
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "c4" / "data"
@@ -181,11 +181,74 @@ class Workbench:
         report["prompt"] = draft["prompt"]
         return report
 
+    def session(self, payload: dict[str, Any], ollama: OllamaExplanationGenerator | None = None) -> dict[str, Any]:
+        """One teaching session in progressive mode.
+
+        The server keeps no learner state: the client sends the learner (including its
+        ``bloom`` record) and receives the verified explanation, the policy decision, and the
+        check question the learner should now answer.
+        """
+        config = payload.get("config")
+        if config is not None and not isinstance(config, dict):
+            raise ValueError("config must be an object")
+        report = self.explain({**payload, "config": {**(config or {}), "progressive": True}}, ollama)
+        target = self._target(payload)
+        learner = self._learner(payload.get("learner"))
+        pipeline = C4Pipeline(self.kg, C4Config(progressive=True))
+        path = build_verified_path(target, self.kg, learner["learner_id"])
+        decision = pipeline.progression_decision(path, learner)
+        report["check"] = {
+            "level": decision.target_level,
+            "level_name": decision.target_name,
+            "question": pipeline.task_for(decision.target_level, path),
+            "scaffold": decision.scaffold,
+            "hints": pipeline.scaffold_hints(path, learner, decision),
+        }
+        report["session"] = self._session_number(payload, learner, target)
+        return report
+
+    def answer(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """Record the learner's answer to a check question and return the updated learner."""
+        target = self._target(payload)
+        learner = self._learner(payload.get("learner"))
+        level = payload.get("level")
+        score = payload.get("score")
+        scaffold = payload.get("scaffold", "full")
+        if isinstance(level, bool) or not isinstance(level, int) or not 1 <= level <= 6:
+            raise ValueError("level must be an integer between 1 and 6")
+        if isinstance(score, bool) or not isinstance(score, (int, float)) or not 0 <= score <= 1:
+            raise ValueError("score must be a number between 0 and 1")
+        if scaffold not in SCAFFOLDS:
+            raise ValueError(f"scaffold must be one of {list(SCAFFOLDS)}")
+        session = self._session_number(payload, learner, target)
+        progress = LearnerProgress.from_state(learner).with_attempt(
+            target, session, level, float(score), scaffold)
+        learner["bloom"] = progress.to_state()
+        pipeline = C4Pipeline(self.kg, C4Config(progressive=True))
+        path = build_verified_path(target, self.kg, learner["learner_id"])
+        return {
+            "learner": self._learner_payload(learner),
+            "session": session,
+            "next": pipeline.progression_decision(path, learner).to_dict(),
+            "concept_progress": progress.get(target).to_dict(),
+        }
+
+    @staticmethod
+    def _session_number(payload: dict[str, Any], learner: dict[str, Any], target: str) -> int:
+        """Session index for the target: explicit, else one more than the recorded attempts."""
+        requested = payload.get("session")
+        if requested is not None:
+            if isinstance(requested, bool) or not isinstance(requested, int) or not 1 <= requested <= 1000:
+                raise ValueError("session must be an integer between 1 and 1000")
+            return requested
+        return len(LearnerProgress.from_state(learner).get(target).attempts) + 1
+
     def results(self) -> dict[str, Any]:
         """Committed evaluation artefacts, if present."""
         output: dict[str, Any] = {}
         for key, name in (("stress", "stress_test.json"), ("natural", "natural.json"),
-                          ("sensitivity", "sensitivity.json")):
+                          ("sensitivity", "sensitivity.json"), ("bloom", "bloom_classifier.json"),
+                          ("progression", "progression.json")):
             path = self.results_dir / name
             output[key] = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
         report = self.results_dir / "RESULTS.md"

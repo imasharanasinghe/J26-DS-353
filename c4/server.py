@@ -8,6 +8,8 @@ Serves the static frontend from ``c4/web`` and a small JSON API:
     POST /api/verify    run the C4 pipeline
     POST /api/generate  draft an explanation (template or Ollama)
     POST /api/explain   draft, verify, repair and report in one call
+    POST /api/session   one progressive teaching session (explanation + check question)
+    POST /api/answer    record a check-question answer; returns the updated learner
 
 The server binds to 127.0.0.1 by default; it has no authentication and must not be
 exposed to a network.
@@ -110,7 +112,7 @@ def make_handler(bench: Workbench, web_dir: Path = WEB_DIR):
         def do_POST(self) -> None:  # noqa: N802
             try:
                 path = self.path.split("?", 1)[0]
-                if path not in ("/api/verify", "/api/generate", "/api/explain"):
+                if path not in ("/api/verify", "/api/generate", "/api/explain", "/api/session", "/api/answer"):
                     raise ApiError(404, "Unknown endpoint")
                 payload = self._read_json()
                 try:
@@ -118,6 +120,10 @@ def make_handler(bench: Workbench, web_dir: Path = WEB_DIR):
                         self._json(200, bench.verify(payload))
                     elif path == "/api/explain":
                         self._json(200, bench.explain(payload))
+                    elif path == "/api/session":
+                        self._json(200, bench.session(payload))
+                    elif path == "/api/answer":
+                        self._json(200, bench.answer(payload))
                     else:
                         self._json(200, bench.generate(payload))
                 except ValueError as exc:

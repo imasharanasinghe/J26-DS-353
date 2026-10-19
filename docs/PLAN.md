@@ -605,6 +605,6 @@ progression across sessions). Design and status are in [PP1.md](./PP1.md).
 - [x] Step 6: simulated-learner multi-session experiment (conditions A, B, C) with paired
   statistics and learner-model sensitivity.
 - [x] Step 7: result files and `RESULTS.md` section from a reproducible script.
-- [ ] Step 8: service and API support for sessions; workbench Progression tab.
+- [ ] Step 8: service and API (`/api/session`, `/api/answer`) done; workbench Progression tab and evaluation sections in progress.
 - [ ] Step 9: human pilot-study protocol (cannot run without ethics approval).
 - [ ] Step 10: update the proposal (`docs/C4.md`), WBS, guidelines, README, and PP1 summaries.

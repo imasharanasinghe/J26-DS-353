@@ -94,3 +94,15 @@ def test_explain_endpoint_runs_the_whole_pipeline(base_url) -> None:
     status, _, body = call(f"{base_url}/api/explain", {"target": "arrays", "source": "template"})
     report = json.loads(body)
     assert status == 200 and report["generator"] == "template" and report["schema_version"] == "c4-report/1.2"
+
+
+def test_session_and_answer_endpoints_round_trip(base_url) -> None:
+    learner = {"mastery": {"arrays": 0.95}, "uncertainty": {"arrays": 0.05}}
+    status, _, body = call(f"{base_url}/api/session", {"target": "stack", "source": "template", "learner": learner})
+    session = json.loads(body)
+    assert status == 200 and session["check"]["level"] == 1 and session["progression"]["action"] == "start"
+    status, _, body = call(f"{base_url}/api/answer", {
+        "target": "stack", "learner": learner, "level": session["check"]["level"], "score": 0.9})
+    answer = json.loads(body)
+    assert status == 200 and answer["next"]["target_level"] == 2
+    assert call(f"{base_url}/api/answer", {"target": "stack", "level": 9, "score": 0.5})[0] == 400
