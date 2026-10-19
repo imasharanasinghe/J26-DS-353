@@ -12,6 +12,13 @@ from . import grounding
 from .pipeline import C4Config, C4Pipeline
 
 
+# Sections of the draft kept at each scaffold level (first word of the section title).
+FADING_SECTIONS = {
+    "full": {"About", "Before", "Where", "Refresher", "Common"},
+    "partial": {"About", "Before", "Where"},
+    "minimal": {"About", "Where"},
+}
+
 GENERATION_OPTIONS = {"temperature": 0.2, "num_predict": 200, "repeat_penalty": 1.1}
 
 
@@ -49,8 +56,19 @@ def compose_explanation(
              sentence for item in earlier if pipeline._mastery_state(item, learner_state) == "MASTERED"
              for sentence in pipeline.misconception_sentences(item)]),
     ]
+    check: list[str] = []
+    if pipeline.config.progressive:
+        # Contingent scaffolding: detail fades with demonstrated success and returns after a
+        # failure, and the draft ends with a check question at the learner's target level.
+        decision = pipeline.progression_decision(c3_path, learner_state)
+        keep = FADING_SECTIONS[decision.scaffold]
+        sections = [(title, bullets) for title, bullets in sections if title.split(" ")[0] in keep]
+        if decision.scaffold == "minimal":
+            sections = [(title, bullets[:1] if title.startswith("About") else bullets)
+                        for title, bullets in sections]
+        check = pipeline.check_section(c3_path, learner_state, decision)
     lines = [f"## {name}: your next step", "", grounding.path_line(c3_path, knowledge_graph)]
-    for title, bullets in sections:
+    for title, bullets in sections + ([("Check yourself", check)] if check else []):
         bullets = list(dict.fromkeys(bullets))
         if bullets:
             lines += ["", f"### {title}"] + [f"- {item}" for item in bullets]

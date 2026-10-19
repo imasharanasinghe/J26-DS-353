@@ -600,7 +600,7 @@ progression across sessions). Design and status are in [PP1.md](./PP1.md).
   extension and the shared contract must be agreed.
 - [x] Step 3: target-level verification (`progressive` mode), `BLOOM_STAGNATION`, task
   claims, report schema 1.2.
-- [ ] Step 4: check questions at the target level and scaffold fading in the generator.
+- [x] Step 4: check questions at the target level and scaffold fading in the generator.
 - [ ] Step 5: Bloom-level classifier evaluation against a labelled item set (dev/test split).
 - [ ] Step 6: simulated-learner multi-session experiment (conditions A, B, C) with paired
   statistics and learner-model sensitivity.

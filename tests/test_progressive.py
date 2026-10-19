@@ -169,3 +169,35 @@ def test_other_targets_get_a_task_for_their_own_concept(pipeline: C4Pipeline) ->
     learner = {"learner_id": "x", "mastery": {"arrays": 0.9}, "uncertainty": {"arrays": 0.05}}
     result = pipeline.run(stack_path, learner, "A stack follows the last-in-first-out rule.")
     assert "Stacks" in result.final_explanation and result.progression["action"] == "start"
+
+
+def _draft(attempts: list[dict], progressive: bool = True) -> str:
+    from c4 import TemplateExplanationGenerator
+    learner = ready_learner(level=2)
+    learner["bloom"]["heap"]["attempts"] = attempts
+    pipeline = C4Pipeline.from_files(DATA / "knowledge_graph.json")
+    return TemplateExplanationGenerator().generate(
+        load("verified_path.json"), learner, pipeline.kg, C4Config(progressive=progressive))
+
+
+def test_draft_detail_fades_with_consecutive_passes() -> None:
+    passes = [{"session": 1, "level": 2, "score": 0.9}, {"session": 2, "level": 2, "score": 0.9}]
+    full, partial, minimal = _draft([]), _draft(passes[:1]), _draft(passes)
+    assert "Refresher" in full and "Common mistakes" in full and full.count("Hint:") == 2
+    assert "Refresher" not in partial and partial.count("Hint:") == 1
+    assert "Hint:" not in minimal and "Before you start" not in minimal
+    assert len(full) > len(partial) > len(minimal)
+
+
+def test_every_progressive_draft_ends_with_the_target_level_question_and_is_not_stagnant(
+        pipeline: C4Pipeline, path: dict) -> None:
+    for attempts in ([], [{"session": 1, "level": 2, "score": 0.9}]):
+        draft = _draft(attempts)
+        assert draft.rstrip().endswith("Can you apply Heaps to a small example and trace each step?")
+        learner = ready_learner(level=2)
+        learner["bloom"]["heap"]["attempts"] = attempts
+        assert pipeline.run(path, learner, draft).progression["stagnation_before"] is False
+
+
+def test_static_drafts_have_no_check_section() -> None:
+    assert "Check yourself" not in _draft([], progressive=False)
