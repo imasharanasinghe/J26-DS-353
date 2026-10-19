@@ -206,24 +206,32 @@ async function generate(source) {
 }
 
 /* ---------- run ---------- */
-async function run() {
+async function run(source = null) {
   showError("");
   const button = $("#run");
+  const auto = [$("#auto-template"), $("#auto-ollama")];
   button.disabled = true;
-  button.textContent = "Verifying…";
+  auto.forEach((b) => { b.disabled = true; });
+  button.textContent = source ? "Drafting and verifying…" : "Verifying…";
   $("#results").setAttribute("aria-busy", "true");
   try {
-    state.report = await api("/api/verify", {
-      target: state.target,
-      explanation: $("#explanation").value,
-      learner: state.learner,
-      config: readConfig(),
-    });
+    const body = { target: state.target, learner: state.learner, config: readConfig() };
+    if (source) {
+      state.report = await api("/api/explain", { ...body, source });
+      $("#explanation").value = state.report.original_explanation;
+      updateCount();
+      $("#prompt-box").hidden = !state.report.prompt;
+      $("#prompt-text").textContent = state.report.prompt || "";
+    } else {
+      state.report = await api("/api/verify", { ...body, explanation: $("#explanation").value });
+    }
     renderReport(state.report);
   } catch (error) {
     showError(error.message);
   } finally {
     button.disabled = false;
+    auto.forEach((b) => { b.disabled = false; });
+    $("#auto-ollama").disabled = !state.ollamaReady;
     button.textContent = "Verify and repair";
     $("#results").removeAttribute("aria-busy");
   }
@@ -515,8 +523,10 @@ async function boot() {
   $("#explanation").addEventListener("keydown", (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key === "Enter") { event.preventDefault(); run(); }
   });
-  $("#run").addEventListener("click", run);
-  $("#run-empty").addEventListener("click", run);
+  $("#run").addEventListener("click", () => run());
+  $("#run-empty").addEventListener("click", () => run());
+  $("#auto-template").addEventListener("click", () => run("template"));
+  $("#auto-ollama").addEventListener("click", () => run("ollama"));
   $("#reset").addEventListener("click", () => { applyTarget(); resetConfig(); showError(""); });
   document.querySelectorAll("[data-scenario]").forEach((b) =>
     b.addEventListener("click", () => loadScenario(b.dataset.scenario)));
@@ -524,6 +534,7 @@ async function boot() {
   $("#gen-ollama").addEventListener("click", () => generate("ollama"));
   ["#cfg-attempts", "#cfg-mastery", "#cfg-uncertainty"].forEach((id) => $(id).addEventListener("input", syncConfigLabels));
   $("#gen-ollama").disabled = true;
+  $("#auto-ollama").disabled = true;
   try {
     state.meta = await api("/api/meta");
     setChip("#chip-api", true);
@@ -544,6 +555,7 @@ async function boot() {
     const { online, model_installed: installed, model } = health.ollama;
     state.ollamaReady = online && installed;
     $("#gen-ollama").disabled = !state.ollamaReady;
+    $("#auto-ollama").disabled = !state.ollamaReady;
     $("#gen-ollama").title = state.ollamaReady ? "Generate a draft with the local model" : "Start Ollama and install qwen3:4b to enable";
     setChip("#chip-ollama", state.ollamaReady, online ? (installed ? model : `${model} missing`) : "Ollama offline");
   }).catch(() => setChip("#chip-ollama", false, "Ollama offline"));

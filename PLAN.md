@@ -568,5 +568,10 @@ interactively (standard-library server + vanilla HTML/CSS/JS; no npm, no cloud).
   hairline rules, no cards, pills, gradients, or dark mode.
 - [x] Navy-blue palette (cool blue-grey background, navy masthead and accent) and UX pass (verdict banner, tooltips, empty-state
   action) replacing the stark white theme (2026-10-19).
+- [x] One-call draft + verify + repair (`Workbench.explain`, `POST /api/explain`,
+  "Draft + verify" buttons) so the generation stage is part of the automatic
+  flow (2026-10-19).
+- [ ] GPT-4o generator (`c4/explainer.py`, key via environment variable) for the
+  primary baseline and experiments; Qwen is the PP1 stand-in.
 - [x] Typography (2026-10-19): Josefin Sans everywhere, self-hosted under
   `c4/web/fonts/` with its SIL OFL licence (no external font requests).

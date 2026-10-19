@@ -143,6 +143,18 @@ class Workbench:
             generator.build_prompt(path, learner, self.kg) if source == "ollama" else None
         )}
 
+    def explain(self, payload: dict[str, Any], ollama: OllamaExplanationGenerator | None = None) -> dict[str, Any]:
+        """Fully automatic run: draft an explanation, then verify, repair, and report.
+
+        The draft is never delivered on its own; the report carries it as
+        ``original_explanation`` next to the verified ``final_explanation``.
+        """
+        draft = self.generate(payload, ollama)
+        report = self.verify({**payload, "explanation": draft["explanation"]})
+        report["generator"] = draft["source"]
+        report["prompt"] = draft["prompt"]
+        return report
+
     def results(self) -> dict[str, Any]:
         """Committed evaluation artefacts, if present."""
         output: dict[str, Any] = {}

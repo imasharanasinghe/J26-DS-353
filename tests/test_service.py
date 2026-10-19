@@ -95,3 +95,18 @@ def test_every_preset_and_scenario_round_trips_through_verify(bench: Workbench) 
             for text in target["scenarios"].values():
                 report = bench.verify({"target": target["id"], "explanation": text, "learner": preset})
                 assert report["unresolved_claims"] == []
+
+
+def test_explain_drafts_then_verifies_in_one_call(bench: Workbench) -> None:
+    report = bench.explain({"target": "arrays", "source": "template"})
+    assert report["generator"] == "template"
+    assert report["original_explanation"].strip() and report["final_explanation"].strip()
+    assert report["unresolved_claims"] == []
+
+
+def test_explain_reports_an_unreachable_generator(bench: Workbench) -> None:
+    from c4 import OllamaExplanationGenerator
+
+    offline = OllamaExplanationGenerator(endpoint="http://127.0.0.1:1/api/chat", timeout=1.0)
+    with pytest.raises(RuntimeError):
+        bench.explain({"target": "heap", "source": "ollama"}, ollama=offline)

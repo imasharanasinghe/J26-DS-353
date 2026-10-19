@@ -88,3 +88,9 @@ def test_self_hosted_font_is_served_with_a_font_type(base_url) -> None:
     status, headers, body = call(f"{base_url}/fonts/JosefinSans.ttf")
     assert status == 200 and headers["Content-Type"] == "font/ttf" and len(body) > 50_000
     assert call(f"{base_url}/fonts/OFL.txt")[0] == 200
+
+
+def test_explain_endpoint_runs_the_whole_pipeline(base_url) -> None:
+    status, _, body = call(f"{base_url}/api/explain", {"target": "arrays", "source": "template"})
+    report = json.loads(body)
+    assert status == 200 and report["generator"] == "template" and report["schema_version"] == "c4-report/1.0"

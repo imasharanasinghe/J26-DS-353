@@ -73,6 +73,9 @@ Ollama call):
 python3 scripts/run_c4_server.py --open     # http://127.0.0.1:8765
 ```
 
+- **Fully automatic:** "Draft + verify" (template or Qwen) generates the draft and
+  runs verify, repair and report in one step (`POST /api/explain`); the draft is
+  shown as the original and never delivered unverified.
 - **Verification tab:** choose a target and learner state (presets or per-concept
   mastery/uncertainty sliders), load an example or draft with the template or
   Qwen, then verify. You see claim cards (factual and cognitive labels, typed

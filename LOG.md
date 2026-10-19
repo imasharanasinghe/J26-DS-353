@@ -243,3 +243,9 @@ This log records the work completed for Component 4 and the associated project a
 - Removed the `Co-authored-by` trailer from the 16 commit messages that carried it (the commits made since the web-workbench work began, one of which was already pushed to `origin/c4`) so that commits show the repository owner only. File contents and authorship were not changed; only commit messages were rewritten, so those 16 commits have new hashes.
 - Kept a local safety branch, `c4-backup-before-trailer-cleanup`, holding the pre-rewrite history.
 - Updated [GUIDELINES.md](./GUIDELINES.md) and [PLAN.md](./PLAN.md), which previously required that trailer, to say that commits carry no co-author or tool-attribution trailer.
+
+### 2026-10-19 13:40:00 +05:30
+- Made the generate-then-verify flow a single call, matching C4.md Stage 2 (the draft is part of the component and is never delivered unverified). Added `Workbench.explain()` in `c4/service.py` and `POST /api/explain` in `c4/server.py`; the report carries the generator name, the prompt, and the draft as `original_explanation` next to the verified `final_explanation`.
+- The workbench has a "Fully automatic" row with "Draft + verify (template)" and "Draft + verify (Qwen)"; the Qwen button is disabled while Ollama is offline. Documented in `c4/README.md`.
+- Added service and endpoint tests, including an unreachable-generator case. 65 tests pass. Not exercised in a browser in this session.
+- Limitations: the generator is still the template or local Qwen3 4B; the proposal's primary generator (GPT-4o) is not implemented, so Qwen results must not be presented as the final effect size. C1/C2/C3 inputs remain fixtures.
