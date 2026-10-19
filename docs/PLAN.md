@@ -606,5 +606,5 @@ progression across sessions). Design and status are in [PP1.md](./PP1.md).
   statistics and learner-model sensitivity.
 - [x] Step 7: result files and `RESULTS.md` section from a reproducible script.
 - [x] Step 8: service and API (`/api/session`, `/api/answer`) and the workbench Progression tab; evaluation evidence added to the Evaluation tab.
-- [ ] Step 9: human pilot-study protocol (cannot run without ethics approval).
+- [x] Step 9: human pilot-study protocol written ([PILOT_STUDY.md](./PILOT_STUDY.md)); not run, needs ethics approval and the materials checklist first.
 - [ ] Step 10: update the proposal (`docs/C4.md`), WBS, guidelines, README, and PP1 summaries.
