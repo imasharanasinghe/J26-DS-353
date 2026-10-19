@@ -110,3 +110,10 @@ def test_explain_reports_an_unreachable_generator(bench: Workbench) -> None:
     offline = OllamaExplanationGenerator(endpoint="http://127.0.0.1:1/api/chat", timeout=1.0)
     with pytest.raises(RuntimeError):
         bench.explain({"target": "heap", "source": "ollama"}, ollama=offline)
+
+
+def test_meta_exposes_the_c3_path_and_c1_context_for_the_inputs_view(bench: Workbench) -> None:
+    heap = next(item for item in bench.meta()["targets"] if item["id"] == "heap")
+    assert heap["path"]["verified"] is True and heap["path"]["target"] == "heap"
+    assert [step["id"] for step in heap["graph_context"]] == [step["id"] for step in heap["path"]["path"]]
+    assert all(item["facts"] for item in heap["graph_context"])

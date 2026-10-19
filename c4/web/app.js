@@ -60,6 +60,7 @@ const PRESET_LABELS = {
 };
 
 function renderLearnerSummary() {
+  refreshInputsView();
   const box = $("#learner-summary");
   box.replaceChildren();
   const learner = state.learner;
@@ -141,6 +142,10 @@ function applyTarget() {
   applyPreset();
   $("#explanation").value = target.scenarios.mixed;
   updateCount();
+}
+
+function refreshInputsView() {
+  if (!$("#view-inputs").hidden) renderInputs();
 }
 
 function updateCount() {
@@ -505,9 +510,52 @@ async function loadEvaluation() {
   }
 }
 
+/* ---------- inputs tab ---------- */
+const FIXTURE_NOTE = "Fixture: interface-compatible mock until the upstream component is integrated.";
+
+function inputCard(title, source, lede, ...body) {
+  return el("section", { class: "block" },
+    el("h3", {}, title), el("p", { class: "lede" }, source, " ", lede), ...body);
+}
+
+function renderInputs() {
+  const view = $("#view-inputs");
+  if (!state.meta) return;
+  const target = targetInfo();
+  const learner = state.learner;
+  const name = (id) => state.meta.concepts[id] || id;
+
+  const c3 = target.path;
+  const steps = table(["Step", "Kind", "Concept", "Difficulty", "Prerequisites"],
+    c3.path.map((step) => [step.step, step.kind, step.name, step.difficulty,
+      step.prerequisites.map(name).join(", ") || "none"]));
+
+  const ids = [...new Set([...target.graph_context.map((item) => item.id), ...Object.keys(learner.mastery)])];
+  const c2 = table(["Concept", "Mastery", "Uncertainty"],
+    ids.map((id) => [name(id),
+      learner.mastery[id] === undefined ? "no history" : learner.mastery[id].toFixed(2),
+      learner.uncertainty[id] === undefined ? "no history" : learner.uncertainty[id].toFixed(2)]));
+
+  const c1 = target.graph_context.map((item) => el("div", { class: "ctx" },
+    el("h4", {}, item.name, item.id === target.id ? " (target)" : ""),
+    el("p", { class: "hint" }, "Difficulty ", item.difficulty, " · prerequisites: ",
+      item.prerequisites.map(name).join(", ") || "none"),
+    el("ul", { class: "plain" }, item.facts.map((fact) => el("li", {}, "True: ", fact))),
+    el("ul", { class: "plain" }, item.known_false.map((fact) => el("li", { class: "false" }, "Known false: ", fact)))));
+
+  view.replaceChildren(
+    inputCard("C3: verified learning path", "From Component 3.",
+      `Learner ${c3.learner_id}, target ${name(c3.target)}, verified: ${c3.verified}, source: ${c3.source}. ${FIXTURE_NOTE}`, steps),
+    inputCard("C2: learner state", "From Component 2.",
+      `Learner ${learner.learner_id}. These are the values the cognitive check uses (edit them in the left panel).`, c2),
+    inputCard("C1: knowledge-graph evidence", "From Component 1.",
+      `Statements for the concepts on the path; the factual check matches claims against these. ${FIXTURE_NOTE}`, c1));
+}
+
 /* ---------- tabs and boot ---------- */
 function selectTab(name) {
-  for (const id of ["verify", "eval"]) {
+  if (name === "inputs") renderInputs();
+  for (const id of ["verify", "inputs", "eval"]) {
     $(`#tab-${id}`).setAttribute("aria-selected", String(id === name));
     $(`#view-${id}`).hidden = id !== name;
   }
@@ -516,6 +564,7 @@ function selectTab(name) {
 
 async function boot() {
   $("#tab-verify").addEventListener("click", () => selectTab("verify"));
+  $("#tab-inputs").addEventListener("click", () => selectTab("inputs"));
   $("#tab-eval").addEventListener("click", () => selectTab("eval"));
   $("#target").addEventListener("change", applyTarget);
   $("#preset").addEventListener("change", applyPreset);

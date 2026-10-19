@@ -571,6 +571,8 @@ interactively (standard-library server + vanilla HTML/CSS/JS; no npm, no cloud).
 - [x] One-call draft + verify + repair (`Workbench.explain`, `POST /api/explain`,
   "Draft + verify" buttons) so the generation stage is part of the automatic
   flow (2026-10-19).
+- [x] "Inputs (C1, C2, C3)" tab showing the path, learner state, and graph
+  evidence behind a run, labelled as fixtures (2026-10-19).
 - [ ] GPT-4o generator (`c4/explainer.py`, key via environment variable) for the
   primary baseline and experiments; Qwen is the PP1 stand-in.
 - [x] Typography (2026-10-19): Josefin Sans everywhere, self-hosted under

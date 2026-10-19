@@ -249,3 +249,9 @@ This log records the work completed for Component 4 and the associated project a
 - The workbench has a "Fully automatic" row with "Draft + verify (template)" and "Draft + verify (Qwen)"; the Qwen button is disabled while Ollama is offline. Documented in `c4/README.md`.
 - Added service and endpoint tests, including an unreachable-generator case. 65 tests pass. Not exercised in a browser in this session.
 - Limitations: the generator is still the template or local Qwen3 4B; the proposal's primary generator (GPT-4o) is not implemented, so Qwen results must not be presented as the final effect size. C1/C2/C3 inputs remain fixtures.
+
+### 2026-10-19 14:10:00 +05:30
+- Added an "Inputs (C1, C2, C3)" tab to the workbench so the three upstream inputs can be shown to the panel, as the PP1 demonstration in [GUIDELINES.md](./GUIDELINES.md) step 1 requires (target path step, learner state, graph context). It shows the C3 verified path (steps, kinds, difficulty, prerequisites, verified flag and source), the C2 mastery and uncertainty per concept, and the C1 true and known-false statements for the concepts on the path. It follows the selected target and learner state (including edits) while open, and labels C1 and C3 as fixtures.
+- `/api/meta` now returns each target's `path` and `graph_context` (`c4/service.py`); no change to verification. Added a service test; 66 tests pass.
+- Checked in headless Chrome: the tab renders, switching target and preset updates it, and the "Draft + verify (template)" button runs end to end. The Qwen button was not exercised.
+- Observation, not fixed: the Trees step lists `linked_list` as a prerequisite, which is not a concept in the C1 fixture, so it shows as a raw id. This is a fixture inconsistency to resolve at integration.

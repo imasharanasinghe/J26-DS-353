@@ -82,8 +82,21 @@ class Workbench:
             for profile in PROFILES:
                 learner, _ = make_learner(self.kg, target_id, profile)
                 presets[profile] = self._learner_payload(learner)
+            path = build_verified_path(target_id, self.kg, self.fixture_learner["learner_id"])
             targets.append({
                 "id": target_id,
+                "path": path,
+                "graph_context": [
+                    {
+                        "id": step["id"],
+                        "name": step["name"],
+                        "difficulty": step["difficulty"],
+                        "prerequisites": step["prerequisites"],
+                        "facts": concepts[step["id"]].get("facts", []),
+                        "known_false": concepts[step["id"]].get("known_false", []),
+                    }
+                    for step in path["path"]
+                ],
                 "name": concept.get("name", target_id),
                 "prerequisites": concept.get("prerequisites", []),
                 "facts": concept.get("facts", []),
