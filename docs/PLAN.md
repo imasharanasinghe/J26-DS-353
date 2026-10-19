@@ -18,8 +18,8 @@ relevant knowledge-graph context are available.
 - C4 implementation: **runnable pilot prototype complete**; the current
   implementation uses deterministic local verification and interface-compatible
   fixtures derived from the documented C3 hand-off.
-- C4 pilot validation: **28 tests pass**, Python compilation passes, and the
-  offline demos produce readable reports and valid JSON output.
+- C4 pilot validation: **160 tests pass** (updated 2026-10-20), Python compilation
+  passes, and the offline demos produce readable reports and valid JSON output.
 - C4 preliminary evaluation: controlled 28-case/84-claim stress test with
   baseline, factual-only, cognitive-only, and full-C4 conditions, plus a
   28-explanation cached Qwen3 4B natural set and a threshold sensitivity sweep
@@ -30,6 +30,13 @@ relevant knowledge-graph context are available.
   output remains untrusted and must pass C4 verification.
 - C4 research-grade NLI evaluation, real upstream integration, and final
   threshold calibration remain outstanding.
+- Response to the PP1 proposal-panel comment (added 2026-10-20): the Bloom-level
+  progression extension (policy, target-level verification with
+  `BLOOM_STAGNATION`, scaffold fading, check questions, estimator evaluation,
+  simulated multi-session experiment, Progression tab, human pilot protocol) is
+  implemented and tested; see the "Bloom-level progression" section below. The
+  human pilot, a second annotator for the Bloom items, and agreement with C2 on
+  the `bloom` learner-state field are outstanding.
 - Untracked upstream proposal and sprint-board files are reference inputs and
   are not included in the C4 documentation commits unless explicitly requested.
 
@@ -607,4 +614,32 @@ progression across sessions). Design and status are in [PP1.md](./PP1.md).
 - [x] Step 7: result files and `RESULTS.md` section from a reproducible script.
 - [x] Step 8: service and API (`/api/session`, `/api/answer`) and the workbench Progression tab; evaluation evidence added to the Evaluation tab.
 - [x] Step 9: human pilot-study protocol written ([PILOT_STUDY.md](./PILOT_STUDY.md)); not run, needs ethics approval and the materials checklist first.
-- [ ] Step 10: update the proposal (`docs/C4.md`), WBS, guidelines, README, and PP1 summaries.
+- [x] Step 10: updated the proposal (`docs/C4.md`: abstract, RQ4a/RQ4b, objectives, metrics, validation,
+  FR15-FR17, WBS 1.5.8.5 and 1.5.10, references), `GUIDELINES.md`, `WBS.md`, `c4/README.md`, `PP1.md`,
+  and `COMP4.md`.
+
+### Results so far (pilot; see `c4/results/PROGRESSION.md` for the caveats)
+
+- RQ4a (stress corpus, 84 runs, same-verifier caveat): a check question at the target level in 100% of
+  progressive runs versus 0% for the unverified text and static C4; 0 violations and 0 unresolved
+  claims after repair.
+- RQ4b (simulated, 300 learners, 8 sessions): under the ZPD learner model progressive C4 gains about
+  0.36 capability levels more than current C4 (95% interval 0.29 to 0.43), but reaches level 3 no
+  sooner; the effect is about zero at 4 sessions and larger at 12; the flat control ties exactly and
+  the matched control shows no advantage (worse at 12 sessions); the stretch above the demonstrated
+  level is the active ingredient, contingent fading adds nothing in this learner model.
+- Bloom estimator: V2 100% on the in-vocabulary test split but 16.7% on indirectly phrased items;
+  single annotator, no kappa.
+
+### Outstanding for the progression work
+
+- [ ] Second annotator for the Bloom items, Cohen's kappa at the 0.70 threshold, and a learned or
+  NLI-based Bloom classifier (the verb-cue matcher cannot read indirect phrasing).
+- [ ] Agree the `bloom` learner-state field and its update rule with C2 (and the check-question
+  results hand-off) at integration.
+- [ ] Placement check for unseen concepts: the policy starts every unseen concept at Remember, which
+  wastes early sessions for learners who start high.
+- [ ] Concept-specific check questions (the templates are generic) and a human review of their quality.
+- [ ] Fit or validate the learner-model parameters against real data; the simulation uses pilot values.
+- [ ] Run the human pilot after ethics approval ([PILOT_STUDY.md](./PILOT_STUDY.md) checklist).
+- [ ] Re-run the progression evidence with the GPT-4o generator once it is available.

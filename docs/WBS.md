@@ -70,6 +70,36 @@ The work was completed in these major steps:
 50. Replaced the stark white theme with a warm sand/ivory/teal palette and
     added UX improvements (verdict banner, tooltips, empty-state action).
 51. Recoloured the interface to a navy-blue palette.
+52. Added the one-call draft, verify, and repair flow (`/api/explain`) and an
+    Inputs tab showing the C1, C2, and C3 inputs behind a run.
+53. Reworked the explanation into a structured document with learner-specific
+    repair, grounded sentences, and report schema 1.1.
+
+Response to the PP1 proposal-panel comment (raise the student's cognitive level
+over time; research contribution, not only a product), added 2026-10-20:
+
+54. Defined the response: cognitive appropriateness as a trajectory, with new
+    research questions RQ4a and RQ4b (see [PLAN.md](./PLAN.md) and
+    [PP1.md](./PP1.md)).
+55. Implemented the Bloom progression policy (`c4/progression.py`):
+    demonstrated level, target level, contingent scaffolding, demotion.
+56. Added a per-concept Bloom record to the learner state with validation.
+57. Added target-level verification: progressive mode, `BLOOM_STAGNATION`, task
+    claims, grounded check questions and hints, report schema 1.2.
+58. Added scaffold fading and target-level check questions to the generators.
+59. Built a labelled Bloom item set and evaluated the Bloom estimator (V1 and a
+    task-aware V2) with development, test, and indirect-phrasing splits.
+60. Built a seeded multi-session simulated-learner experiment with ZPD, flat,
+    and matched learner models, ablations, and paired statistics (bootstrap
+    interval, Wilcoxon signed-rank, Cohen's dz).
+61. Evaluated target-level faithfulness on the stress corpus (RQ4a) and wrote
+    `scripts/run_c4_progression.py` and `c4/results/PROGRESSION.md`.
+62. Added `/api/session` and `/api/answer`, a Progression tab, and progression
+    evidence in the Evaluation tab; checked them in headless Chrome.
+63. Wrote the human pilot-study protocol ([PILOT_STUDY.md](./PILOT_STUDY.md));
+    it has not been run and needs ethics approval.
+64. Updated the proposal ([C4.md](./C4.md)), guidelines, plan, log, README, and
+    the PP1 summaries for the new contribution, with its limitations.
 
 ## Current demo commands
 
@@ -107,9 +137,20 @@ Preliminary evaluation:
 python3 scripts/run_c4_eval.py
 ```
 
+Bloom progression experiments (seeded, no model or network needed):
+
+```bash
+python3 scripts/run_c4_progression.py
+```
+
 ## Current limitation
 
 The real C1 graph, C2 learner output, C3 runtime, shared Neo4j database, and
 final production LLM configuration are not yet integrated. The current
 fixtures and local Qwen3 option are suitable for a transparent PP1 proof of
 concept.
+
+The progression results come from simulated learners with assumed parameters;
+the human pilot has not been run, and the Bloom estimator has been scored
+against items labelled by one annotator only. The per-concept Bloom record is a
+C4 extension of the C2 learner state that C2 does not yet provide.

@@ -167,3 +167,40 @@ python3 scripts/run_c4_eval.py --refresh  # regenerate missing Qwen outputs into
   There are no independent human annotations and no Cohen's kappa.
   Post-repair rates use the same verifier and are not independent evidence.
 - Real C1/C2/C3 integration, Neo4j retrieval, and the learner study remain pending.
+
+## Bloom-level progression (response to the PP1 panel)
+
+Static mode (the default) checks whether an explanation matches the learner's level now.
+Progressive mode (`C4Config(progressive=True)`, or the `progressive` flag in the API) treats
+cognitive appropriateness as a trajectory:
+
+- The learner state carries a `bloom` block per concept: the **demonstrated level** (1 Remember
+  to 6 Create) and the history of check-question results. C2 does not provide it, so it is a C4
+  extension (`c4/progression.py`).
+- The **target level** is the demonstrated level + 1 when every direct prerequisite is mastered,
+  otherwise the demonstrated level (consolidate); a failed stretch is retried with full support.
+- The verifier's Bloom ceiling becomes the target level. An explanation with no accepted check
+  question at that level is a `BLOOM_STAGNATION` violation, repaired by appending a "Check
+  yourself" section (faded hints plus the question). A question above the target is a
+  `BLOOM_MISMATCH` and is re-levelled. Questions are tasks, not domain claims: outside the
+  hallucination denominator, inside the cognitive-mismatch one.
+- **Contingent scaffolding**: full support at the start and after a failure, partial after one
+  pass, minimal after two; the template draft shrinks accordingly.
+- The report is `c4-report/1.2` and carries a `progression` block.
+
+```bash
+python3 scripts/run_c4_progression.py   # RQ4a stress run + simulated multi-session experiment
+```
+
+Writes `c4/results/progression.json` and `c4/results/PROGRESSION.md` (seeded, no model or
+network). The Bloom estimator is scored in `RESULTS.md` section C. Read the caveats there: the
+simulation encodes assumptions about learners (it includes flat and matched control models), the
+Bloom labels come from one annotator, and the human pilot ([docs/PILOT_STUDY.md](../docs/PILOT_STUDY.md))
+has not been run.
+
+Workbench: the **Progression** tab runs sessions (`POST /api/session`), records simulated answers
+(`POST /api/answer`), and shows the learner's levels and trajectory; the **Evaluation** tab shows
+the progression evidence. PP1 demo run-sheet addition: start a session with the "All
+prerequisites mastered" preset, answer well twice and show the target rise and the support fade,
+fail once to show the retry with full support, then lower a prerequisite below 0.7 in the left
+panel to show the policy consolidate instead of advancing.
