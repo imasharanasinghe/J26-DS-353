@@ -1,0 +1,547 @@
+{
+ "version": "bloom-items-v1",
+ "provenance": "Written and labelled by the C4 author (single annotator) from the revised Bloom taxonomy: the label is the cognitive process the item asks for. Not independently annotated, so there is no Cohen's kappa; a second annotator is still required.",
+ "split_rule": "Alternating items within each level: even positions dev, odd positions test. Cue lexicon changes are developed on dev only; test is scored after the lexicon is frozen. The `hard` split holds indirectly phrased items with no cue verb: it measures what a verb-cue matcher cannot do and is never used to tune the lexicon.",
+ "items": [
+  {
+   "id": "b1-01",
+   "text": "What is a stack?",
+   "level": 1,
+   "split": "dev"
+  },
+  {
+   "id": "b1-02",
+   "text": "Name the two ends of a queue.",
+   "level": 1,
+   "split": "test"
+  },
+  {
+   "id": "b1-03",
+   "text": "List the operations an array supports.",
+   "level": 1,
+   "split": "dev"
+  },
+  {
+   "id": "b1-04",
+   "text": "Which data structure follows the last-in-first-out rule?",
+   "level": 1,
+   "split": "test"
+  },
+  {
+   "id": "b1-05",
+   "text": "State the definition of a binary tree.",
+   "level": 1,
+   "split": "dev"
+  },
+  {
+   "id": "b1-06",
+   "text": "A heap is a complete binary tree.",
+   "level": 1,
+   "split": "test"
+  },
+  {
+   "id": "b1-07",
+   "text": "Recall what a base case is in recursion.",
+   "level": 1,
+   "split": "dev"
+  },
+  {
+   "id": "b1-08",
+   "text": "Define a linked list.",
+   "level": 1,
+   "split": "test"
+  },
+  {
+   "id": "b1-09",
+   "text": "Identify the root of a tree.",
+   "level": 1,
+   "split": "dev"
+  },
+  {
+   "id": "b1-10",
+   "text": "A queue follows the first-in-first-out rule.",
+   "level": 1,
+   "split": "test"
+  },
+  {
+   "id": "b1-11",
+   "text": "Array elements are accessed by index.",
+   "level": 1,
+   "split": "dev"
+  },
+  {
+   "id": "b1-12",
+   "text": "What does LIFO stand for?",
+   "level": 1,
+   "split": "test"
+  },
+  {
+   "id": "b2-01",
+   "text": "Explain why recursion needs a base case.",
+   "level": 2,
+   "split": "dev"
+  },
+  {
+   "id": "b2-02",
+   "text": "Describe in your own words how a stack works.",
+   "level": 2,
+   "split": "test"
+  },
+  {
+   "id": "b2-03",
+   "text": "Summarize how a heap is stored in an array.",
+   "level": 2,
+   "split": "dev"
+  },
+  {
+   "id": "b2-04",
+   "text": "Why does a binary tree have at most two children per node?",
+   "level": 2,
+   "split": "test"
+  },
+  {
+   "id": "b2-05",
+   "text": "In your own words, what does the base case of recursion do?",
+   "level": 2,
+   "split": "dev"
+  },
+  {
+   "id": "b2-06",
+   "text": "Give an example of a problem that a queue models naturally.",
+   "level": 2,
+   "split": "test"
+  },
+  {
+   "id": "b2-07",
+   "text": "Explain what happens to the call stack during recursion.",
+   "level": 2,
+   "split": "dev"
+  },
+  {
+   "id": "b2-08",
+   "text": "Paraphrase the idea that a max-heap keeps its largest element at the root.",
+   "level": 2,
+   "split": "test"
+  },
+  {
+   "id": "b2-09",
+   "text": "Interpret what a tree traversal order tells you about the visit sequence.",
+   "level": 2,
+   "split": "dev"
+  },
+  {
+   "id": "b2-10",
+   "text": "Classify linked lists, arrays, and trees as linear or hierarchical.",
+   "level": 2,
+   "split": "test"
+  },
+  {
+   "id": "b2-11",
+   "text": "Why is array indexing fast?",
+   "level": 2,
+   "split": "dev"
+  },
+  {
+   "id": "b2-12",
+   "text": "Describe how elements move through a queue.",
+   "level": 2,
+   "split": "test"
+  },
+  {
+   "id": "b3-01",
+   "text": "Apply binary search to find 7 in the sorted array [1, 3, 5, 7, 9].",
+   "level": 3,
+   "split": "dev"
+  },
+  {
+   "id": "b3-02",
+   "text": "Implement a stack using an array.",
+   "level": 3,
+   "split": "test"
+  },
+  {
+   "id": "b3-03",
+   "text": "Solve the problem of reversing a string using a stack.",
+   "level": 3,
+   "split": "dev"
+  },
+  {
+   "id": "b3-04",
+   "text": "Compute the height of a binary tree with seven nodes arranged in full levels.",
+   "level": 3,
+   "split": "test"
+  },
+  {
+   "id": "b3-05",
+   "text": "Trace the insertion of 5 into the min-heap [2, 4, 6].",
+   "level": 3,
+   "split": "dev"
+  },
+  {
+   "id": "b3-06",
+   "text": "Use recursion to calculate the factorial of 5.",
+   "level": 3,
+   "split": "test"
+  },
+  {
+   "id": "b3-07",
+   "text": "Write a function that traverses a tree in order.",
+   "level": 3,
+   "split": "dev"
+  },
+  {
+   "id": "b3-08",
+   "text": "Demonstrate how a queue processes the requests A, B, C.",
+   "level": 3,
+   "split": "test"
+  },
+  {
+   "id": "b3-09",
+   "text": "Execute the sequence push 3, push 4, pop, push 5 on an empty stack and give the final contents.",
+   "level": 3,
+   "split": "dev"
+  },
+  {
+   "id": "b3-10",
+   "text": "Carry out a depth-first traversal of the given tree.",
+   "level": 3,
+   "split": "test"
+  },
+  {
+   "id": "b3-11",
+   "text": "Determine the array index of the left child of the node at index 2.",
+   "level": 3,
+   "split": "dev"
+  },
+  {
+   "id": "b3-12",
+   "text": "Convert the recursive sum function into a loop.",
+   "level": 3,
+   "split": "test"
+  },
+  {
+   "id": "b4-01",
+   "text": "Compare the cost of searching a sorted array and a linked list.",
+   "level": 4,
+   "split": "dev"
+  },
+  {
+   "id": "b4-02",
+   "text": "Analyze why a recursive Fibonacci function is slow.",
+   "level": 4,
+   "split": "test"
+  },
+  {
+   "id": "b4-03",
+   "text": "What are the differences between a stack and a queue?",
+   "level": 4,
+   "split": "dev"
+  },
+  {
+   "id": "b4-04",
+   "text": "Break the quicksort algorithm into its main parts and show how they depend on each other.",
+   "level": 4,
+   "split": "test"
+  },
+  {
+   "id": "b4-05",
+   "text": "Distinguish a binary tree from a binary search tree.",
+   "level": 4,
+   "split": "dev"
+  },
+  {
+   "id": "b4-06",
+   "text": "Examine the trace to find where the recursion fails to terminate.",
+   "level": 4,
+   "split": "test"
+  },
+  {
+   "id": "b4-07",
+   "text": "Why does a heap give faster priority access than a sorted array, and what trade-off does it pay at insertion?",
+   "level": 4,
+   "split": "dev"
+  },
+  {
+   "id": "b4-08",
+   "text": "Contrast the memory layout of arrays and linked lists.",
+   "level": 4,
+   "split": "test"
+  },
+  {
+   "id": "b4-09",
+   "text": "Which part of this loop causes the quadratic running time?",
+   "level": 4,
+   "split": "dev"
+  },
+  {
+   "id": "b4-10",
+   "text": "Differentiate between depth-first and breadth-first traversal.",
+   "level": 4,
+   "split": "test"
+  },
+  {
+   "id": "b4-11",
+   "text": "Compare depth-first and breadth-first traversal on the same tree.",
+   "level": 4,
+   "split": "dev"
+  },
+  {
+   "id": "b4-12",
+   "text": "Examine how changing the pivot choice affects quicksort's recursion depth.",
+   "level": 4,
+   "split": "test"
+  },
+  {
+   "id": "b5-01",
+   "text": "Justify choosing a hash table over a sorted array for frequent lookups.",
+   "level": 5,
+   "split": "dev"
+  },
+  {
+   "id": "b5-02",
+   "text": "Evaluate whether recursion or iteration is better for traversing a very deep tree.",
+   "level": 5,
+   "split": "test"
+  },
+  {
+   "id": "b5-03",
+   "text": "Critique this solution that uses a queue where a stack is needed.",
+   "level": 5,
+   "split": "dev"
+  },
+  {
+   "id": "b5-04",
+   "text": "Assess the trade-offs of storing a heap in an array.",
+   "level": 5,
+   "split": "test"
+  },
+  {
+   "id": "b5-05",
+   "text": "Which implementation of a priority queue would you recommend for a large dataset, and defend your choice?",
+   "level": 5,
+   "split": "dev"
+  },
+  {
+   "id": "b5-06",
+   "text": "Judge whether this binary search implementation is correct for lists with duplicate values.",
+   "level": 5,
+   "split": "test"
+  },
+  {
+   "id": "b5-07",
+   "text": "Decide if a linked list is a good fit for random access, and support your answer.",
+   "level": 5,
+   "split": "dev"
+  },
+  {
+   "id": "b5-08",
+   "text": "Argue for or against using recursion for production tree traversal.",
+   "level": 5,
+   "split": "test"
+  },
+  {
+   "id": "b5-09",
+   "text": "Determine which of two sorting approaches suits nearly sorted data and defend your judgement.",
+   "level": 5,
+   "split": "dev"
+  },
+  {
+   "id": "b5-10",
+   "text": "Recommend a data structure for an undo feature and defend the choice.",
+   "level": 5,
+   "split": "test"
+  },
+  {
+   "id": "b5-11",
+   "text": "Evaluate the claim that arrays are always faster than linked lists.",
+   "level": 5,
+   "split": "dev"
+  },
+  {
+   "id": "b5-12",
+   "text": "Appraise the risks of using a global stack inside a recursive algorithm.",
+   "level": 5,
+   "split": "test"
+  },
+  {
+   "id": "b6-01",
+   "text": "Design a data structure that supports push, pop, and retrieving the minimum in constant time.",
+   "level": 6,
+   "split": "dev"
+  },
+  {
+   "id": "b6-02",
+   "text": "Create a new problem that can be solved with a queue.",
+   "level": 6,
+   "split": "test"
+  },
+  {
+   "id": "b6-03",
+   "text": "Develop an algorithm to merge two heaps efficiently.",
+   "level": 6,
+   "split": "dev"
+  },
+  {
+   "id": "b6-04",
+   "text": "Construct a traversal that visits tree nodes level by level using a queue.",
+   "level": 6,
+   "split": "test"
+  },
+  {
+   "id": "b6-05",
+   "text": "Propose a new way to store a tree in an array so inserts stay cheap.",
+   "level": 6,
+   "split": "dev"
+  },
+  {
+   "id": "b6-06",
+   "text": "Invent a data structure for a to-do list that supports undo and redo.",
+   "level": 6,
+   "split": "test"
+  },
+  {
+   "id": "b6-07",
+   "text": "Compose a complete program that simulates a bank queue and reports the average waiting time.",
+   "level": 6,
+   "split": "dev"
+  },
+  {
+   "id": "b6-08",
+   "text": "Formulate your own recursive definition for the number of nodes in a tree.",
+   "level": 6,
+   "split": "test"
+  },
+  {
+   "id": "b6-09",
+   "text": "Build a custom priority queue that breaks ties by insertion order.",
+   "level": 6,
+   "split": "dev"
+  },
+  {
+   "id": "b6-10",
+   "text": "Devise a test suite that would expose bugs in any stack implementation.",
+   "level": 6,
+   "split": "test"
+  },
+  {
+   "id": "b6-11",
+   "text": "Plan an experiment to compare your new structure against a heap.",
+   "level": 6,
+   "split": "dev"
+  },
+  {
+   "id": "b6-12",
+   "text": "Generate an original example of a problem where a greedy choice fails.",
+   "level": 6,
+   "split": "test"
+  },
+  {
+   "id": "h1-01",
+   "text": "Which end of a stack do pushes and pops use?",
+   "level": 1,
+   "split": "hard"
+  },
+  {
+   "id": "h1-02",
+   "text": "How many children can a binary tree node have at most?",
+   "level": 1,
+   "split": "hard"
+  },
+  {
+   "id": "h1-03",
+   "text": "What is the first position of an array called?",
+   "level": 1,
+   "split": "hard"
+  },
+  {
+   "id": "h2-01",
+   "text": "How does a stack keep track of function calls?",
+   "level": 2,
+   "split": "hard"
+  },
+  {
+   "id": "h2-02",
+   "text": "What does it mean for a heap to be complete?",
+   "level": 2,
+   "split": "hard"
+  },
+  {
+   "id": "h2-03",
+   "text": "What is the idea behind halving the problem at every step?",
+   "level": 2,
+   "split": "hard"
+  },
+  {
+   "id": "h3-01",
+   "text": "What does this stack contain after pushing 1, 2, 3 and popping once?",
+   "level": 3,
+   "split": "hard"
+  },
+  {
+   "id": "h3-02",
+   "text": "How many comparisons does binary search need on a sorted array of eight items?",
+   "level": 3,
+   "split": "hard"
+  },
+  {
+   "id": "h3-03",
+   "text": "Where would the value 4 land when inserted into this binary search tree?",
+   "level": 3,
+   "split": "hard"
+  },
+  {
+   "id": "h4-01",
+   "text": "How would the output change if the base case were removed from this function?",
+   "level": 4,
+   "split": "hard"
+  },
+  {
+   "id": "h4-02",
+   "text": "What do a stack and a queue have in common, and where do they part ways?",
+   "level": 4,
+   "split": "hard"
+  },
+  {
+   "id": "h4-03",
+   "text": "Where does this loop spend most of its time?",
+   "level": 4,
+   "split": "hard"
+  },
+  {
+   "id": "h5-01",
+   "text": "Is a linked list the right tool when you need constant-time access by position?",
+   "level": 5,
+   "split": "hard"
+  },
+  {
+   "id": "h5-02",
+   "text": "Would you trust this traversal on a million-node tree?",
+   "level": 5,
+   "split": "hard"
+  },
+  {
+   "id": "h5-03",
+   "text": "Does this heap-based solution beat sorting the whole array when you only need the top three?",
+   "level": 5,
+   "split": "hard"
+  },
+  {
+   "id": "h6-01",
+   "text": "How could a stack be rearranged so that it also reports its minimum quickly?",
+   "level": 6,
+   "split": "hard"
+  },
+  {
+   "id": "h6-02",
+   "text": "What would an array-based queue need so that it never runs out of room?",
+   "level": 6,
+   "split": "hard"
+  },
+  {
+   "id": "h6-03",
+   "text": "Can you imagine a structure that mixes the strengths of arrays and linked lists?",
+   "level": 6,
+   "split": "hard"
+  }
+ ]
+}

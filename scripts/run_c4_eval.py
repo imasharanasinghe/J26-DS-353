@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT))
 
 from c4 import OllamaExplanationGenerator
 from c4.adapters import load_json
-from c4.evaluation import evaluate_natural, evaluate_sensitivity, evaluate_stress
+from c4.evaluation import evaluate_bloom, evaluate_natural, evaluate_sensitivity, evaluate_stress
 
 DATA = ROOT / "c4" / "data"
 RESULTS = ROOT / "c4" / "results"
@@ -26,7 +26,26 @@ def fmt(value) -> str:
     return "n/a" if value is None else f"{value}"
 
 
-def render(stress: dict, natural: dict | None, sensitivity: list[dict]) -> str:
+def render_bloom(bloom: dict) -> list[str]:
+    lines = [
+        "",
+        "## C. Bloom-level estimator against labelled items",
+        f"- Item set `{bloom['version']}`: {bloom['items']} items, 6 levels. {bloom['provenance']}",
+        f"- Split rule: {bloom['split_rule']}",
+        "",
+        "| Split | Estimator | Items | Accuracy % | 95% CI | Within one level % | Mean abs. error | Macro-F1 |",
+        "|---|---|---|---|---|---|---|---|",
+    ]
+    for split, row in bloom["splits"].items():
+        for name in ("v1", "v2"):
+            r = row[name]
+            lines.append(f"| {split} | {name} | {r['items']} | {r['accuracy']} | {r['accuracy_ci95']} | "
+                         f"{r['within_one']} | {r['mean_abs_error']} | {r['macro_f1']} |")
+    lines += ["", f"**Caveat.** {bloom['caveat']}"]
+    return lines
+
+
+def render(stress: dict, natural: dict | None, sensitivity: list[dict], bloom: dict | None = None) -> str:
     det = stress["detection"]
     base = stress["baseline_unverified_reference"]
     lines = [
@@ -115,6 +134,8 @@ def render(stress: dict, natural: dict | None, sensitivity: list[dict]) -> str:
         ]
         for item in natural["examples"]:
             lines += [f"- `{item['case_id']}`", f"  - original: {item['original']}", f"  - final: {item['final']}"]
+    if bloom:
+        lines += render_bloom(bloom)
     return "\n".join(lines) + "\n"
 
 
@@ -135,7 +156,9 @@ def main() -> None:
         (RESULTS / "natural.json").write_text(json.dumps(natural, indent=2) + "\n", encoding="utf-8")
     sensitivity = evaluate_sensitivity(kg, DATA / "natural_cache.json")
     (RESULTS / "sensitivity.json").write_text(json.dumps(sensitivity, indent=2) + "\n", encoding="utf-8")
-    report = render(stress, natural, sensitivity)
+    bloom = evaluate_bloom(DATA / "bloom_items.json")
+    (RESULTS / "bloom_classifier.json").write_text(json.dumps(bloom, indent=2) + "\n", encoding="utf-8")
+    report = render(stress, natural, sensitivity, bloom)
     (RESULTS / "RESULTS.md").write_text(report, encoding="utf-8")
     print(report)
 

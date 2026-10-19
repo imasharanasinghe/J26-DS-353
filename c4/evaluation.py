@@ -21,6 +21,7 @@ from .metrics import (
     percent,
     wilson_interval,
 )
+from .bloom import estimate_level, estimate_level_v2, score_estimator
 from .explainer import GENERATION_OPTIONS
 from .paths import build_verified_path
 from .pipeline import C4Config, C4Pipeline
@@ -331,3 +332,34 @@ def evaluate_sensitivity(kg: dict[str, Any], cache_path: Path,
             "natural_not_graph_supported_pct": claim_rates(natural_claims)["hallucination_rate"],
         })
     return rows
+
+
+def evaluate_bloom(items_path: str | Path) -> dict[str, Any]:
+    """Score the V1 and V2 Bloom estimators on the labelled item set, split by split.
+
+    ``dev`` informed the V2 lexicon, ``test`` was scored once after it was frozen, and
+    ``hard`` (indirect phrasing without cue verbs) was never used for tuning.
+    """
+    document = json.loads(Path(items_path).read_text(encoding="utf-8"))
+    splits: dict[str, Any] = {}
+    for split in ("dev", "test", "hard"):
+        items = [item for item in document["items"] if item["split"] == split]
+        row: dict[str, Any] = {}
+        for name, estimator in (("v1", estimate_level), ("v2", estimate_level_v2)):
+            scored = score_estimator(items, estimator)
+            correct = round(scored["accuracy"] * scored["items"] / 100)
+            scored["accuracy_ci95"] = wilson_interval(correct, scored["items"])
+            row[name] = scored
+        splits[split] = row
+    return {
+        "version": document["version"],
+        "provenance": document["provenance"],
+        "split_rule": document["split_rule"],
+        "items": len(document["items"]),
+        "splits": splits,
+        "caveat": ("One annotator (the C4 author) wrote and labelled the items, so there is no inter-annotator "
+                   "agreement. The V2 lexicon uses the standard Bloom verb lists and was extended after reading dev "
+                   "errors, so its dev score is optimistic; the test items use the same vocabulary family, so its "
+                   "test score measures in-vocabulary coverage, not generalisation. The hard split shows the limit of "
+                   "any verb-cue matcher. A second annotator and a learned classifier are still required."),
+    }

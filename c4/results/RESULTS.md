@@ -29,7 +29,7 @@ Baseline = original explanations, rates from the reference labels. Repaired rate
 | full_c4 | 0.0 | 0.0 | 0/28 | (0.0, 12.1) | 28/0, p=1e-08 |
 
 Rewrite (full C4): 44/44 violating claims corrected (success 100.0%); new violations introduced: 0.
-Mean full-C4 latency per case: 0.469 ms (verifier only; 0 LLM calls).
+Mean full-C4 latency per case: 0.47 ms (verifier only; 0 LLM calls).
 
 **Caveat.** Post-repair rates use the same verifier as the repair loop (not independent). Detection scores on a recipe-built corpus show the rules behave as specified; they are not generalisation evidence.
 
@@ -65,3 +65,18 @@ Reading: the strict rule (default 0.6) cannot distinguish a faithful paraphrase 
 - `tree/uncertain`
   - original: A tree is a hierarchical data structure where each node connects to zero or more child nodes. Since you know recursion, you can traverse trees by recursively visiting each node's children.
   - final: Trees are hierarchical data structures. Take a quick check on Recursion first: the model is unsure how well you know it (mastery 0.85, uncertainty 0.40).
+
+## C. Bloom-level estimator against labelled items
+- Item set `bloom-items-v1`: 90 items, 6 levels. Written and labelled by the C4 author (single annotator) from the revised Bloom taxonomy: the label is the cognitive process the item asks for. Not independently annotated, so there is no Cohen's kappa; a second annotator is still required.
+- Split rule: Alternating items within each level: even positions dev, odd positions test. Cue lexicon changes are developed on dev only; test is scored after the lexicon is frozen. The `hard` split holds indirectly phrased items with no cue verb: it measures what a verb-cue matcher cannot do and is never used to tune the lexicon.
+
+| Split | Estimator | Items | Accuracy % | 95% CI | Within one level % | Mean abs. error | Macro-F1 |
+|---|---|---|---|---|---|---|---|
+| dev | v1 | 36 | 52.8 | (37.0, 68.0) | 58.3 | 1.389 | 0.547 |
+| dev | v2 | 36 | 97.2 | (85.8, 99.5) | 100.0 | 0.028 | 0.972 |
+| test | v1 | 36 | 52.8 | (37.0, 68.0) | 61.1 | 1.472 | 0.564 |
+| test | v2 | 36 | 100.0 | (90.4, 100.0) | 100.0 | 0.0 | 1.0 |
+| hard | v1 | 18 | 16.7 | (5.8, 39.2) | 33.3 | 2.5 | 0.048 |
+| hard | v2 | 18 | 16.7 | (5.8, 39.2) | 33.3 | 2.5 | 0.048 |
+
+**Caveat.** One annotator (the C4 author) wrote and labelled the items, so there is no inter-annotator agreement. The V2 lexicon uses the standard Bloom verb lists and was extended after reading dev errors, so its dev score is optimistic; the test items use the same vocabulary family, so its test score measures in-vocabulary coverage, not generalisation. The hard split shows the limit of any verb-cue matcher. A second annotator and a learned classifier are still required.

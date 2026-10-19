@@ -17,6 +17,7 @@ from .models import (
     RewriteStep,
     VerifiedClaim,
 )
+from .bloom import CUES_V1, estimate_level, estimate_level_v2
 from .progression import Decision, LearnerProgress, ProgressionConfig, decide
 
 STOPWORDS = frozenset(
@@ -27,14 +28,7 @@ MISCONCEPTION_PREFIX = "contradicts graph misconception: "
 HEADING = re.compile(r"^(#{1,4})\s+(.*)$")
 BULLET = re.compile(r"^([-*\u2022]|\d+[.)])\s+(.*)$")
 
-# Verb cues for the pilot Bloom estimator (revised taxonomy level per cue).
-BLOOM_CUES: tuple[tuple[int, tuple[str, ...]], ...] = (
-    (6, ("design", "create", "construct", "develop")),
-    (5, ("evaluate", "justify", "critique", "assess")),
-    (4, ("analyze", "analyse", "compare", "differentiate", "examine")),
-    (3, ("implement", "apply", "solve", "compute")),
-    (2, ("explain", "describe", "why", "summarize")),
-)
+BLOOM_CUES = CUES_V1  # kept for callers that import it from here
 
 
 @dataclass
@@ -830,10 +824,6 @@ class C4Pipeline:
         words = (cls._stem(word) for word in re.findall(r"[a-z0-9]+", text.lower()))
         return {word for word in words if word not in STOPWORDS and word not in NEGATIONS}
 
-    @staticmethod
-    def _estimate_bloom(sentence: str) -> int:
-        words = set(re.findall(r"[a-z]+", sentence.lower()))
-        for level, cues in BLOOM_CUES:
-            if words & set(cues):
-                return level
-        return 1
+    def _estimate_bloom(self, sentence: str) -> int:
+        """Pilot Bloom estimator: V1 verb cues in static mode, task-aware V2 when progressive."""
+        return estimate_level_v2(sentence) if self.config.progressive else estimate_level(sentence)

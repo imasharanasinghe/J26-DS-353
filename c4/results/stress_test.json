@@ -88,7 +88,7 @@
         "worsened": 0,
         "p_exact": 3.052e-05
       },
-      "mean_latency_ms": 0.404
+      "mean_latency_ms": 0.406
     },
     "cognitive_only": {
       "claims_after": 53,
@@ -104,7 +104,7 @@
         "worsened": 0,
         "p_exact": 6.104e-05
       },
-      "mean_latency_ms": 0.425
+      "mean_latency_ms": 0.426
     },
     "full_c4": {
       "claims_after": 40,
@@ -120,13 +120,13 @@
         "worsened": 0,
         "p_exact": 1e-08
       },
-      "mean_latency_ms": 0.469
+      "mean_latency_ms": 0.47
     }
   },
   "caveat": "Post-repair rates use the same verifier as the repair loop (not independent). Detection scores on a recipe-built corpus show the rules behave as specified; they are not generalisation evidence.",
   "sample_reports": {
     "tree/all_mastered": {
-      "schema_version": "c4-report/1.1",
+      "schema_version": "c4-report/1.2",
       "learner_id": "all_mastered:tree",
       "target": "tree",
       "verified_path": true,
@@ -144,6 +144,7 @@
           ]
         }
       ],
+      "progression": null,
       "initial_claims": [
         {
           "claim_id": "claim-1",
@@ -297,6 +298,8 @@
         "rewrite_success_rate": 100.0,
         "new_violations_introduced": 0,
         "unresolved": 0,
+        "stagnation_before": null,
+        "stagnation_after": null,
         "final_confidence": {
           "HIGH": 2,
           "MEDIUM": 1,
@@ -316,11 +319,13 @@
         "contradict_recall": 0.75,
         "check_factual": true,
         "check_cognitive": true,
-        "rewrite": true
+        "rewrite": true,
+        "progressive": false,
+        "check_stagnation": true
       }
     },
     "tree/missing_prereq": {
-      "schema_version": "c4-report/1.1",
+      "schema_version": "c4-report/1.2",
       "learner_id": "missing_prereq:tree",
       "target": "tree",
       "verified_path": true,
@@ -337,6 +342,7 @@
           ]
         }
       ],
+      "progression": null,
       "initial_claims": [
         {
           "claim_id": "claim-1",
@@ -470,6 +476,8 @@
         "rewrite_success_rate": 100.0,
         "new_violations_introduced": 0,
         "unresolved": 0,
+        "stagnation_before": null,
+        "stagnation_after": null,
         "final_confidence": {
           "HIGH": 2,
           "MEDIUM": 0,
@@ -489,11 +497,13 @@
         "contradict_recall": 0.75,
         "check_factual": true,
         "check_cognitive": true,
-        "rewrite": true
+        "rewrite": true,
+        "progressive": false,
+        "check_stagnation": true
       }
     },
     "tree/several_low": {
-      "schema_version": "c4-report/1.1",
+      "schema_version": "c4-report/1.2",
       "learner_id": "several_low:tree",
       "target": "tree",
       "verified_path": true,
@@ -511,6 +521,7 @@
           ]
         }
       ],
+      "progression": null,
       "initial_claims": [
         {
           "claim_id": "claim-1",
@@ -676,6 +687,8 @@
         "rewrite_success_rate": 100.0,
         "new_violations_introduced": 0,
         "unresolved": 0,
+        "stagnation_before": null,
+        "stagnation_after": null,
         "final_confidence": {
           "HIGH": 1,
           "MEDIUM": 2,
@@ -695,7 +708,9 @@
         "contradict_recall": 0.75,
         "check_factual": true,
         "check_cognitive": true,
-        "rewrite": true
+        "rewrite": true,
+        "progressive": false,
+        "check_stagnation": true
       }
     }
   }
