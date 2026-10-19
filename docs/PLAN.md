@@ -602,7 +602,7 @@ progression across sessions). Design and status are in [PP1.md](./PP1.md).
   claims, report schema 1.2.
 - [x] Step 4: check questions at the target level and scaffold fading in the generator.
 - [x] Step 5: Bloom-level classifier evaluation against a labelled item set (dev/test split).
-- [ ] Step 6: simulated-learner multi-session experiment (conditions A, B, C) with paired
+- [x] Step 6: simulated-learner multi-session experiment (conditions A, B, C) with paired
   statistics and learner-model sensitivity.
 - [ ] Step 7: result files and `RESULTS.md` section from a reproducible script.
 - [ ] Step 8: service and API support for sessions; workbench Progression tab.

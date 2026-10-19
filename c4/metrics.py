@@ -110,3 +110,67 @@ def wilson_interval(successes: int, total: int, z: float = 1.96) -> tuple[float,
     centre = (p + z * z / (2 * total)) / denom
     margin = z * math.sqrt(p * (1 - p) / total + z * z / (4 * total * total)) / denom
     return round(100 * max(0.0, centre - margin), 1), round(100 * min(1.0, centre + margin), 1)
+
+
+def _normal_cdf(value: float) -> float:
+    return 0.5 * (1 + math.erf(value / math.sqrt(2)))
+
+
+def bootstrap_mean_ci(
+    values: Sequence[float], seed: int = 0, resamples: int = 2000, level: float = 0.95
+) -> tuple[float, float] | None:
+    """Percentile bootstrap interval for the mean (seeded, so results are reproducible)."""
+    import random
+
+    if not values:
+        return None
+    rng = random.Random(seed)
+    n = len(values)
+    means = sorted(sum(values[rng.randrange(n)] for _ in range(n)) / n for _ in range(resamples))
+    low = means[int(((1 - level) / 2) * resamples)]
+    high = means[min(resamples - 1, int((1 - (1 - level) / 2) * resamples))]
+    return round(low, 4), round(high, 4)
+
+
+def wilcoxon_signed_rank(differences: Sequence[float]) -> dict[str, float | int | None]:
+    """Paired Wilcoxon signed-rank test, normal approximation with tie and continuity correction.
+
+    Zero differences are dropped. Returns ``None`` statistics when fewer than 6 non-zero pairs remain.
+    """
+    nonzero = [d for d in differences if d != 0]
+    n = len(nonzero)
+    if n < 6:
+        return {"n": n, "w_plus": None, "z": None, "p": None}
+    order = sorted(range(n), key=lambda i: abs(nonzero[i]))
+    ranks = [0.0] * n
+    tie_term = 0.0
+    i = 0
+    while i < n:
+        j = i
+        while j + 1 < n and abs(nonzero[order[j + 1]]) == abs(nonzero[order[i]]):
+            j += 1
+        average = (i + j) / 2 + 1
+        for k in range(i, j + 1):
+            ranks[order[k]] = average
+        size = j - i + 1
+        tie_term += size ** 3 - size
+        i = j + 1
+    w_plus = sum(rank for rank, d in zip(ranks, nonzero) if d > 0)
+    mean = n * (n + 1) / 4
+    variance = n * (n + 1) * (2 * n + 1) / 24 - tie_term / 48
+    if variance <= 0:
+        return {"n": n, "w_plus": w_plus, "z": None, "p": None}
+    shift = w_plus - mean
+    shift -= 0.5 if shift > 0 else -0.5 if shift < 0 else 0
+    z = shift / math.sqrt(variance)
+    return {"n": n, "w_plus": round(w_plus, 1), "z": round(z, 3), "p": float(f"{2 * (1 - _normal_cdf(abs(z))):.4g}")}
+
+
+def cohens_dz(differences: Sequence[float]) -> float | None:
+    """Effect size for paired data: mean difference over the standard deviation of the differences."""
+    n = len(differences)
+    if n < 2:
+        return None
+    mean = sum(differences) / n
+    variance = sum((d - mean) ** 2 for d in differences) / (n - 1)
+    return round(mean / math.sqrt(variance), 3) if variance > 0 else None
