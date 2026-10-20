@@ -1,12 +1,12 @@
 /* C4 workbench - quiet editorial theme: white paper, ink text, hairline rules. */
-/* Inter (SIL OFL 1.1, see fonts/OFL.txt), self-hosted so the demo works offline. */
+/* Josefin Sans (SIL OFL 1.1, see fonts/OFL.txt), self-hosted so the demo works offline. */
 @font-face {
-  font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
-  src: url("fonts/Inter.ttf") format("truetype");
+  font-family: "Josefin Sans"; font-style: normal; font-weight: 100 700; font-display: swap;
+  src: url("fonts/JosefinSans.ttf") format("truetype");
 }
 @font-face {
-  font-family: "Inter"; font-style: italic; font-weight: 100 900; font-display: swap;
-  src: url("fonts/Inter-Italic.ttf") format("truetype");
+  font-family: "Josefin Sans"; font-style: italic; font-weight: 100 700; font-display: swap;
+  src: url("fonts/JosefinSans-Italic.ttf") format("truetype");
 }
 
 :root {
@@ -18,7 +18,7 @@
   --warn: #8f6208; --warn-bg: #f6e9c8; --info: #2f5f9e; --info-bg: #dfe9f6;
   --series-fact: #213f8f; --series-cog: #d08a1e;
   --radius: 8px; --shadow: 0 1px 0 rgba(15, 30, 70, .06), 0 8px 20px -14px rgba(15, 30, 70, .4);
-  --font: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font: "Josefin Sans", "Avenir Next", "Century Gothic", "Helvetica Neue", Arial, sans-serif;
 }
 * { box-sizing: border-box; }
 html { color-scheme: light; scroll-behavior: smooth; }

@@ -91,7 +91,7 @@ def test_static_index_is_served(base_url) -> None:
 
 
 def test_self_hosted_font_is_served_with_a_font_type(base_url) -> None:
-    status, headers, body = call(f"{base_url}/fonts/Inter.ttf")
+    status, headers, body = call(f"{base_url}/fonts/JosefinSans.ttf")
     assert status == 200 and headers["Content-Type"] == "font/ttf" and len(body) > 50_000
     assert call(f"{base_url}/fonts/OFL.txt")[0] == 200
 
