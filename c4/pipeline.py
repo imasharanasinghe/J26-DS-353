@@ -712,8 +712,12 @@ class C4Pipeline:
     # ------------------------------------------------------------ progression
 
     def target_ready(self, c3_path: dict[str, Any], learner_state: dict[str, Any]) -> bool:
-        """True when every direct prerequisite of the target is mastered (certain and above threshold)."""
-        prerequisites = self.kg.get("concepts", {}).get(c3_path["target"], {}).get("prerequisites", [])
+        """True when every direct prerequisite of the target is mastered (certain and above threshold).
+
+        Prerequisites absent from the graph cannot be assessed and are skipped, as in the path and hints.
+        """
+        concepts = self.kg.get("concepts", {})
+        prerequisites = [item for item in concepts.get(c3_path["target"], {}).get("prerequisites", []) if item in concepts]
         return all(self._mastery_state(item, learner_state) == "MASTERED" for item in prerequisites)
 
     def progression_decision(self, c3_path: dict[str, Any], learner_state: dict[str, Any]) -> Decision:

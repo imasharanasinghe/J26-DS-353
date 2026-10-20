@@ -9,8 +9,8 @@
     ],
     "policy_actions": {
       "start": 28,
-      "consolidate": 32,
-      "advance": 24
+      "advance": 28,
+      "consolidate": 28
     },
     "runs_with_unresolved_claims": 0,
     "conditions": {

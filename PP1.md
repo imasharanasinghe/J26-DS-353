@@ -112,7 +112,7 @@ What the full results say (`c4/results/PROGRESSION.md`):
 - **The progression results are simulated.** The ZPD model partly returns its own assumption, which is why the flat and matched controls are reported. All learner-model parameters are pilot values, not fitted to data. The results support the design and its limits, **not a claim about real students**.
 - **The human pilot has not been run.** The protocol is written ([docs/PILOT_STUDY.md](docs/PILOT_STUDY.md)); it needs SLIIT ethics approval first and is exploratory (18 to 24 learners).
 - **The Bloom estimator is a verb-cue matcher.** One annotator labelled the 90 items (no Cohen's kappa); 100% on the test split reflects in-vocabulary coverage, and 16.7% on indirectly phrased items shows its limit. A second annotator and a learned classifier are needed.
-- Earlier limitations still hold: recipe-built stress labels, post-repair rates from the same verifier, rule-based factual matching, fixture C1/C2/C3 inputs, and the GPT-4o generator not yet implemented.
+- Earlier limitations still hold: recipe-built stress labels, post-repair rates from the same verifier, rule-based factual matching, fixture C1/C2/C3 inputs, and the GPT-4o generator not yet implemented (Qwen via Ollama is the temporary stand-in).
 - The `bloom` learner-state field is a C4 extension that C2 does not provide yet; the check questions are generic templates.
 
 ---
@@ -130,17 +130,18 @@ What the full results say (`c4/results/PROGRESSION.md`):
 | Second annotator, kappa, learned Bloom classifier | Next |
 | Agree the Bloom field with C2; placement check; concept-specific questions | Next |
 | Ethics approval and the human pilot | Next (after approval) |
-| GPT-4o generator; NLI factual matching; real C1 to C3 integration | Outstanding |
+| GPT-4o generator (Qwen via Ollama used meanwhile); NLI factual matching; real C1 to C3 integration | Outstanding |
 
 ---
 
 ## 7. Slide-ready content
 
-### Slide A: Panel feedback and our response
+### Slide A: Panel feedback, our response, and the research questions
 
 - **Feedback:** strengthen the research contribution; show how the student's cognitive level rises over time.
 - **Response:** appropriateness becomes a trajectory. C4 verifies faithfulness *and* targets the learner's next Bloom level.
-- **Evidence:** a multi-session comparison of unverified, matched-level, and progressive explanation, with controls.
+- **RQ4a:** faithful and at the target level, versus unverified and static C4?
+- **RQ4b:** faster progression across sessions, versus matched-level and unverified, and when not?
 
 ### Slide B: From snapshot to trajectory
 
@@ -158,21 +159,19 @@ check answer -> demonstrated level -> target level (+1 if prerequisites mastered
    -> next session
 ```
 
-### Slide D: Research questions
+Drafts come only from a language model. **Qwen (via Ollama) is the temporary stand-in for the planned GPT-4o generator**; the verifier and policy are generator-independent, so switching is a configuration change, but the numbers here were not produced with GPT-4o.
 
-- RQ4a: faithful and at the target level, versus unverified and static C4?
-- RQ4b: faster progression across sessions, versus matched-level and unverified, and when not?
-
-### Slide E: Results
+### Slide D: Results
 
 - RQ4a: question at target level 0% → **100%**, 0 violations, 0 unresolved (84 runs).
 - RQ4b (simulated): **+0.36** capability levels (interval 0.29 to 0.43) under the ZPD model; **no gain** under the flat and matched controls; needs about 8 or more sessions.
 - Stretch is the active ingredient; fading adds nothing in this model.
 
-### Slide F: Limitations and next steps
+### Slide E: Limitations and next steps
 
 - Simulated learners are assumptions, not students; Bloom labels from one annotator; estimator misses indirect phrasing.
-- Next: second annotator and classifier, C2 agreement, ethics approval and the human pilot.
+- Generator is Qwen via Ollama, a temporary replacement for GPT-4o (not yet implemented).
+- Next: second annotator and classifier, C2 agreement, GPT-4o generator, ethics approval and the human pilot.
 
 ### Demo flow (live, in the workbench)
 
