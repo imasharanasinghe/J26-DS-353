@@ -812,10 +812,10 @@ async function answerCheck(score) {
 }
 
 /* Prerequisites that keep the policy from advancing (same rule as the server: mastery clearly above the
-   threshold and uncertainty low). */
+   threshold and uncertainty low; prerequisites outside the graph cannot be assessed and are skipped). */
 function prerequisiteBlockers() {
   const defaults = state.meta.config_defaults;
-  return targetInfo().prerequisites.filter((id) => {
+  return targetInfo().prerequisites.filter((id) => state.meta.concepts[id] !== undefined).filter((id) => {
     const mastery = state.learner.mastery[id], spread = state.learner.uncertainty[id];
     return mastery === undefined || mastery < defaults.mastery_threshold + defaults.threshold_margin
       || (spread ?? 1) > defaults.uncertainty_threshold;
