@@ -81,7 +81,7 @@ Valid sentences are kept as written. Only bad ones are repaired.
   - The before/after rewrite trace, with an unresolved-claims notice.
   - An **Evaluation** tab.
   - A **verdict banner**, tooltips and a keyboard shortcut.
-- Design: navy theme, Josefin Sans font (self-hosted, licensed).
+- Design: navy theme, Inter font (self-hosted, licensed).
 - Downloadable JSON report.
 
 ### Stage 7 — Draft, verify and repair in one call

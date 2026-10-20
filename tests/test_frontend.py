@@ -30,7 +30,7 @@ def test_page_references_only_local_assets() -> None:
 
 def test_font_licence_ships_with_the_font_files() -> None:
     fonts = WEB / "fonts"
-    assert (fonts / "JosefinSans.ttf").is_file() and (fonts / "JosefinSans-Italic.ttf").is_file()
+    assert (fonts / "Inter.ttf").is_file() and (fonts / "Inter-Italic.ttf").is_file()
     assert "SIL Open Font License" in (fonts / "OFL.txt").read_text(encoding="utf-8")
 
 
