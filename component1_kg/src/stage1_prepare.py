@@ -36,6 +36,7 @@ def prepare_corpus(filepaths):
             category = record.get('category', ['unknown'])[0]
             title = record.get('title', '')
             video_id = record.get('video_ID', '')
+
             chunks = chunk_text(text)
             for i, chunk in enumerate(chunks):
                 all_chunks.append({

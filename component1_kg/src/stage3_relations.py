@@ -4,16 +4,14 @@ import os
 from itertools import combinations
 
 # ── Prerequisite linguistic patterns ─────────────────────────────────
-# These are phrases that signal "A must come before B" in lecture text
 PREREQ_PATTERNS = [
-    r"before (we|you|we can) (learn|study|understand|look at|cover)",
-    r"(requires?|needs?|assumes?|depends? on|builds? on|based on)",
-    r"(first|previously|earlier) (learn|cover|introduc|discuss|defin)",
-    r"(must|should|need to) (know|understand|learn|have) .{0,30} (before|first|prior)",
+    r"before (we|you|we can) (learn|study|understand|look at|cover|discuss)",
+    r"(requires?|needs?|depends? on|builds? on|based on) (a |an |the |knowledge of |understanding of )?",
+    r"(must|should|need to) (know|understand|learn|have studied) .{0,30} (before|first|prior to)",
     r"(foundation|prerequisite|building block|basis) (of|for)",
-    r"(recall|remember|review) (that|how|what)",
-    r"(extend|build|expand) (on|upon|from)",
-    r"(now that|since) (you|we) (know|understand|have learned|covered)",
+    r"(now that|since) (you|we) (know|understand|have learned|have covered)",
+    r"(recall|remember) (from|that|how) .{0,20} (we|you) (learned|covered|discussed|studied)",
+    r"(extend|build|expand) (on|upon|from) .{0,20}(what|our)",
 ]
 
 # ── Bloom level verb patterns ─────────────────────────────────────────
@@ -45,6 +43,126 @@ MISCONCEPTION_WHITELIST = [
     ("dfs", "bfs"),
 ]
 
+# Known DSA prerequisite pairs (factually correct, domain expert knowledge)
+# These are injected as seeds since lecture text rarely states them explicitly
+PREREQUISITE_SEEDS = [
+    # Foundations
+    ("array", "dynamic array"),
+    ("array", "binary search"),
+    ("array", "binary search tree"),
+    ("array", "sorting"),
+    ("array", "hash table"),
+    ("array", "heap"),
+    ("array", "trie"),
+    ("array", "union find"),
+    ("array", "radix sort"),
+    ("array", "pointer"),
+    ("array", "adjacency matrix"),
+    ("array", "dynamic programming"),
+    ("array", "segment tree"),
+    ("array", "multidimensional array"),
+    # Linked list family
+    ("linked list", "singly linked list"),
+    ("linked list", "doubly linked list"),
+    ("linked list", "circular linked list"),
+    ("array", "linked list"),
+    # Stack & Queue
+    ("array", "stack"),
+    ("array", "queue"),
+    ("stack", "recursion"),
+    ("queue", "breadth-first search"),
+    ("stack", "depth-first search"),
+    ("stack", "stack top"),
+    ("stack", "stack bottom"),
+    ("queue", "circular queue"),
+    ("queue", "deque"),
+    ("heap", "priority queue"),
+    # Tree family
+    ("binary search", "binary search tree"),
+    ("recursion", "binary search tree"),
+    ("binary tree", "binary search tree"),
+    ("binary search tree", "balanced binary tree"),
+    ("balanced binary tree", "avl tree"),
+    ("balanced binary tree", "red-black tree"),
+    ("binary search tree", "b-tree"),
+    ("b-tree", "b+ tree"),
+    ("binary tree", "huffman tree"),
+    ("heap", "heap sort"),
+    ("binary tree", "heap"),
+    ("array", "heap"),
+    ("binary search tree", "symbol table"),
+    ("array", "segment tree"),
+    ("recursion", "trie"),
+    ("linked list", "node"),
+    ("binary tree", "root node"),
+    ("binary tree", "leaf node"),
+    ("binary tree", "traversal"),
+    ("traversal", "level order traversal"),
+    # Graph family
+    ("array", "graph"),
+    ("linked list", "adjacency list"),
+    ("graph", "shortest path"),
+    ("graph", "minimum spanning tree"),
+    ("graph", "kruskal"),
+    ("graph", "prim"),
+    ("graph", "topological sort"),
+    ("graph", "depth-first search"),
+    ("graph", "breadth-first search"),
+    ("graph", "directed graph"),
+    ("graph", "undirected graph"),
+    ("graph", "weighted graph"),
+    ("graph", "connected graph"),
+    ("connected graph", "strongly connected graph"),
+    ("graph", "spanning tree"),
+    # Sorting family
+    ("sorting", "binary search"),
+    ("sorting", "radix sort"),
+    ("sorting", "divide and conquer"),
+    ("array", "bubble sort"),
+    ("array", "selection sort"),
+    ("array", "insertion sort"),
+    ("recursion", "merge sort"),
+    ("divide and conquer", "merge sort"),
+    ("recursion", "quicksort"),
+    ("divide and conquer", "quicksort"),
+    ("array", "counting sort"),
+    ("array", "bucket sort"),
+    # Search family
+    ("array", "sequential search"),
+    ("array", "linear search"),
+    ("sorting", "binary search"),
+    # Hashing
+    ("array", "hashing"),
+    ("hashing", "hash function"),
+    ("hashing", "hash table"),
+    ("hash function", "hash collision"),
+    # Complexity
+    ("algorithm", "time complexity"),
+    ("algorithm", "space complexity"),
+    ("time complexity", "computational complexity"),
+    ("time complexity", "big-o notation"),
+    ("big-o notation", "asymptotic analysis"),
+    ("algorithm", "algorithm correctness"),
+    ("algorithm", "algorithm complexity"),
+    # Algorithm paradigms
+    ("recursion", "divide and conquer"),
+    ("recursion", "dynamic programming"),
+    ("recursion", "backtracking"),
+    ("dynamic programming", "memoization"),
+    ("recursion", "recurrence"),
+    # Memory & pointers
+    ("pointer", "memory"),
+    ("memory", "memory allocation"),
+    ("memory allocation", "memory management"),
+    ("memory", "dynamic array"),
+    # String
+    ("array", "string"),
+    ("string", "string matching"),
+    # Union Find
+    ("array", "union find"),
+    ("union find", "disjoint set"),
+]
+
 def detect_prerequisite(text, concept_a, concept_b):
     """Check if text suggests concept_a is a prerequisite of concept_b"""
     text_lower = text.lower()
@@ -69,14 +187,16 @@ def detect_prerequisite(text, concept_a, concept_b):
                     return True, snippet.strip()
 
     # Also check: if concept_a appears much earlier in text than concept_b
-    # and text contains a transition word
+        # Tighter transition check — must have a strong transition word
     if pos_a < pos_b:
         between = text_lower[pos_a:pos_b]
-        transition_words = ['before', 'first', 'then', 'next', 'after',
-                           'now', 'once', 'having', 'knowing']
-        for word in transition_words:
-            if word in between:
-                snippet = text[pos_a:pos_a+80]
+        strong_transitions = ['before we', 'before you', 'must know',
+                              'need to know', 'now that you', 'now that we',
+                              'builds on', 'depends on', 'based on',
+                              'requires knowledge', 'prerequisite']
+        for phrase in strong_transitions:
+            if phrase in between:
+                snippet = text[pos_a:pos_a+100]
                 return True, snippet.strip()
 
     return False, None
@@ -190,6 +310,27 @@ def run_relation_extraction(chunks_file, concepts_file, sample_chunks=100):
         if concepts_in_chunk:
             print(f"[{i+1}/{sample_chunks}] Chunk {row['chunk_id']}: {len(concepts_in_chunk)} concepts, {chunk_relations} relations")
 
+        # Save BEFORE seeds so you can see the difference
+    df_from_text = pd.DataFrame(all_relations)
+
+    # Inject prerequisite seeds
+    print("\nInjecting prerequisite seeds...")
+    for (concept_a, concept_b) in PREREQUISITE_SEEDS:
+        if concept_a in concept_list and concept_b in concept_list:
+            all_relations.append({
+                'relation_type': 'prerequisite-of',
+                'concept_a': concept_a,
+                'concept_b': concept_b,
+                'bloom_level': None,
+                'confidence': 'high',
+                'source_text': 'domain knowledge seed',
+                'chunk_id': 'seed',
+                'category': 'seed',
+                'video_id': 'seed'
+            })
+            print(f"  ✅ [prerequisite-of SEED] {concept_a} → {concept_b}")
+
+    # Now save everything including seeds
     df_relations = pd.DataFrame(all_relations)
     df_relations.to_csv('outputs/relations_unverified.csv', index=False)
 

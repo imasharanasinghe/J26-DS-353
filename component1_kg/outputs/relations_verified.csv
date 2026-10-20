@@ -1,0 +1,97 @@
+relation_type,concept_a,concept_b,bloom_level,confidence,source_text,chunk_id,category,video_id
+common-misconception-of,heap,stack,,high,known misconception pair: heap / stack,1_0,course introduction,1
+common-misconception-of,priority queue,stack,,high,known misconception pair: priority queue / stack,1_0,course introduction,1
+common-misconception-of,stack,queue,,high,known misconception pair: stack / queue,1_0,course introduction,1
+bloom-level,array,recursion,apply,medium,"some exposure to object oriented programming and recursion. We use the Java language, but we don't dwell on details of Java, we m",1_7,course introduction,1
+bloom-level,searching,array,apply,medium,"s because we can use integers as an index into an array then, and then quickly access information relevant to each object. And it",2_5,union find,2
+bloom-level,searching,symbol table,remember,medium,"zero through N - one is to find application of a symbol table or a searching algorithm, which is one of the things that we'll be",2_5,union find,2
+bloom-level,searching,union find,remember,medium,"presses a lot of details that are not relevant to union find. In fact, to make this mapping from an object name to the integer zer",2_5,union find,2
+bloom-level,data structure,array,apply,medium,"s because we can use integers as an index into an array then, and then quickly access information relevant to each object. And it",2_5,union find,2
+bloom-level,data structure,symbol table,remember,medium,"zero through N - one is to find application of a symbol table or a searching algorithm, which is one of the things that we'll be",2_5,union find,2
+bloom-level,data structure,union find,remember,medium,"presses a lot of details that are not relevant to union find. In fact, to make this mapping from an object name to the integer zer",2_5,union find,2
+bloom-level,array,symbol table,remember,medium,"zero through N - one is to find application of a symbol table or a searching algorithm, which is one of the things that we'll be",2_5,union find,2
+bloom-level,array,union find,remember,medium,"presses a lot of details that are not relevant to union find. In fact, to make this mapping from an object name to the integer zer",2_5,union find,2
+bloom-level,symbol table,union find,remember,medium,"presses a lot of details that are not relevant to union find. In fact, to make this mapping from an object name to the integer zer",2_5,union find,2
+bloom-level,data structure,array index,apply,medium,"use to support the algorithm is simply an integer array indexed by object. The interpretation is the two objects, P and Q are conn",3_0,union find,3
+bloom-level,array,array index,apply,medium,"use to support the algorithm is simply an integer array indexed by object. The interpretation is the two objects, P and Q are conn",3_0,union find,3
+prerequisite-of,data structure,array,,medium,"data structure except, now we need an extra array, that for each item, gives the number of",5_3,union find,5
+common-misconception-of,spanning tree,graph,,high,known misconception pair: spanning tree / graph,6_0,union find,6
+common-misconception-of,graph,minimum spanning tree,,high,known misconception pair: graph / minimum spanning tree,6_0,union find,6
+bloom-level,array,graph,apply,medium,the algorithms and underlying science related to graphics and movies and geometric models of all sort. So this is a actually an i,8_1,analysis of algorithms,8
+prerequisite-of,array,string,,medium,zero. In other operations it depends on the system implementation and an important one is,9_2,analysis of algorithms,9
+bloom-level,divide and conquer,prim,create,medium,"which we'll talk about in a couple of weeks, is a prime example of that. And then if you have double four loops like our two sum a",10_3,analysis of algorithms,10
+prerequisite-of,array,dynamic array,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,binary search,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,binary search tree,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,sorting,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,hash table,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,heap,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,trie,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,union find,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,radix sort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,pointer,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,adjacency matrix,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,multidimensional array,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,linked list,singly linked list,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,linked list,doubly linked list,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,linked list,circular linked list,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,linked list,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,stack,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,queue,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,stack,recursion,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,queue,breadth-first search,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,stack,depth-first search,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,stack,stack top,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,stack,stack bottom,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,queue,deque,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,heap,priority queue,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,binary search,binary search tree,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,recursion,binary search tree,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,binary tree,binary search tree,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,binary search tree,b-tree,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,b-tree,b+ tree,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,binary tree,huffman tree,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,heap,heap sort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,binary tree,heap,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,binary search tree,symbol table,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,recursion,trie,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,binary tree,root node,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,binary tree,leaf node,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,binary tree,traversal,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,traversal,level order traversal,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,graph,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,linked list,adjacency list,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,graph,shortest path,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,graph,minimum spanning tree,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,graph,kruskal,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,graph,prim,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,graph,topological sort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,graph,depth-first search,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,graph,breadth-first search,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,graph,directed graph,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,graph,undirected graph,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,graph,weighted graph,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,graph,connected graph,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,connected graph,strongly connected graph,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,graph,spanning tree,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,sorting,binary search,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,sorting,radix sort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,sorting,divide and conquer,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,bubble sort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,selection sort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,insertion sort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,recursion,merge sort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,divide and conquer,merge sort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,recursion,quicksort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,divide and conquer,quicksort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,counting sort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,bucket sort,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,sequential search,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,array,hashing,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,hashing,hash function,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,hashing,hash table,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,time complexity,computational complexity,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,time complexity,big-o notation,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,recursion,divide and conquer,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,memory allocation,memory management,,high,domain knowledge seed,seed,seed,seed
+prerequisite-of,string,string matching,,high,domain knowledge seed,seed,seed,seed

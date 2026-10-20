@@ -1,28 +1,85 @@
-concept
-array
-arrays
-big o
-binary search
-binary search tree
-bst
-divide and conquer
-graph
-hash table
-heap
-kruskal
-minimum spanning tree
-pointer
-pointers
-prim
-priority queue
-queue
-queues
-radix sort
-recursion
-shortest path
-sorting
-stack
-stacks
-symbol table
-trie
-union find
+concept_id,name_cn,concept
+K_算法正确性_计算机科学与技术,算法正确性,algorithm correctness
+K_快速排序_计算机科学与技术,快速排序,quicksort
+K_生成树_计算机科学与技术,生成树,spanning tree
+K_堆_计算机科学与技术,堆,heap
+K_交换排序_计算机科学与技术,交换排序,exchange sort
+K_单链表_计算机科学与技术,单链表,singly linked list
+K_栈顶_计算机科学与技术,栈顶,stack top
+K_广度优先搜索_计算机科学与技术,广度优先搜索,breadth-first search
+K_进栈_计算机科学与技术,进栈,push
+K_贪心法_计算机科学与技术,贪心法,greedy algorithm
+K_搜索树_计算机科学与技术,搜索树,search tree
+K_计算复杂度_计算机科学与技术,计算复杂度,computational complexity
+K_栈底_计算机科学与技术,栈底,stack bottom
+K_连通图_计算机科学与技术,连通图,connected graph
+K_栈溢出_计算机科学与技术,栈溢出,stack overflow
+K_哈夫曼树_计算机科学与技术,哈夫曼树,huffman tree
+K_层次遍历_计算机科学与技术,层次遍历,level order traversal
+K_优先队列_计算机科学与技术,优先队列,priority queue
+K_语法树_计算机科学与技术,语法树,syntax tree
+K_二分搜索_计算机科学与技术,二分搜索,binary search
+K_邻接表_计算机科学与技术,邻接表,adjacency list
+K_强连通图_计算机科学与技术,强连通图,strongly connected graph
+K_栈_计算机科学与技术,栈,stack
+K_队列_计算机科学与技术,队列,queue
+K_插入排序_计算机科学与技术,插入排序,insertion sort
+K_事件队列_计算机科学与技术,事件队列,event queue
+K_等待队列_计算机科学与技术,等待队列,waiting queue
+K_循环链表_计算机科学与技术,循环链表,circular linked list
+K_基数排序_计算机科学与技术,基数排序,radix sort
+K_散列函数_计算机科学与技术,散列函数,hash function
+K_空间复杂度_计算机科学与技术,空间复杂度,space complexity
+K_搜索_计算机科学与技术,搜索,searching
+K_完全二叉树_计算机科学与技术,完全二叉树,binary tree
+K_数据结构_计算机科学与技术,数据结构,data structure
+K_无向图_计算机科学与技术,无向图,undirected graph
+K_哈希表_计算机科学与技术,哈希表,hash table
+K_冒泡排序_计算机科学与技术,冒泡排序,bubble sort
+K_数组_计算机科学与技术,数组,array
+K_堆排序_计算机科学与技术,堆排序,heap sort
+K_时间复杂度_计算机科学与技术,时间复杂度,time complexity
+K_字符串匹配_计算机科学与技术,字符串匹配,string matching
+K_叶节点_计算机科学与技术,叶节点,leaf node
+K_内存管理_计算机科学与技术,内存管理,memory management
+K_B树_计算机科学与技术,B树,b-tree
+K_桶排序_计算机科学与技术,桶排序,bucket sort
+K_邻接矩阵_计算机科学与技术,邻接矩阵,adjacency matrix
+K_分治_计算机科学与技术,分治,divide and conquer
+K_链表_计算机科学与技术,链表,linked list
+K_选择排序_计算机科学与技术,选择排序,selection sort
+K_加权图_计算机科学与技术,加权图,weighted graph
+K_归并排序_计算机科学与技术,归并排序,merge sort
+K_哈希_计算机科学与技术,哈希,hashing
+K_红黑树_计算机科学与技术,红黑树,red-black tree
+K_指针_计算机科学与技术,指针,pointer
+K_双端队列_计算机科学与技术,双端队列,deque
+K_深度优先搜索_计算机科学与技术,深度优先搜索,depth-first search
+K_双向链表_计算机科学与技术,双向链表,doubly linked list
+K_字符串_计算机科学与技术,字符串,string
+K_顺序查找_计算机科学与技术,顺序查找,sequential search
+K_遍历_计算机科学与技术,遍历,traversal
+K_B+树_计算机科学与技术,B+树,b+ tree
+K_图_计算机科学与技术,图,graph
+K_创建多维数组_计算机科学与技术,创建多维数组,multidimensional array
+K_数组元素逻辑次序_计算机科学与技术,数组元素逻辑次序,array element
+K_数组下标运算_计算机科学与技术,数组下标运算,array index
+K_动态数组类_计算机科学与技术,动态数组类,dynamic array
+K_动态内存分配_计算机科学与技术,动态内存分配,memory allocation
+K_哈希链表节点_计算机科学与技术,哈希链表节点,linked list node
+K_最短路径问题_计算机科学与技术,最短路径问题,shortest path
+K_根节点 _计算机科学与技术,根节点 ,root node
+K_计算算法复杂度_计算机科学与技术,计算算法复杂度,algorithm complexity
+K_幅有向图_计算机科学与技术,幅有向图,directed graph
+K_计数排序算法_计算机科学与技术,计数排序算法,counting sort
+K_平衡二叉搜索树_计算机科学与技术,平衡二叉搜索树,binary search tree
+K_拓扑排序的序列_计算机科学与技术,拓扑排序的序列,topological sort
+caption_dataset,kruskal,kruskal
+caption_dataset,minimum spanning tree,minimum spanning tree
+caption_dataset,prim,prim
+caption_dataset,recursion,recursion
+caption_dataset,sorting,sorting
+caption_dataset,symbol table,symbol table
+caption_dataset,trie,trie
+caption_dataset,union find,union find
+caption_dataset,big-o notation,big-o notation

@@ -45,6 +45,21 @@ def find_concepts_in_text(text):
             found.append(concept)
     return list(set(found))
 
+# Merge plural and variant forms into one canonical concept.
+MERGE_MAP = {
+    'arrays': 'array',
+    'stacks': 'stack',
+    'queues': 'queue',
+    'pointers': 'pointer',
+    'graphs': 'graph',
+    'trees': 'tree',
+    'heaps': 'heap',
+    'tries': 'trie',
+    'lists': 'list',
+    'bst': 'binary search tree',
+    'big o': 'big-o notation',
+}
+
 def run_concept_extraction(chunks_file, sample_size=100):
     df = pd.read_csv(chunks_file)
     df_sample = df.head(sample_size)
@@ -72,11 +87,15 @@ def run_concept_extraction(chunks_file, sample_size=100):
     results_df = pd.DataFrame(results)
     results_df.to_csv('outputs/concepts_raw.csv', index=False)
 
-    concept_nodes = pd.DataFrame({'concept': sorted(list(all_concepts))})
+    normalized = {
+        MERGE_MAP.get(concept, concept)
+        for concept in all_concepts
+    }
+    concept_nodes = pd.DataFrame({'concept': sorted(list(normalized))})
     concept_nodes.to_csv('outputs/concept_nodes.csv', index=False)
 
-    print(f"\n✅ Total unique concepts found: {len(all_concepts)}")
-    print(f"All concepts:\n{sorted(list(all_concepts))}")
+    print(f"\n✅ Total unique concepts found: {len(normalized)}")
+    print(f"All concepts:\n{sorted(normalized)}")
     return concept_nodes
 
 if __name__ == "__main__":
