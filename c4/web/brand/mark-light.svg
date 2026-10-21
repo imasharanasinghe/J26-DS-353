@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="CartoLEARN mark">
+  <g fill="none" stroke-linecap="round">
+    <path d="M91.2 30.4 A46 46 0 1 0 91.2 89.6" stroke="#F2F8FC" stroke-width="6.5"/>
+    <path d="M79 40.7 A30 30 0 1 0 79 79.3" stroke="#9AD8F2" stroke-width="5.25"/>
+    <path d="M66.7 51 A14 14 0 1 0 66.7 69" stroke="#3DB8E8" stroke-width="4"/>
+    <path d="M56 60 H94" stroke="#3DB8E8" stroke-width="3"/>
+  </g>
+  <circle cx="56" cy="60" r="5" fill="#F2F8FC"/>
+  <circle cx="94" cy="60" r="6.5" fill="#3DB8E8"/>
+</svg>
