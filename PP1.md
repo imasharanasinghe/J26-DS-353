@@ -136,22 +136,20 @@ What the full results say (`c4/results/PROGRESSION.md`):
 
 ## 7. Slide-ready content
 
-### Slide A: Panel feedback, our response, and the research questions
+Each member presents two slides.
+
+### Slide 1: Panel feedback and our response (snapshot to trajectory)
 
 - **Feedback:** strengthen the research contribution; show how the student's cognitive level rises over time.
 - **Response:** appropriateness becomes a trajectory. C4 verifies faithfulness *and* targets the learner's next Bloom level.
 - **RQ4a:** faithful and at the target level, versus unverified and static C4?
 - **RQ4b:** faster progression across sessions, versus matched-level and unverified, and when not?
 
-### Slide B: From snapshot to trajectory
-
 | Snapshot (before) | Trajectory (now) |
 |---|---|
 | Match the current level | Target current level + 1 |
 | Violation: too high | Violations: too high **and** no task at the target |
 | Filters bad explanations | Moves the learner forward, support fades |
-
-### Slide C: The mechanism
 
 ```text
 check answer -> demonstrated level -> target level (+1 if prerequisites mastered)
@@ -161,17 +159,12 @@ check answer -> demonstrated level -> target level (+1 if prerequisites mastered
 
 Drafts come only from a language model. **Qwen (via Ollama) is the temporary stand-in for the planned GPT-4o generator**; the verifier and policy are generator-independent, so switching is a configuration change, but the numbers here were not produced with GPT-4o.
 
-### Slide D: Results
+### Slide 2: Results, limitations and next steps
 
 - RQ4a: question at target level 0% → **100%**, 0 violations, 0 unresolved (84 runs).
-- RQ4b (simulated): **+0.36** capability levels (interval 0.29 to 0.43) under the ZPD model; **no gain** under the flat and matched controls; needs about 8 or more sessions.
-- Stretch is the active ingredient; fading adds nothing in this model.
-
-### Slide E: Limitations and next steps
-
-- Simulated learners are assumptions, not students; Bloom labels from one annotator; estimator misses indirect phrasing.
-- Generator is Qwen via Ollama, a temporary replacement for GPT-4o (not yet implemented).
-- Next: second annotator and classifier, C2 agreement, GPT-4o generator, ethics approval and the human pilot.
+- RQ4b (simulated): **+0.36** capability levels (interval 0.29 to 0.43) under the ZPD model; **no gain** under the flat and matched controls; needs about 8 or more sessions. The stretch is the active ingredient; fading adds nothing in this model.
+- **Limitations:** simulated learners are assumptions, not students; Bloom labels from one annotator; estimator misses indirect phrasing; generator is Qwen, not yet GPT-4o.
+- **Next:** second annotator and classifier, C2 agreement, GPT-4o generator, ethics approval and the human pilot.
 
 ### Demo flow (live, in the workbench)
 
