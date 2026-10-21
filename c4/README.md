@@ -153,9 +153,14 @@ python3 scripts/run_c4_eval.py --refresh  # regenerate missing Qwen outputs into
 
 ## Third-party assets
 
+- Outfit (weights 500 and 600), (c) The Outfit Project Authors, SIL Open Font License 1.1 -
+  see [web/fonts/OFL-Outfit.txt](web/fonts/OFL-Outfit.txt). It is the CartoLEARN brand typeface and is
+  what the UI uses.
 - Josefin Sans (variable roman and italic), (c) The Josefin Sans Project Authors,
-  SIL Open Font License 1.1 - see [web/fonts/OFL.txt](web/fonts/OFL.txt).
-  Self-hosted; the UI makes no external requests.
+  SIL Open Font License 1.1 - see [web/fonts/OFL.txt](web/fonts/OFL.txt). Still shipped in
+  `web/fonts/` but no longer referenced by the stylesheet.
+- CartoLEARN mark and app icon in `web/brand/`, from the project brand kit.
+- All fonts and images are self-hosted; the UI makes no external requests.
 
 ## Limitations (read before presenting results)
 
