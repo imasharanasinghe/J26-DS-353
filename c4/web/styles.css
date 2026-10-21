@@ -34,14 +34,12 @@ button, select, textarea, input { font-size: inherit; }
 /* ---------- masthead ---------- */
 .topbar {
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  padding: 18px 40px; background: var(--head); color: var(--head-ink);
+  padding: 18px 40px; background: var(--head); color: var(--head-ink); border-bottom: 3px solid var(--sea);
 }
 .brand { display: flex; align-items: center; gap: 16px; min-width: 0; }
-.brand-mark {
-  display: grid; place-items: center; width: 46px; height: 46px; border-radius: 6px;
-  background: var(--head-ink); color: var(--head); font: 700 22px/1 var(--font); letter-spacing: -.01em;
-}
-.brand h1 { font: 400 23px/1.2 var(--font); letter-spacing: .01em; }
+.brand-mark { display: block; width: 46px; height: 46px; flex: none; }
+.eyebrow { display: block; color: var(--shallows); font: 600 12.5px/1 var(--font); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 5px; }
+.brand h1 { font: 500 23px/1.2 var(--font); letter-spacing: .005em; }
 .brand p { color: var(--head-muted); font-size: 14px; margin-top: 2px; }
 .status { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
 .chip {
@@ -49,7 +47,7 @@ button, select, textarea, input { font-size: inherit; }
   font: 400 13.5px var(--font); color: var(--head-muted); background: rgba(255, 255, 255, .08);
 }
 .chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
-.chip[data-state="ok"] { color: var(--head-ink); } .chip[data-state="ok"] i { background: #6fd39a; }
+.chip[data-state="ok"] { color: var(--head-ink); } .chip[data-state="ok"] i { background: var(--shallows); }
 .chip[data-state="off"] i { background: #f08a7c; }
 
 /* ---------- layout ---------- */
