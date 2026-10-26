@@ -1,0 +1,269 @@
+{
+  "_note": "MOCK knowledge graph standing in for C1 until the real graph is ready. Same shape C1 must send. difficulty: 1 (easiest) to 5 (hardest).",
+  "concepts": {
+    "variables": {
+      "name": "Variables and Types",
+      "difficulty": 1,
+      "prerequisites": []
+    },
+    "loops": {
+      "name": "Loops",
+      "difficulty": 1,
+      "prerequisites": [
+        "variables"
+      ]
+    },
+    "arrays": {
+      "name": "Arrays",
+      "difficulty": 1,
+      "prerequisites": [
+        "variables"
+      ]
+    },
+    "functions": {
+      "name": "Functions",
+      "difficulty": 2,
+      "prerequisites": [
+        "variables",
+        "loops"
+      ]
+    },
+    "recursion": {
+      "name": "Recursion",
+      "difficulty": 2,
+      "prerequisites": [
+        "functions"
+      ]
+    },
+    "big_o": {
+      "name": "Big-O Complexity",
+      "difficulty": 2,
+      "prerequisites": [
+        "loops",
+        "arrays"
+      ]
+    },
+    "linked_list": {
+      "name": "Linked Lists",
+      "difficulty": 2,
+      "prerequisites": [
+        "arrays"
+      ]
+    },
+    "stack": {
+      "name": "Stacks",
+      "difficulty": 2,
+      "prerequisites": [
+        "arrays"
+      ]
+    },
+    "queue": {
+      "name": "Queues",
+      "difficulty": 2,
+      "prerequisites": [
+        "arrays"
+      ]
+    },
+    "sorting_basic": {
+      "name": "Basic Sorting",
+      "difficulty": 2,
+      "prerequisites": [
+        "arrays",
+        "loops"
+      ]
+    },
+    "binary_search": {
+      "name": "Binary Search",
+      "difficulty": 2,
+      "prerequisites": [
+        "arrays",
+        "sorting_basic"
+      ]
+    },
+    "hashing": {
+      "name": "Hashing",
+      "difficulty": 3,
+      "prerequisites": [
+        "arrays",
+        "big_o"
+      ]
+    },
+    "hash_table": {
+      "name": "Hash Tables",
+      "difficulty": 3,
+      "prerequisites": [
+        "hashing",
+        "linked_list"
+      ]
+    },
+    "merge_sort": {
+      "name": "Merge Sort",
+      "difficulty": 3,
+      "prerequisites": [
+        "recursion",
+        "sorting_basic"
+      ]
+    },
+    "quick_sort": {
+      "name": "Quick Sort",
+      "difficulty": 3,
+      "prerequisites": [
+        "recursion",
+        "sorting_basic"
+      ]
+    },
+    "tree": {
+      "name": "Trees",
+      "difficulty": 3,
+      "prerequisites": [
+        "linked_list",
+        "recursion"
+      ]
+    },
+    "binary_tree": {
+      "name": "Binary Trees",
+      "difficulty": 3,
+      "prerequisites": [
+        "tree"
+      ]
+    },
+    "tree_traversal": {
+      "name": "Tree Traversal",
+      "difficulty": 3,
+      "prerequisites": [
+        "binary_tree",
+        "recursion"
+      ]
+    },
+    "bst": {
+      "name": "Binary Search Trees",
+      "difficulty": 3,
+      "prerequisites": [
+        "binary_tree",
+        "binary_search"
+      ]
+    },
+    "graph": {
+      "name": "Graphs",
+      "difficulty": 3,
+      "prerequisites": [
+        "linked_list",
+        "arrays"
+      ]
+    },
+    "heap": {
+      "name": "Heaps",
+      "difficulty": 4,
+      "prerequisites": [
+        "binary_tree",
+        "arrays"
+      ]
+    },
+    "priority_queue": {
+      "name": "Priority Queues",
+      "difficulty": 4,
+      "prerequisites": [
+        "heap",
+        "queue"
+      ]
+    },
+    "heap_sort": {
+      "name": "Heap Sort",
+      "difficulty": 4,
+      "prerequisites": [
+        "heap",
+        "sorting_basic"
+      ]
+    },
+    "bfs": {
+      "name": "Breadth-First Search",
+      "difficulty": 4,
+      "prerequisites": [
+        "graph",
+        "queue"
+      ]
+    },
+    "dfs": {
+      "name": "Depth-First Search",
+      "difficulty": 4,
+      "prerequisites": [
+        "graph",
+        "stack",
+        "recursion"
+      ]
+    },
+    "memoization": {
+      "name": "Memoization",
+      "difficulty": 4,
+      "prerequisites": [
+        "recursion",
+        "hash_table"
+      ]
+    },
+    "tree_rotation": {
+      "name": "Tree Rotations",
+      "difficulty": 4,
+      "prerequisites": [
+        "bst"
+      ]
+    },
+    "avl_tree": {
+      "name": "AVL Trees",
+      "difficulty": 5,
+      "prerequisites": [
+        "tree_rotation",
+        "tree_traversal"
+      ]
+    },
+    "dijkstra": {
+      "name": "Dijkstra's Algorithm",
+      "difficulty": 5,
+      "prerequisites": [
+        "bfs",
+        "priority_queue"
+      ]
+    },
+    "dynamic_programming": {
+      "name": "Dynamic Programming",
+      "difficulty": 5,
+      "prerequisites": [
+        "memoization",
+        "big_o"
+      ]
+    }
+  },
+  "misconceptions": {
+    "stack_is_fifo": {
+      "affects": "stack",
+      "description": "Thinks a stack removes the first item added (FIFO) instead of the last (LIFO)."
+    },
+    "queue_random_access": {
+      "affects": "queue",
+      "description": "Thinks you can read any item in a queue directly, like an array."
+    },
+    "recursion_no_base_case": {
+      "affects": "recursion",
+      "description": "Writes recursive functions without a stopping (base) case."
+    },
+    "bigo_exact_time": {
+      "affects": "big_o",
+      "description": "Thinks Big-O gives the exact running time in seconds."
+    },
+    "hash_no_collisions": {
+      "affects": "hash_table",
+      "description": "Thinks two keys can never land in the same slot."
+    },
+    "bst_any_binary_tree": {
+      "affects": "bst",
+      "description": "Thinks every binary tree is a binary search tree."
+    },
+    "heap_is_sorted": {
+      "affects": "heap",
+      "description": "Thinks a heap's array is fully sorted."
+    },
+    "dijkstra_negative_ok": {
+      "affects": "dijkstra",
+      "description": "Thinks Dijkstra works with negative edge weights."
+    }
+  }
+}

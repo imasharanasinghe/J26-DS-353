@@ -1,0 +1,3408 @@
+{
+  "_note": "C3 mock-planner paths (MockProposer, seed 7, k=3) over C3's 30-concept mock graph and 5 mock learners. Generated from origin/c3_pathplanner; C4 fixtures for extra coverage, not used by the committed evaluation.",
+  "paths": [
+    {
+      "learner_id": "L01_beginner",
+      "target": "heap",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "functions",
+          "name": "Functions",
+          "difficulty": 2,
+          "prerequisites": [
+            "variables",
+            "loops"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 7,
+          "kind": "learn",
+          "id": "heap",
+          "name": "Heaps",
+          "difficulty": 4,
+          "prerequisites": [
+            "binary_tree",
+            "arrays"
+          ]
+        }
+      ],
+      "summary": "arrays -> linked_list -> functions -> recursion -> tree -> binary_tree -> heap",
+      "score": -2.3286,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        2,
+        1,
+        2
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "linked_list",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(linked_list, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "recursion",
+          "text": "MissingPrerequisite(tree, needs=recursion)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R1",
+          "type": "LateStep",
+          "concept": "variables",
+          "after": "functions",
+          "text": "LateStep(variables, after=functions)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "linked_list",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(linked_list, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "recursion",
+          "text": "MissingPrerequisite(tree, needs=recursion)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "heap",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(heap, needs=arrays)"
+        },
+        {
+          "rule": "R2",
+          "type": "AlreadyKnown",
+          "concept": "variables",
+          "mastery": 0.92,
+          "text": "AlreadyKnown(variables, mastery=0.92)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L01_beginner",
+      "target": "priority_queue",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "functions",
+          "name": "Functions",
+          "difficulty": 2,
+          "prerequisites": [
+            "variables",
+            "loops"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "queue",
+          "name": "Queues",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 7,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 8,
+          "kind": "learn",
+          "id": "heap",
+          "name": "Heaps",
+          "difficulty": 4,
+          "prerequisites": [
+            "binary_tree",
+            "arrays"
+          ]
+        },
+        {
+          "step": 9,
+          "kind": "learn",
+          "id": "priority_queue",
+          "name": "Priority Queues",
+          "difficulty": 4,
+          "prerequisites": [
+            "heap",
+            "queue"
+          ]
+        }
+      ],
+      "summary": "arrays -> functions -> linked_list -> queue -> recursion -> tree -> binary_tree -> heap -> priority_queue",
+      "score": -2.7444,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        2,
+        1,
+        2
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "linked_list",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(linked_list, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "heap",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(heap, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "priority_queue",
+          "needs": "queue",
+          "text": "MissingPrerequisite(priority_queue, needs=queue)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "recursion",
+          "text": "MissingPrerequisite(tree, needs=recursion)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "recursion",
+          "needs": "functions",
+          "text": "MissingPrerequisite(recursion, needs=functions)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.001
+    },
+    {
+      "learner_id": "L01_beginner",
+      "target": "bst",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "functions",
+          "name": "Functions",
+          "difficulty": 2,
+          "prerequisites": [
+            "variables",
+            "loops"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "sorting_basic",
+          "name": "Basic Sorting",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays",
+            "loops"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 7,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 8,
+          "kind": "learn",
+          "id": "binary_search",
+          "name": "Binary Search",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays",
+            "sorting_basic"
+          ]
+        },
+        {
+          "step": 9,
+          "kind": "learn",
+          "id": "bst",
+          "name": "Binary Search Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "binary_tree",
+            "binary_search"
+          ]
+        }
+      ],
+      "summary": "arrays -> functions -> linked_list -> recursion -> sorting_basic -> tree -> binary_tree -> binary_search -> bst",
+      "score": -3.0444,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        2,
+        3,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "linked_list",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(linked_list, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "bst",
+          "needs": "binary_search",
+          "text": "MissingPrerequisite(bst, needs=binary_search)"
+        },
+        {
+          "rule": "R1",
+          "type": "LateStep",
+          "concept": "variables",
+          "after": "functions",
+          "text": "LateStep(variables, after=functions)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "bst",
+          "needs": "binary_tree",
+          "text": "MissingPrerequisite(bst, needs=binary_tree)"
+        },
+        {
+          "rule": "R2",
+          "type": "AlreadyKnown",
+          "concept": "variables",
+          "mastery": 0.92,
+          "text": "AlreadyKnown(variables, mastery=0.92)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.001
+    },
+    {
+      "learner_id": "L01_beginner",
+      "target": "binary_tree",
+      "verified": true,
+      "source": "draft",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "functions",
+          "name": "Functions",
+          "difficulty": 2,
+          "prerequisites": [
+            "variables",
+            "loops"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        }
+      ],
+      "summary": "arrays -> functions -> linked_list -> recursion -> tree -> binary_tree",
+      "score": -1.6167,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        0,
+        0,
+        0
+      ],
+      "violations_found": [],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L01_beginner",
+      "target": "tree",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "functions",
+          "name": "Functions",
+          "difficulty": 2,
+          "prerequisites": [
+            "variables",
+            "loops"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        }
+      ],
+      "summary": "arrays -> linked_list -> functions -> recursion -> tree",
+      "score": -1.4,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        1,
+        2,
+        0
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "recursion",
+          "needs": "functions",
+          "text": "MissingPrerequisite(recursion, needs=functions)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "recursion",
+          "text": "MissingPrerequisite(tree, needs=recursion)"
+        },
+        {
+          "rule": "R2",
+          "type": "CognitiveLoadJump",
+          "concept": "tree",
+          "from": "arrays",
+          "load": 3,
+          "level": 1,
+          "text": "CognitiveLoadJump(tree, from=arrays, load=3, level=1)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L01_beginner",
+      "target": "stack",
+      "verified": true,
+      "source": "draft",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "stack",
+          "name": "Stacks",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        }
+      ],
+      "summary": "arrays -> stack",
+      "score": -0.15,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        0,
+        0,
+        0
+      ],
+      "violations_found": [],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L01_beginner",
+      "target": "queue",
+      "verified": true,
+      "source": "draft",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "queue",
+          "name": "Queues",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        }
+      ],
+      "summary": "arrays -> queue",
+      "score": -0.15,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        0,
+        1,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R3",
+          "type": "OffPath",
+          "concept": "loops",
+          "target": "queue",
+          "text": "OffPath(loops, target=queue)"
+        },
+        {
+          "rule": "R2",
+          "type": "AlreadyKnown",
+          "concept": "loops",
+          "mastery": 0.85,
+          "text": "AlreadyKnown(loops, mastery=0.85)"
+        },
+        {
+          "rule": "R3",
+          "type": "OffPath",
+          "concept": "loops",
+          "target": "queue",
+          "text": "OffPath(loops, target=queue)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "queue",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(queue, needs=arrays)"
+        },
+        {
+          "rule": "R2",
+          "type": "AlreadyKnown",
+          "concept": "loops",
+          "mastery": 0.85,
+          "text": "AlreadyKnown(loops, mastery=0.85)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L01_beginner",
+      "target": "recursion",
+      "verified": true,
+      "source": "draft",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "functions",
+          "name": "Functions",
+          "difficulty": 2,
+          "prerequisites": [
+            "variables",
+            "loops"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        }
+      ],
+      "summary": "functions -> recursion",
+      "score": 0.35,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        0,
+        0,
+        0
+      ],
+      "violations_found": [],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L02_intermediate",
+      "target": "heap",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "probe",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "remediate",
+          "id": "recursion_no_base_case",
+          "affects": "recursion",
+          "description": "Writes recursive functions without a stopping (base) case."
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "heap",
+          "name": "Heaps",
+          "difficulty": 4,
+          "prerequisites": [
+            "binary_tree",
+            "arrays"
+          ]
+        }
+      ],
+      "summary": "probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree -> heap",
+      "score": -0.8333,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        1,
+        0,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "recursion",
+          "before": "tree",
+          "text": "MissingProbe(recursion, before=tree)"
+        },
+        {
+          "rule": "R5",
+          "type": "UnremediatedMisconception",
+          "concept": "recursion_no_base_case",
+          "before": "tree",
+          "text": "UnremediatedMisconception(recursion_no_base_case, before=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "heap",
+          "needs": "binary_tree",
+          "text": "MissingPrerequisite(heap, needs=binary_tree)"
+        },
+        {
+          "rule": "R5",
+          "type": "UnremediatedMisconception",
+          "concept": "recursion_no_base_case",
+          "before": "tree",
+          "text": "UnremediatedMisconception(recursion_no_base_case, before=tree)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L02_intermediate",
+      "target": "priority_queue",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "remediate",
+          "id": "recursion_no_base_case",
+          "affects": "recursion",
+          "description": "Writes recursive functions without a stopping (base) case."
+        },
+        {
+          "step": 2,
+          "kind": "probe",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "heap",
+          "name": "Heaps",
+          "difficulty": 4,
+          "prerequisites": [
+            "binary_tree",
+            "arrays"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "probe",
+          "id": "queue",
+          "name": "Queues",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 7,
+          "kind": "learn",
+          "id": "priority_queue",
+          "name": "Priority Queues",
+          "difficulty": 4,
+          "prerequisites": [
+            "heap",
+            "queue"
+          ]
+        }
+      ],
+      "summary": "remediate:recursion_no_base_case -> probe:recursion -> tree -> binary_tree -> heap -> probe:queue -> priority_queue",
+      "score": -1.275,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        2,
+        0,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "heap",
+          "needs": "binary_tree",
+          "text": "MissingPrerequisite(heap, needs=binary_tree)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "recursion",
+          "before": "tree",
+          "text": "MissingProbe(recursion, before=tree)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "queue",
+          "before": "priority_queue",
+          "text": "MissingProbe(queue, before=priority_queue)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "priority_queue",
+          "needs": "heap",
+          "text": "MissingPrerequisite(priority_queue, needs=heap)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L02_intermediate",
+      "target": "bst",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "binary_search",
+          "name": "Binary Search",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays",
+            "sorting_basic"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "probe",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "remediate",
+          "id": "recursion_no_base_case",
+          "affects": "recursion",
+          "description": "Writes recursive functions without a stopping (base) case."
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "bst",
+          "name": "Binary Search Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "binary_tree",
+            "binary_search"
+          ]
+        }
+      ],
+      "summary": "binary_search -> probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree -> bst",
+      "score": -1.075,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        1,
+        2,
+        3
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "recursion",
+          "before": "tree",
+          "text": "MissingProbe(recursion, before=tree)"
+        },
+        {
+          "rule": "R5",
+          "type": "UnremediatedMisconception",
+          "concept": "recursion_no_base_case",
+          "before": "tree",
+          "text": "UnremediatedMisconception(recursion_no_base_case, before=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "bst",
+          "needs": "binary_search",
+          "text": "MissingPrerequisite(bst, needs=binary_search)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L02_intermediate",
+      "target": "binary_tree",
+      "verified": true,
+      "source": "draft",
+      "path": [
+        {
+          "step": 1,
+          "kind": "probe",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "remediate",
+          "id": "recursion_no_base_case",
+          "affects": "recursion",
+          "description": "Writes recursive functions without a stopping (base) case."
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        }
+      ],
+      "summary": "probe:recursion -> remediate:recursion_no_base_case -> tree -> binary_tree",
+      "score": -0.05,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        0,
+        0,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L02_intermediate",
+      "target": "tree",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "remediate",
+          "id": "recursion_no_base_case",
+          "affects": "recursion",
+          "description": "Writes recursive functions without a stopping (base) case."
+        },
+        {
+          "step": 2,
+          "kind": "probe",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        }
+      ],
+      "summary": "remediate:recursion_no_base_case -> probe:recursion -> tree",
+      "score": 0.4,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        1,
+        0,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "recursion",
+          "before": "tree",
+          "text": "MissingProbe(recursion, before=tree)"
+        },
+        {
+          "rule": "R2",
+          "type": "AlreadyKnown",
+          "concept": "variables",
+          "mastery": 0.95,
+          "text": "AlreadyKnown(variables, mastery=0.95)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L02_intermediate",
+      "target": "stack",
+      "verified": true,
+      "source": "draft",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "stack",
+          "name": "Stacks",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        }
+      ],
+      "summary": "stack",
+      "score": 0.8,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        0,
+        0,
+        0
+      ],
+      "violations_found": [],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L02_intermediate",
+      "target": "queue",
+      "verified": true,
+      "source": "draft",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "queue",
+          "name": "Queues",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        }
+      ],
+      "summary": "queue",
+      "score": 0.08,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        0,
+        0,
+        0
+      ],
+      "violations_found": [],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L02_intermediate",
+      "target": "recursion",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "remediate",
+          "id": "recursion_no_base_case",
+          "affects": "recursion",
+          "description": "Writes recursive functions without a stopping (base) case."
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        }
+      ],
+      "summary": "remediate:recursion_no_base_case -> recursion",
+      "score": -0.15,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        2,
+        1,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R3",
+          "type": "OffPath",
+          "concept": "queue",
+          "target": "recursion",
+          "text": "OffPath(queue, target=recursion)"
+        },
+        {
+          "rule": "R5",
+          "type": "UnremediatedMisconception",
+          "concept": "recursion_no_base_case",
+          "before": "recursion",
+          "text": "UnremediatedMisconception(recursion_no_base_case, before=recursion)"
+        },
+        {
+          "rule": "R3",
+          "type": "OffPath",
+          "concept": "linked_list",
+          "target": "recursion",
+          "text": "OffPath(linked_list, target=recursion)"
+        },
+        {
+          "rule": "R2",
+          "type": "AlreadyKnown",
+          "concept": "linked_list",
+          "mastery": 0.78,
+          "text": "AlreadyKnown(linked_list, mastery=0.78)"
+        },
+        {
+          "rule": "R5",
+          "type": "UnremediatedMisconception",
+          "concept": "recursion_no_base_case",
+          "before": "recursion",
+          "text": "UnremediatedMisconception(recursion_no_base_case, before=recursion)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L03_strong_unsure",
+      "target": "heap",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "probe",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "heap",
+          "name": "Heaps",
+          "difficulty": 4,
+          "prerequisites": [
+            "binary_tree",
+            "arrays"
+          ]
+        }
+      ],
+      "summary": "probe:binary_tree -> heap",
+      "score": 0.6,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        1,
+        0,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R3",
+          "type": "OffPath",
+          "concept": "queue",
+          "target": "heap",
+          "text": "OffPath(queue, target=heap)"
+        },
+        {
+          "rule": "R2",
+          "type": "AlreadyKnown",
+          "concept": "queue",
+          "mastery": 0.83,
+          "text": "AlreadyKnown(queue, mastery=0.83)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "binary_tree",
+          "before": "heap",
+          "text": "MissingProbe(binary_tree, before=heap)"
+        },
+        {
+          "rule": "R2",
+          "type": "AlreadyKnown",
+          "concept": "linked_list",
+          "mastery": 0.85,
+          "text": "AlreadyKnown(linked_list, mastery=0.85)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L03_strong_unsure",
+      "target": "priority_queue",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "probe",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "heap",
+          "name": "Heaps",
+          "difficulty": 4,
+          "prerequisites": [
+            "binary_tree",
+            "arrays"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "priority_queue",
+          "name": "Priority Queues",
+          "difficulty": 4,
+          "prerequisites": [
+            "heap",
+            "queue"
+          ]
+        }
+      ],
+      "summary": "probe:binary_tree -> heap -> priority_queue",
+      "score": 0.15,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        1,
+        0,
+        3
+      ],
+      "violations_found": [
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "binary_tree",
+          "before": "heap",
+          "text": "MissingProbe(binary_tree, before=heap)"
+        },
+        {
+          "rule": "R3",
+          "type": "OffPath",
+          "concept": "stack",
+          "target": "priority_queue",
+          "text": "OffPath(stack, target=priority_queue)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "binary_tree",
+          "before": "heap",
+          "text": "MissingProbe(binary_tree, before=heap)"
+        },
+        {
+          "rule": "R5",
+          "type": "UnremediatedMisconception",
+          "concept": "stack_is_fifo",
+          "before": "stack",
+          "text": "UnremediatedMisconception(stack_is_fifo, before=stack)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L03_strong_unsure",
+      "target": "bst",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "probe",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "bst",
+          "name": "Binary Search Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "binary_tree",
+            "binary_search"
+          ]
+        }
+      ],
+      "summary": "probe:binary_tree -> bst",
+      "score": 0.6,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        1,
+        0,
+        3
+      ],
+      "violations_found": [
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "binary_tree",
+          "before": "bst",
+          "text": "MissingProbe(binary_tree, before=bst)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "binary_tree",
+          "before": "bst",
+          "text": "MissingProbe(binary_tree, before=bst)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L03_strong_unsure",
+      "target": "binary_tree",
+      "verified": true,
+      "source": "draft",
+      "path": [
+        {
+          "step": 1,
+          "kind": "probe",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        }
+      ],
+      "summary": "probe:tree -> binary_tree",
+      "score": -0.12,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        0,
+        1,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R3",
+          "type": "OffPath",
+          "concept": "sorting_basic",
+          "target": "binary_tree",
+          "text": "OffPath(sorting_basic, target=binary_tree)"
+        },
+        {
+          "rule": "R2",
+          "type": "AlreadyKnown",
+          "concept": "sorting_basic",
+          "mastery": 0.86,
+          "text": "AlreadyKnown(sorting_basic, mastery=0.86)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "tree",
+          "before": "binary_tree",
+          "text": "MissingProbe(tree, before=binary_tree)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "tree",
+          "before": "binary_tree",
+          "text": "MissingProbe(tree, before=binary_tree)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L03_strong_unsure",
+      "target": "tree",
+      "verified": true,
+      "source": "draft",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        }
+      ],
+      "summary": "tree",
+      "score": 0.06,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        0,
+        0,
+        0
+      ],
+      "violations_found": [],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L03_strong_unsure",
+      "target": "stack",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "remediate",
+          "id": "stack_is_fifo",
+          "affects": "stack",
+          "description": "Thinks a stack removes the first item added (FIFO) instead of the last (LIFO)."
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "stack",
+          "name": "Stacks",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        }
+      ],
+      "summary": "remediate:stack_is_fifo -> stack",
+      "score": -0.2,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        1,
+        0,
+        0
+      ],
+      "violations_found": [
+        {
+          "rule": "R5",
+          "type": "UnremediatedMisconception",
+          "concept": "stack_is_fifo",
+          "before": "stack",
+          "text": "UnremediatedMisconception(stack_is_fifo, before=stack)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L04_cold_start",
+      "target": "heap",
+      "verified": true,
+      "source": "draft",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "variables",
+          "name": "Variables and Types",
+          "difficulty": 1,
+          "prerequisites": []
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "loops",
+          "name": "Loops",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "functions",
+          "name": "Functions",
+          "difficulty": 2,
+          "prerequisites": [
+            "variables",
+            "loops"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 7,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 8,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 9,
+          "kind": "learn",
+          "id": "heap",
+          "name": "Heaps",
+          "difficulty": 4,
+          "prerequisites": [
+            "binary_tree",
+            "arrays"
+          ]
+        }
+      ],
+      "summary": "variables -> arrays -> loops -> functions -> linked_list -> recursion -> tree -> binary_tree -> heap",
+      "score": -2.7444,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        0,
+        3,
+        2
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "functions",
+          "needs": "loops",
+          "text": "MissingPrerequisite(functions, needs=loops)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "linked_list",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(linked_list, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "heap",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(heap, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L04_cold_start",
+      "target": "priority_queue",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "variables",
+          "name": "Variables and Types",
+          "difficulty": 1,
+          "prerequisites": []
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "loops",
+          "name": "Loops",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "queue",
+          "name": "Queues",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "functions",
+          "name": "Functions",
+          "difficulty": 2,
+          "prerequisites": [
+            "variables",
+            "loops"
+          ]
+        },
+        {
+          "step": 7,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 8,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 9,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 10,
+          "kind": "learn",
+          "id": "heap",
+          "name": "Heaps",
+          "difficulty": 4,
+          "prerequisites": [
+            "binary_tree",
+            "arrays"
+          ]
+        },
+        {
+          "step": 11,
+          "kind": "learn",
+          "id": "priority_queue",
+          "name": "Priority Queues",
+          "difficulty": 4,
+          "prerequisites": [
+            "heap",
+            "queue"
+          ]
+        }
+      ],
+      "summary": "variables -> arrays -> loops -> linked_list -> queue -> functions -> recursion -> tree -> binary_tree -> heap -> priority_queue",
+      "score": -3.1545,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        2,
+        2,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "arrays",
+          "needs": "variables",
+          "text": "MissingPrerequisite(arrays, needs=variables)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "loops",
+          "needs": "variables",
+          "text": "MissingPrerequisite(loops, needs=variables)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "recursion",
+          "needs": "functions",
+          "text": "MissingPrerequisite(recursion, needs=functions)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "linked_list",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(linked_list, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "queue",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(queue, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "recursion",
+          "text": "MissingPrerequisite(tree, needs=recursion)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "heap",
+          "needs": "binary_tree",
+          "text": "MissingPrerequisite(heap, needs=binary_tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "heap",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(heap, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "priority_queue",
+          "needs": "heap",
+          "text": "MissingPrerequisite(priority_queue, needs=heap)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.001
+    },
+    {
+      "learner_id": "L04_cold_start",
+      "target": "bst",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "variables",
+          "name": "Variables and Types",
+          "difficulty": 1,
+          "prerequisites": []
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "loops",
+          "name": "Loops",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "functions",
+          "name": "Functions",
+          "difficulty": 2,
+          "prerequisites": [
+            "variables",
+            "loops"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "sorting_basic",
+          "name": "Basic Sorting",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays",
+            "loops"
+          ]
+        },
+        {
+          "step": 7,
+          "kind": "learn",
+          "id": "binary_search",
+          "name": "Binary Search",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays",
+            "sorting_basic"
+          ]
+        },
+        {
+          "step": 8,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 9,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 10,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 11,
+          "kind": "learn",
+          "id": "bst",
+          "name": "Binary Search Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "binary_tree",
+            "binary_search"
+          ]
+        }
+      ],
+      "summary": "variables -> arrays -> loops -> functions -> linked_list -> sorting_basic -> binary_search -> recursion -> tree -> binary_tree -> bst",
+      "score": -2.6545,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        1,
+        3,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "recursion",
+          "text": "MissingPrerequisite(tree, needs=recursion)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "functions",
+          "needs": "loops",
+          "text": "MissingPrerequisite(functions, needs=loops)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "linked_list",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(linked_list, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_search",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(binary_search, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_search",
+          "needs": "sorting_basic",
+          "text": "MissingPrerequisite(binary_search, needs=sorting_basic)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "bst",
+          "needs": "binary_tree",
+          "text": "MissingPrerequisite(bst, needs=binary_tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "sorting_basic",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(sorting_basic, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "bst",
+          "needs": "binary_search",
+          "text": "MissingPrerequisite(bst, needs=binary_search)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.001
+    },
+    {
+      "learner_id": "L04_cold_start",
+      "target": "binary_tree",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "variables",
+          "name": "Variables and Types",
+          "difficulty": 1,
+          "prerequisites": []
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "loops",
+          "name": "Loops",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "functions",
+          "name": "Functions",
+          "difficulty": 2,
+          "prerequisites": [
+            "variables",
+            "loops"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 7,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 8,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        }
+      ],
+      "summary": "variables -> loops -> functions -> recursion -> arrays -> linked_list -> tree -> binary_tree",
+      "score": -2.8375,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        2,
+        1,
+        3
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "functions",
+          "needs": "loops",
+          "text": "MissingPrerequisite(functions, needs=loops)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "recursion",
+          "text": "MissingPrerequisite(tree, needs=recursion)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R2",
+          "type": "CognitiveLoadJump",
+          "concept": "binary_tree",
+          "from": "loops",
+          "load": 3,
+          "level": 1,
+          "text": "CognitiveLoadJump(binary_tree, from=loops, load=3, level=1)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L04_cold_start",
+      "target": "tree",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "variables",
+          "name": "Variables and Types",
+          "difficulty": 1,
+          "prerequisites": []
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "loops",
+          "name": "Loops",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "functions",
+          "name": "Functions",
+          "difficulty": 2,
+          "prerequisites": [
+            "variables",
+            "loops"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 7,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        }
+      ],
+      "summary": "variables -> arrays -> loops -> functions -> recursion -> linked_list -> tree",
+      "score": -1.8286,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        2,
+        1,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "linked_list",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(linked_list, needs=arrays)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "linked_list",
+          "needs": "arrays",
+          "text": "MissingPrerequisite(linked_list, needs=arrays)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L04_cold_start",
+      "target": "stack",
+      "verified": true,
+      "source": "draft",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "variables",
+          "name": "Variables and Types",
+          "difficulty": 1,
+          "prerequisites": []
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "stack",
+          "name": "Stacks",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        }
+      ],
+      "summary": "variables -> arrays -> stack",
+      "score": -0.4333,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        0,
+        1,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "arrays",
+          "needs": "variables",
+          "text": "MissingPrerequisite(arrays, needs=variables)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "arrays",
+          "needs": "variables",
+          "text": "MissingPrerequisite(arrays, needs=variables)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L04_cold_start",
+      "target": "queue",
+      "verified": true,
+      "source": "draft",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "variables",
+          "name": "Variables and Types",
+          "difficulty": 1,
+          "prerequisites": []
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "arrays",
+          "name": "Arrays",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "queue",
+          "name": "Queues",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        }
+      ],
+      "summary": "variables -> arrays -> queue",
+      "score": -0.4333,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        0,
+        0,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "arrays",
+          "needs": "variables",
+          "text": "MissingPrerequisite(arrays, needs=variables)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L04_cold_start",
+      "target": "recursion",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "variables",
+          "name": "Variables and Types",
+          "difficulty": 1,
+          "prerequisites": []
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "loops",
+          "name": "Loops",
+          "difficulty": 1,
+          "prerequisites": [
+            "variables"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "functions",
+          "name": "Functions",
+          "difficulty": 2,
+          "prerequisites": [
+            "variables",
+            "loops"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        }
+      ],
+      "summary": "variables -> loops -> functions -> recursion",
+      "score": -0.675,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        2,
+        0,
+        2
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "recursion",
+          "needs": "functions",
+          "text": "MissingPrerequisite(recursion, needs=functions)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "functions",
+          "needs": "loops",
+          "text": "MissingPrerequisite(functions, needs=loops)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L05_uneven",
+      "target": "heap",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "remediate",
+          "id": "heap_is_sorted",
+          "affects": "heap",
+          "description": "Thinks a heap's array is fully sorted."
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "probe",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "heap",
+          "name": "Heaps",
+          "difficulty": 4,
+          "prerequisites": [
+            "binary_tree",
+            "arrays"
+          ]
+        }
+      ],
+      "summary": "remediate:heap_is_sorted -> linked_list -> probe:recursion -> tree -> binary_tree -> heap",
+      "score": -1.675,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        1,
+        3,
+        2
+      ],
+      "violations_found": [
+        {
+          "rule": "R3",
+          "type": "OffPath",
+          "concept": "stack",
+          "target": "heap",
+          "text": "OffPath(stack, target=heap)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R2",
+          "type": "AlreadyKnown",
+          "concept": "stack",
+          "mastery": 0.82,
+          "text": "AlreadyKnown(stack, mastery=0.82)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "recursion",
+          "before": "tree",
+          "text": "MissingProbe(recursion, before=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "recursion",
+          "before": "tree",
+          "text": "MissingProbe(recursion, before=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "heap",
+          "needs": "binary_tree",
+          "text": "MissingPrerequisite(heap, needs=binary_tree)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "recursion",
+          "before": "tree",
+          "text": "MissingProbe(recursion, before=tree)"
+        },
+        {
+          "rule": "R5",
+          "type": "UnremediatedMisconception",
+          "concept": "heap_is_sorted",
+          "before": "heap",
+          "text": "UnremediatedMisconception(heap_is_sorted, before=heap)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L05_uneven",
+      "target": "priority_queue",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "remediate",
+          "id": "queue_random_access",
+          "affects": "queue",
+          "description": "Thinks you can read any item in a queue directly, like an array."
+        },
+        {
+          "step": 2,
+          "kind": "remediate",
+          "id": "heap_is_sorted",
+          "affects": "heap",
+          "description": "Thinks a heap's array is fully sorted."
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "probe",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 7,
+          "kind": "learn",
+          "id": "heap",
+          "name": "Heaps",
+          "difficulty": 4,
+          "prerequisites": [
+            "binary_tree",
+            "arrays"
+          ]
+        },
+        {
+          "step": 8,
+          "kind": "learn",
+          "id": "priority_queue",
+          "name": "Priority Queues",
+          "difficulty": 4,
+          "prerequisites": [
+            "heap",
+            "queue"
+          ]
+        }
+      ],
+      "summary": "remediate:queue_random_access -> remediate:heap_is_sorted -> linked_list -> probe:recursion -> tree -> binary_tree -> heap -> priority_queue",
+      "score": -2.08,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        3,
+        2,
+        3
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "priority_queue",
+          "needs": "heap",
+          "text": "MissingPrerequisite(priority_queue, needs=heap)"
+        },
+        {
+          "rule": "R5",
+          "type": "UnremediatedMisconception",
+          "concept": "queue_random_access",
+          "before": "priority_queue",
+          "text": "UnremediatedMisconception(queue_random_access, before=priority_queue)"
+        },
+        {
+          "rule": "R5",
+          "type": "UnremediatedMisconception",
+          "concept": "heap_is_sorted",
+          "before": "priority_queue",
+          "text": "UnremediatedMisconception(heap_is_sorted, before=priority_queue)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "recursion",
+          "before": "tree",
+          "text": "MissingProbe(recursion, before=tree)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.001
+    },
+    {
+      "learner_id": "L05_uneven",
+      "target": "bst",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "probe",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "learn",
+          "id": "binary_search",
+          "name": "Binary Search",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays",
+            "sorting_basic"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 5,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        },
+        {
+          "step": 6,
+          "kind": "learn",
+          "id": "bst",
+          "name": "Binary Search Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "binary_tree",
+            "binary_search"
+          ]
+        }
+      ],
+      "summary": "probe:recursion -> binary_search -> linked_list -> tree -> binary_tree -> bst",
+      "score": -1.164,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        1,
+        2,
+        2
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "bst",
+          "needs": "binary_tree",
+          "text": "MissingPrerequisite(bst, needs=binary_tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "recursion",
+          "before": "tree",
+          "text": "MissingProbe(recursion, before=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "bst",
+          "needs": "binary_search",
+          "text": "MissingPrerequisite(bst, needs=binary_search)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "recursion",
+          "before": "tree",
+          "text": "MissingProbe(recursion, before=tree)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L05_uneven",
+      "target": "binary_tree",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "probe",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        },
+        {
+          "step": 4,
+          "kind": "learn",
+          "id": "binary_tree",
+          "name": "Binary Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "tree"
+          ]
+        }
+      ],
+      "summary": "linked_list -> probe:recursion -> tree -> binary_tree",
+      "score": -0.7667,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        3,
+        1,
+        1
+      ],
+      "violations_found": [
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "binary_tree",
+          "needs": "tree",
+          "text": "MissingPrerequisite(binary_tree, needs=tree)"
+        },
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "recursion",
+          "before": "tree",
+          "text": "MissingProbe(recursion, before=tree)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "tree",
+          "needs": "linked_list",
+          "text": "MissingPrerequisite(tree, needs=linked_list)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L05_uneven",
+      "target": "tree",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "linked_list",
+          "name": "Linked Lists",
+          "difficulty": 2,
+          "prerequisites": [
+            "arrays"
+          ]
+        },
+        {
+          "step": 2,
+          "kind": "probe",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        },
+        {
+          "step": 3,
+          "kind": "learn",
+          "id": "tree",
+          "name": "Trees",
+          "difficulty": 3,
+          "prerequisites": [
+            "linked_list",
+            "recursion"
+          ]
+        }
+      ],
+      "summary": "linked_list -> probe:recursion -> tree",
+      "score": -0.55,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        1,
+        1,
+        0
+      ],
+      "violations_found": [
+        {
+          "rule": "R4",
+          "type": "MissingProbe",
+          "concept": "recursion",
+          "before": "tree",
+          "text": "MissingProbe(recursion, before=tree)"
+        },
+        {
+          "rule": "R3",
+          "type": "OffPath",
+          "concept": "sorting_basic",
+          "target": "tree",
+          "text": "OffPath(sorting_basic, target=tree)"
+        },
+        {
+          "rule": "R2",
+          "type": "AlreadyKnown",
+          "concept": "sorting_basic",
+          "mastery": 0.75,
+          "text": "AlreadyKnown(sorting_basic, mastery=0.75)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    },
+    {
+      "learner_id": "L05_uneven",
+      "target": "recursion",
+      "verified": true,
+      "source": "repaired",
+      "path": [
+        {
+          "step": 1,
+          "kind": "learn",
+          "id": "recursion",
+          "name": "Recursion",
+          "difficulty": 2,
+          "prerequisites": [
+            "functions"
+          ]
+        }
+      ],
+      "summary": "recursion",
+      "score": 0.09,
+      "drafts_considered": 3,
+      "repair_rounds": [
+        2,
+        0,
+        2
+      ],
+      "violations_found": [
+        {
+          "rule": "R3",
+          "type": "OffPath",
+          "concept": "hashing",
+          "target": "recursion",
+          "text": "OffPath(hashing, target=recursion)"
+        },
+        {
+          "rule": "R1",
+          "type": "MissingPrerequisite",
+          "concept": "hashing",
+          "needs": "big_o",
+          "text": "MissingPrerequisite(hashing, needs=big_o)"
+        },
+        {
+          "rule": "R3",
+          "type": "OffPath",
+          "concept": "queue",
+          "target": "recursion",
+          "text": "OffPath(queue, target=recursion)"
+        },
+        {
+          "rule": "R2",
+          "type": "AlreadyKnown",
+          "concept": "queue",
+          "mastery": 0.77,
+          "text": "AlreadyKnown(queue, mastery=0.77)"
+        },
+        {
+          "rule": "R5",
+          "type": "UnremediatedMisconception",
+          "concept": "queue_random_access",
+          "before": "queue",
+          "text": "UnremediatedMisconception(queue_random_access, before=queue)"
+        }
+      ],
+      "remaining_violations": [],
+      "elapsed_s": 0.0
+    }
+  ]
+}
