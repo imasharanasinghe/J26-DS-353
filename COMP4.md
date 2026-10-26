@@ -1,184 +1,172 @@
-# Component 4 (C4) — PP1 Summary
+# Component 4: Current State (as of 26 October 2026)
 
-**Explanation Verifier**: checks an AI-written explanation against the knowledge graph and the learner's state, repairs what is wrong, and reports the result.
+J26-DS-353, Component 4 (Amarasinghe S A R U, IT23216778). Branch `c4`.
+
+This file records what C4 does today, what it contributes, what evidence exists and what is missing. It describes the **implemented, committed scope**. The draft Teachability extension is described in [NEW1.md](NEW1.md) and is not approved or implemented. Related files: [PP1.md](PP1.md) (panel response and slides), [c4/README.md](c4/README.md) (technical readme), [docs/C4.md](docs/C4.md) (proposal).
+
+Status checks made when this file was written: 161 tests pass (about 5 s); about 5,900 lines across `c4/`, `tests/`, `scripts/` and the web UI.
 
 ---
 
-## 1. The problem C4 solves
+## 1. In one sentence
 
-An LLM tutor writes fluent explanations, but it can:
+C4 is a **verifier** that sits between an LLM tutor and the learner. It checks that an explanation is true (matches the knowledge graph) and suits this learner (matches their mastery and Bloom level), rewrites only the bad sentences, and never shows the learner an unchecked draft.
 
-- **Hallucinate**: state something the knowledge graph says is false or does not support.
-- **Ignore the learner**: lean on a prerequisite the learner has not mastered, or explain above their level.
-
-C4 sits between the LLM and the learner. Nothing reaches the learner until it has been checked.
-
-## 2. How it works (one slide)
+## 2. How it works
 
 ```text
 C1 graph + C2 learner state + C3 verified path + draft explanation
-   -> split into atomic claims
-   -> FACTUAL check    ENTAILED | CONTRADICTED | UNSUPPORTED   (evidence from the graph)
-   -> COGNITIVE check  APPROPRIATE | BLOOM_MISMATCH | UNMASTERED_PREREQUISITE | INCONCLUSIVE
-   -> rewrite ONLY the violating sentences
-   -> re-verify (max 3 rounds)
-   -> final explanation + faithfulness report
+  -> split into sentence-level claims (stable ids, longest-match concept detection)
+  -> FACTUAL label    ENTAILED | CONTRADICTED | UNSUPPORTED  (with graph evidence)
+  -> COGNITIVE label  APPROPRIATE | BLOOM_MISMATCH | UNMASTERED_PREREQUISITE | INCONCLUSIVE
+  -> typed violations + confidence tier
+  -> rewrite only the violating sentences, then re-verify (max 3 rounds)
+  -> final explanation + report (JSON, schema c4-report/1.2)
 ```
 
-Valid sentences are kept as written. Only bad ones are repaired.
+### 2.1 Factual check
 
-## 2b. Panel feedback and our response
+- A claim is matched to graph facts by content-word Jaccard similarity, threshold 0.6.
+- A `known_false` statement wins only if the claim is closer to it than to any true fact and the negation polarity matches.
+- This is rule-based, not NLI.
 
-**Feedback (proposal presentation):** strengthen the research contribution rather than only building a product, and suggest how to raise the student's cognitive level over time.
+### 2.2 Cognitive check
 
-**Response:** cognitive appropriateness is now a **trajectory, not a snapshot**. C4 verifies that each explanation is faithful *and* targets the learner's **next** Bloom level, records what the learner demonstrates, and we test whether this raises the demonstrated level across sessions. New research questions: **RQ4a** (faithful and at the target level) and **RQ4b** (progression across sessions). Full detail, talking points and slide text are in [PP1.md](PP1.md).
+- A concept is **mastered** when mastery >= 0.70 and uncertainty <= 0.25.
+- Mastery within 0.05 of the threshold, uncertainty above 0.25, or missing learner history gives `INCONCLUSIVE`. It is never silently accepted.
+- A verb-cue estimator assigns each claim a Bloom level.
+- The Bloom ceiling is 2, raised to 3 only when every direct prerequisite of the target is mastered and certain.
+- The target concept is exempt from the prerequisite check (being new is not a violation); every other concept a claim mentions must be mastered.
 
-| Snapshot (before) | Trajectory (now) |
+### 2.3 Repair
+
+Only the violating sentence is replaced; valid sentences are kept as written.
+
+| Violation | What C4 writes |
 |---|---|
-| Match the current level | Target current level + 1 when prerequisites are mastered |
-| Violation: too high (`BLOOM_MISMATCH`) | Too high **and** no task at the target level (`BLOOM_STAGNATION`) |
-| Filters bad explanations | Moves the learner forward, with support that fades |
+| Contradicts a graph misconception | `Common mistake: "..." is false.` plus a graph fact that verifies for this learner |
+| Unsupported claim | The closest graph fact that verifies for this learner |
+| Relies on an unmastered prerequisite | `Review Binary Trees first: your mastery is 0.00, below the 0.70 this path needs, and it is a prerequisite of Heaps.` |
+| Uncertain or missing history | `Take a quick check on Recursion first: ... (mastery 0.75, uncertainty 0.32).` |
+| Above the Bloom ceiling | A sentence saying it is saved for later, then a graph fact at the learner's level |
 
-## 3. What we built on the `c4` branch
+- Sentences C4 itself writes from C1/C2/C3 data are marked `source: "grounded"` and excluded from the hallucination and mismatch denominators so they cannot dilute the rates.
+- Claims still unresolved after 3 rounds are listed in the report. They are never reported as verified.
 
-### Stage 1 — Planning and research rules
-- Work plan, research guidelines (frozen metric definitions, failure policy) and a work log.
-- Confirmed the PP1 constraints and the marking criteria.
+### 2.4 Draft generation
 
-### Stage 2 — Core verifier (`c4/pipeline.py`)
-- Claim extraction with stable claim IDs and longest-match concept detection.
-- Factual and cognitive labelling, with typed violations and a confidence tier.
-- Targeted repair that uses a graph fact that itself verifies.
-- Validation of the C3 handoff before verification.
+- Drafts come only from a local Qwen3 4B model through Ollama. The offline template generator was removed on 20 October.
+- The draft is a structured document: path diagram, what the concept is, what to know first, where the learner stands, a refresher on secured concepts, and common mistakes from the graph.
+- The generator is replaceable (GPT-4o later) without touching the verifier. Verifying pasted text and all evaluation scripts need no model.
 
-### Stage 3 — Connecting to C1, C2 and C3
-- Adapters that follow each branch's current contract:
-  - C1 exports a graph.
-  - C2 exposes mastery and uncertainty.
-  - C3 exposes a verified-path JSON.
-- C4 mock data under `c4/data/` has the same shape as the real outputs.
-- Multiple explanation targets, and concepts beyond heaps.
-- Singular and plural concept names are normalised.
+### 2.5 Bloom-level progression (the response to the proposal panel)
 
-### Stage 4 — Local LLM draft generation (`c4/explainer.py`)
-- Optional Ollama integration (`qwen3:4b`) to write the draft.
-- The template generator that once worked offline was removed (2026-10-20): drafts come only from the language model.
-- Prompts constrain the output, and repetitive model responses are cleaned.
-- The generator can be swapped without touching the verifier.
+Cognitive appropriateness is treated as a trajectory, not a snapshot.
 
-### Stage 5 — Preliminary evaluation (`c4/evaluation.py`)
-- **Stress test**: 28 cases (7 concepts × 4 learner profiles), 84 claims, with ablations (factual only, cognitive only, full C4).
-- **Natural set**: 28 real Qwen3 explanations (cached).
-- **Threshold sensitivity** sweep.
-- Stats: 95% confidence intervals and McNemar tests.
-- Results are saved in `c4/results/` (see `RESULTS.md`).
+- Each learner has a per-concept `bloom` record: the **demonstrated level** (1 Remember to 6 Create) and the history of check-question results. C2 does not provide this field yet, so it is a C4 extension (`c4/progression.py`).
+- **Target level** = demonstrated level + 1 when every direct prerequisite is mastered; otherwise the demonstrated level (consolidate).
+- A failed stretch is retried with full support. A learner is demoted only after two failures at a demonstrated level.
+- **Contingent scaffolding:** full support at the start and after a failure, partial after one pass, minimal after two.
+- The verifier's Bloom ceiling becomes the target level. An explanation with no accepted check question at that level is a `BLOOM_STAGNATION` violation, repaired by appending a "Check yourself" section. A question above the target is a `BLOOM_MISMATCH` and is re-levelled.
+- Check questions are tasks, not domain claims: outside the hallucination denominator, inside the cognitive-mismatch one.
 
-### Stage 6 — Web workbench (`c4/web/`, `c4/server.py`, `c4/service.py`)
-- A validated service layer and a localhost HTTP API (health, meta, verify, generate, results).
-- A single-page UI with:
-  - Target and learner selection, with a learner editor for mastery and uncertainty.
-  - Claim cards showing typed violations and graph evidence.
-  - The before/after rewrite trace, with an unresolved-claims notice.
-  - An **Evaluation** tab.
-  - A **verdict banner**, tooltips and a keyboard shortcut.
-- Design: navy theme, Josefin Sans font (self-hosted, licensed).
-- Downloadable JSON report.
+## 3. The product (what can be run)
 
-### Stage 7 — Draft, verify and repair in one call
-- `explain` endpoint and UI button run the whole flow. A draft is never shown unverified.
-- **Inputs tab**: shows the C1, C2 and C3 inputs behind a run, so the panel can see what C4 received.
+| Piece | How to use it |
+|---|---|
+| Web workbench | `python3 scripts/run_c4_server.py --open` (http://127.0.0.1:8765) |
+| Demo CLI | `python3 scripts/run_c4_demo.py --pretty` (scenarios valid, factual, cognitive; `--target`; `--ollama`) |
+| Evaluation | `python3 scripts/run_c4_eval.py` (writes `c4/results/RESULTS.md`) |
+| Progression experiment | `python3 scripts/run_c4_progression.py` (writes `c4/results/PROGRESSION.md`) |
+| Tests | `python3 -m pytest -q tests` |
 
-### Stage 8 — Structured, learner-specific explanations
-- The explanation is now a document:
-  - Path diagram.
-  - What the concept is.
-  - What to know first.
-  - Where the learner stands.
-  - A refresher on secured concepts.
-  - Common mistakes from the graph.
-- Learner-specific repair messages:
-  - Unmastered prerequisite → "Review Binary Trees first: your mastery is 0.00, below the 0.70 this path needs."
-  - Above the Bloom ceiling → saved for later.
-  - Misconception → "Common mistake: … is false."
-- Document-style UI, with aligned icons and text.
+Workbench tabs: **Inputs** (the C1/C2/C3 data behind a run), **Verification** (claim cards with evidence, learner sliders, rewrite trace, ablation toggles, downloadable JSON report), **Progression** (sessions with simulated answers and the learner's trajectory), **Evaluation** (committed results with caveats).
 
-### Stage 9 — Bloom-level progression (response to the panel)
-- **Policy** (`c4/progression.py`): demonstrated level per concept (1 Remember to 6 Create), target level = demonstrated + 1 when prerequisites are mastered, retry with full support after a failed stretch, demotion only after two failures on a demonstrated level, contingent scaffolding (full, partial, minimal).
-- **Learner state**: a per-concept `bloom` record with history (a C4 extension; C2 does not provide it yet).
-- **Verifier**: opt-in progressive mode. The Bloom ceiling is the target level; an explanation with no check question at that level is `BLOOM_STAGNATION` and is repaired; questions are task claims, not domain claims. Report schema 1.2.
-- **Generator**: faded detail and a target-level check question with hints.
-- **Estimator evaluation** (`c4/bloom.py`, `c4/data/bloom_items.json`): 90 labelled items with dev, test and indirect-phrasing splits.
-- **Simulated multi-session experiment** (`c4/simulation.py`): paired conditions A (unverified), B (current C4), C (progressive), ablations, and three learner models including flat and matched controls; bootstrap intervals, Wilcoxon signed-rank, Cohen's dz.
-- **Workbench**: a **Progression** tab (sessions, simulated answers, trajectory) and progression evidence in the **Evaluation** tab; `/api/session` and `/api/answer`.
-- **Human pilot protocol** ([docs/PILOT_STUDY.md](docs/PILOT_STUDY.md)): written, not run, needs ethics approval.
-- Run `python3 scripts/run_c4_progression.py` to reproduce; results are in `c4/results/PROGRESSION.md`.
+- API: `GET /api/health|meta|results`, `POST /api/verify|generate|explain|session|answer`.
+- Local only: standard-library server, vanilla JS, self-hosted fonts, no external requests, bound to 127.0.0.1 with no authentication (do not expose it).
+- Branding: CartoLEARN (Outfit typeface, mark, palette).
 
-## 4. Results (preliminary, 28-case stress test)
+## 4. Evidence so far
 
-| | Hallucination | Cognitive mismatch | Cases with a violation |
+### 4.1 Controlled stress test (28 cases = 7 concepts x 4 learner profiles; 84 claims)
+
+| Condition | Hallucination | Cognitive mismatch | Cases with a violation |
 |---|---|---|---|
 | Unverified baseline | 25.0% | 29.8% | 28 / 28 |
 | Factual check only | 0.0% | 28.1% | 12 / 28 |
 | Cognitive check only | 24.5% | 0.0% | 13 / 28 |
 | **Full C4** | **0.0%** | **0.0%** | **0 / 28** |
 
-- All 44 violating claims were corrected, and no new violations were introduced.
-- On real Qwen3 text, hallucination went from 100% to 0% (28 explanations).
-- The verifier alone takes under 1 ms per case.
+- All 44 violating claims corrected; 0 new violations introduced.
+- Detection precision, recall and F1 are 1.0 against the reference labels.
+- About 0.5 ms per case (verifier only, no model calls).
 
-### Progression results (pilot; simulated learners)
+### 4.2 Natural Qwen3 output (28 explanations, cached)
 
-**RQ4a, stress corpus (84 runs, same-verifier caveat):**
+- Hallucination 100% to 0%, cognitive mismatch 23.5% to 0%.
+- Read the 100% as "not supported by the two graph facts", not as true hallucination: the strict rule flags essentially every sentence of natural text.
+- Threshold sensitivity (0.3 to 0.8) is in `c4/results/RESULTS.md`.
+
+### 4.3 Progression (simulated learners)
+
+**RQ4a**, stress corpus (84 runs, same-verifier caveat):
 
 | Text | Question at target level | Runs with a violation |
 |---|---|---|
-| Unverified explanation | 0% | 84 / 84 |
-| Static C4 (current) | 0% | 0 / 84 |
+| Unverified | 0% | 84 / 84 |
+| Static C4 | 0% | 0 / 84 |
 | **Progressive C4** | **100%** | **0 / 84** |
 
-**RQ4b, 300 simulated learners, 8 sessions (capability gain, progressive minus current C4):**
+**RQ4b**, 300 simulated learners, 8 sessions (gain of progressive over current C4):
 
 | Learner model | Difference (95% interval) | Reading |
 |---|---|---|
 | ZPD (design hypothesis) | +0.36 (0.29 to 0.43), dz 0.59 | Helps, but reaches level 3 no sooner |
-| Flat control | 0.00 | Ties exactly: level does not matter |
+| Flat control | 0.00 | Ties: level does not matter |
 | Matched control | +0.02 (-0.05 to 0.09) | No advantage; worse at 12 sessions (-0.29) |
 
 - The stretch above the demonstrated level is the active ingredient (+1.12 versus no stretch). Contingent fading adds nothing in this learner model.
 - The effect is about zero at 4 sessions and grows with more (+0.90 at 12), so a short study can miss it.
-- The Bloom estimator reaches 100% on its in-vocabulary test split and 16.7% on indirectly phrased items; there is one annotator and no kappa.
+- Statistics: paired conditions, bootstrap intervals, Wilcoxon signed-rank, Cohen's dz.
 
-## 5. Honest limitations (expect these in the VIVA)
+### 4.4 Bloom estimator
 
-- Stress-test labels are built from a recipe, not human-annotated, so there is no Cohen's kappa. The perfect detection scores show the rules behave as specified. They are not evidence of generalisation.
-- Post-repair rates use the same verifier that did the repair, so they are not independent.
-- Factual matching is rule-based, not NLI.
-- C1, C2 and C3 are not yet integrated end to end. Concept IDs differ between branches, so C4 uses interface-compatible mocks.
-- Parameters are pilot values, not validated research values.
-- **The progression results are simulated.** The learner models encode assumptions (the ZPD model partly returns its own assumption), so we also report flat and matched controls and where progression does not help. They are evidence about the design, not about students. The human pilot is the validation and has not been run.
-- The Bloom estimator is a verb-cue matcher scored on items labelled by one annotator; it cannot read indirectly phrased questions.
-- The per-concept Bloom record is a C4 extension that C2 does not provide yet; the policy starts every unseen concept at Remember (no placement check), and the check questions are generic templates.
+- 90 labelled items across 6 levels, dev, test and indirect-phrasing splits (`c4/data/bloom_items.json`).
+- 100% on the in-vocabulary test split, **16.7% on indirectly phrased items**. Single annotator, no kappa.
 
-## 6. Next steps (after PP1)
+## 5. Contributions
 
-- Integrate with the real C1, C2 and C3 outputs.
-- Independent human annotation of the evaluation labels.
-- NLI-based factual matching.
-- Evaluate on more concepts and learners.
-- Second annotator and kappa for the Bloom items; a learned or NLI-based Bloom classifier.
-- Agree the Bloom learner-state field with C2; add a placement check and concept-specific check questions.
-- Ethics approval and the human pilot for RQ4b ([docs/PILOT_STUDY.md](docs/PILOT_STUDY.md)).
+### 5.1 Research contribution (currently claimed)
 
-## 7. How to demo
+1. **Faithfulness as two axes.** Factual faithfulness and learner-relative cognitive appropriateness are verified at claim level; a true but too-advanced sentence counts as a violation.
+2. **Cognitive appropriateness as a trajectory.** The target is the learner's next Bloom level; `BLOOM_STAGNATION` is a new violation type; scaffolding fades with success.
+3. **A simulated test of whether this helps**, with flat and matched controls that show where it does not.
+4. **Method pieces:** frozen metric definitions and failure policy, an ablation design, a labelled Bloom item set, and a human pilot-study protocol ([docs/PILOT_STUDY.md](docs/PILOT_STUDY.md)).
 
-See [c4/README.md](c4/README.md) for the run-sheet. Start the server, open the workbench, and use the **Verification**, **Progression**, **Inputs** and **Evaluation** tabs. For the progression demo: pick the "All prerequisites mastered" preset, start a session, answer well twice (target rises, support fades), answer "Not yet" once (retry with full support), then lower a prerequisite below 0.7 (the policy consolidates).
+### 5.2 Product contribution
 
-## 8. Where things are
+- The verify, repair and report middleware, the final layer of the four-component framework.
+- Claim-level, auditable output: evidence per claim, a rewrite trace and a machine-readable report.
+- The workbench as a demonstration surface.
 
-| Path | What |
-|---|---|
-| `c4/` | Verifier, service, server, web UI, evaluation |
-| `tests/` | Automated tests |
-| `scripts/` | Evaluation runner, progression runner and server runner |
-| `docs/` | Plans, log, guidelines, component proposals (C1–C4), PP1 marking criteria, WBS, pilot-study protocol |
-| `PP1.md` | Panel response, talking points and slide text |
+## 6. Honest weaknesses (say these before the panel does)
+
+- **Circular evidence.** Stress labels are built by recipe, not annotated by people, and post-repair rates use the same verifier that did the repair. Perfect scores show the rules behave as specified, not that they generalise.
+- **No human annotation and no Cohen's kappa** for the stress corpus or the Bloom items.
+- **Factual matching is lexical, not NLI**; it cannot tell a faithful paraphrase from an invention.
+- **Claims are whole sentences**, not atomic propositions.
+- **No end-to-end integration.** C1, C2 and C3 are not integrated; concept ids differ between branches, so C4 uses interface-compatible mocks.
+- **The progression results are simulated.** The ZPD model partly returns its own assumption. No human pilot has been run and it needs SLIIT ethics approval.
+- **Smaller gaps:** no placement check for unseen concepts (every one starts at Remember); check questions are generic templates; parameters are pilot values.
+- **Novelty is unchecked.** No literature search has been done.
+
+## 7. Where the project stands
+
+- PP1 is over. The panel said the four components together amounted to roughly one normal final-year component and asked for something deeper in each. The next milestone is **PP2, the final presentation**.
+- The committed scope is what this file describes.
+- [NEW1.md](NEW1.md) is a draft, unapproved extension: a knowledge-restricted AI novice produces a **teachability score** (how much understanding transfers), with explanation survivability (A -> B -> C chains) as the recommended single discovery. Tutor-tutee distance and groups of four are a research pilot, and the stretch experiments are future work. The verifier would remain as the correctness instrument.
+- Outstanding work is listed in [docs/PLAN.md](docs/PLAN.md) and in section 6 above.
+
+## 8. Other files
+
+- [docs/C4.md](docs/C4.md) and the PP1 files describe the pre-Teachability scope and have not been updated for it, deliberately, until the new scope is approved.

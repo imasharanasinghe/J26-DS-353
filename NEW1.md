@@ -3,7 +3,7 @@
 **Teachability: measuring and optimising how well understanding transfers between minds**
 
 J26-DS-353, Component 4 (Amarasinghe S A R U, IT23216778)
-Status: **proposal draft, not yet approved by the supervisor.** Nothing in this file is implemented yet. Written after the PP1 result (22 October 2026), where the panel asked for a much deeper, more inventive scope.
+Status: **proposal draft, not yet approved by the supervisor.** Nothing in this file is implemented yet. Written after the PP1 result (22 October 2026), where the panel asked for a much deeper, more inventive scope. Revised 26 October 2026 after a scope review: the core is narrowed to the teachability score plus one discovery, deployable parts are separated from research pilots (section 6), and student grouping is specified (section 7).
 
 ---
 
@@ -48,11 +48,13 @@ Experts are often poor teachers (the curse of knowledge); near-peers are often b
 
 Questions: is there an optimal knowledge distance between a tutor and a tutee, how large is it, does it depend on the concept and Bloom level, and which pairings and groups produce the largest gains for both people? Study first in simulation, then confirm in a small human pilot. Output: a measured quantity and a pairing method.
 
+**Status: research pilot, not a deployable feature.** It needs real students, consent or ethics approval and several weeks, and a university will not reshuffle a cohort for it. The grouping design is in section 7. If time is short this discovery is reported as simulation plus a small pilot, or dropped to future work.
+
 ### 3.4 Application: curse-of-knowledge report (for teachers)
 
 From the knowledge graph, find every prerequisite an explanation silently assumes, and compare against what a class or learner has mastered. The teacher sees, for example: "this explanation assumes four things 60% of your class has not yet learned".
 
-### 3.5 Stretch experiments (only if time remains)
+### 3.5 Stretch experiments (future work; not in the committed scope)
 
 - **Convince the stubborn AI:** the student must change the mind of an AI that holds a plausible misconception taken from the graph's known-false list. Success measures the Evaluate and Analyse levels.
 - **Question depth:** classify the depth of the questions students ask, as a measure of cognitive level and a map of what a class is confused about.
@@ -78,7 +80,48 @@ The earlier trajectory idea from PP1 (raise the learner's Bloom level over time)
 | Stress test and results (`c4/results/`) | Baseline and method for the controlled-explanation experiments |
 | Mock C1/C2/C3 fixtures (`c4/data/`) | Inputs for the first phases; no upstream change is required |
 
-## 6. Plan, in priority order
+## 6. Practicality: what a university can use and what is a research pilot
+
+| Part | Practical in a real university? | Why |
+|---|---|---|
+| Teachability score (AI novice reads an explanation and takes a test) | **Yes, deployable** | Automated and cheap; needs no student time. |
+| Curse-of-knowledge report for lecturers | **Yes, the most deployable part** | Built from the graph and class mastery data; the lecturer does not have to change how they teach. |
+| Survivability chains (A -> B -> C) | Yes, as a study | A research experiment run mostly with AI minds, not a student-facing feature. |
+| Tutor-tutee distance and grouping | **Research pilot only** | Needs real students, ethics approval and weeks of time (section 7). |
+| Stubborn AI, question depth | Optional | First to be cut. |
+
+The proposal should state which parts are deployable now and which are pilots. The panel will respect that more than a claim that everything is classroom-ready.
+
+### 6.1 How the system works
+
+1. **Inputs:** the knowledge graph (C1), each student's mastery and uncertainty (C2) and the learning path (C3).
+2. **Explanation:** a tutor, a peer or the language model writes or generates an explanation of a concept.
+3. **Two checks:** the existing verifier checks that the explanation is correct. The knowledge-restricted AI novice, limited to what the target student has not mastered, reads it and takes a short test tagged by Bloom level; its score is the teachability.
+4. **Outputs:**
+   - The student sees, for example, "this explanation assumes Recursion, which you have not mastered", with the prerequisite to review first.
+   - The lecturer sees, for example, "this assumes four things 60% of your class has not learned yet".
+   - The system flags or repairs the explanation.
+
+### 6.2 How the student learns from it
+
+- Explanations are checked against the student's own gaps, and a missing prerequisite is named before the student is confused by it.
+- A student can explain a concept to a peer and the system scores how well it transferred. Learning by teaching is a well-established way to learn, but this system's own effect on learning is **not** known until the pilot is run, and no learning-gain claim may be made before then.
+- The student sees their gaps and the Bloom level they have reached (kept from the PP1 progression work).
+
+## 7. Grouping students in fours (pilot design)
+
+Putting students in groups of four, using last semester's marks as a starting signal, is practical: universities already group by ability for tutorials and labs, marks are available, and four fits a lab bench or tutorial table (two pairs, or one tutor and three learners).
+
+**Cautions and design rules**
+
+- **Marks are a noisy proxy for knowledge.** Concept-level mastery from C2 is a better grouping signal. Use semester marks as a fallback, or as a first pass before C2 data exists.
+- **The grouping depends on the question.** For the tutor-tutee distance study, groups are deliberately not uniform: vary the spread (for example one stronger, two middle, one weaker) so outcomes can be compared across distances. For ordinary teaching, mixed near-peer groups are usually better than putting top students together.
+- **Fairness.** Do not show students a ranking or label anyone as weak; give groups neutral names. Get consent before using anyone's marks for research, and store marks de-identified.
+- **Rotation.** Reshuffle groups every few weeks so one particular set of people does not confound the result.
+- **Pilot size.** About 20-30 students (5-7 groups of four) over 3-4 weeks, aligned with the human validation in `docs/PILOT_STUDY.md`. A pilot of this size can estimate an effect and test feasibility; it cannot prove one.
+- **Approval.** SLIIT ethics approval and the lecturer's agreement are needed before any student is grouped for research.
+
+## 8. Plan, in priority order
 
 | Phase | Deliverable | Humans needed | Rough effort* |
 |---|---|---|---|
@@ -90,21 +133,25 @@ The earlier trajectory idea from PP1 (raise the learner's Bloom level over time)
 
 *Guesses for one person working part-time, not commitments. The real deadline is not known and must be fitted in.
 
-**Minimum viable thesis:** phases 1 and 2 done well, phase 3 in simulation with a human pilot, phase 4 if time allows.
+**Minimum viable thesis:** phase 1 (the validated teachability score) and phase 2 (survivability) done well. Phase 3 is reported in simulation plus a small pilot if time and approval allow, otherwise as future work. Phase 4 is a small application if time allows. The stretch experiments are not committed.
 
-## 7. Risks and limits (state these before the panel does)
+## 9. Risks and limits (state these before the panel does)
 
 1. **The novice must be believable.** A small local model (Qwen3 4B) may leak knowledge it should not have. Leakage tests are mandatory, and a stronger model may be needed for final runs. Without validation against real beginners the score is only a model output.
 2. **Simulated discoveries are about the simulator.** Phases 2 and 3 become claims about people only if the pilot confirms them.
 3. **The human pilot needs consent or ethics approval and enough participants.** If it fails, keep the simulated results and present the pilot as a smaller validation.
 4. **Scope.** Depth on phases 1-2 beats shallow coverage of everything.
 5. **Novelty is not verified.** Teachable agents, learning-by-teaching systems and peer-tutor matching all exist. The claimed contribution is the teachability metric, the survivability result and the measured tutor-tutee distance. A literature search is required before any novelty claim is made to the panel.
-6. **Interfaces.** Mock fixtures are enough to start, but the learner-state and graph schemas must still be agreed with the C1 and C2 owners.
+6. **Leakage of a restricted novice.** Prompt-based "pretend you do not know X" leaks. Measure the leak rate and report it; do not assume it away.
+7. **Marks as a grouping signal.** Semester marks are a noisy proxy for concept knowledge; prefer C2 mastery and say which was used.
+8. **Interfaces.** Mock fixtures are enough to start, but the learner-state and graph schemas must still be agreed with the C1 and C2 owners.
 
-## 8. Open decisions
+## 10. Open decisions
 
 - Supervisor approval of the revised scope and title.
 - The next hard deadline (PP2 / final) to fit the phases to.
 - Ethics or consent route for the human pilot.
 - Which model plays the novice (local Qwen3 4B vs a stronger hosted model) and the budget for it.
 - Whether the verifier remains in the title or becomes a supporting method.
+- Whether grouping uses C2 mastery or last semester's marks, and whether the lecturer will allow groups to be formed for the pilot.
+- Which single discovery is committed (recommended: survivability) and whether tutor-tutee distance stays as a pilot or moves to future work.

@@ -644,3 +644,23 @@ progression across sessions). Design and status are in [PP1.md](./PP1.md).
 - [ ] Fit or validate the learner-model parameters against real data; the simulation uses pilot values.
 - [ ] Run the human pilot after ethics approval ([PILOT_STUDY.md](./PILOT_STUDY.md) checklist).
 - [ ] Re-run the progression evidence with the GPT-4o generator once it is available.
+
+## Proposed Teachability scope (draft, not approved) - added 2026-10-26
+
+After the PP1 result the panel asked for a deeper scope. [NEW1.md](../NEW1.md) proposes keeping the verifier as a measurement instrument and adding a second axis, **teachability** (how much understanding transfers). Nothing in it is implemented, and it has not been approved by the supervisor, so the sections above still describe the committed C4 scope.
+
+Recommended narrowing (reviewed 2026-10-26):
+
+- Core: a knowledge-restricted AI novice and teachability score, validated for leakage, discrimination, agreement with real beginners, and difference from the correctness verifier.
+- One discovery: explanation survivability (A -> B -> C chains). Tutor-tutee distance stays a research pilot (simulation plus a small group-of-four pilot) or moves to future work.
+- Small application: curse-of-knowledge report for lecturers (the most deployable part).
+- Stretch experiments (stubborn AI, question depth) are not committed.
+- Deployable now: teachability score and lecturer report. Research pilots only: grouping and tutor distance.
+
+### Outstanding for the Teachability scope
+
+- [ ] Supervisor approval of the revised scope and title.
+- [ ] Literature search before any novelty claim (teachable agents, learning-by-teaching systems and peer-tutor matching already exist).
+- [ ] Decide the novice model (local Qwen3 4B vs a stronger hosted model) and its budget; measure its leak rate.
+- [ ] Decide the grouping signal (C2 mastery vs last semester's marks) and the group-of-four pilot design in [NEW1.md](../NEW1.md) section 7.
+- [ ] Ethics approval and lecturer agreement before any student is grouped for research (shared with [PILOT_STUDY.md](./PILOT_STUDY.md)).

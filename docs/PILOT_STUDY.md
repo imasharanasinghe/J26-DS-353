@@ -7,6 +7,8 @@ Nothing in this document may be presented as a result. The simulated-learner exp
 study is the validation it cannot provide. It follows the learner-evaluation safeguards in
 [GUIDELINES.md](./GUIDELINES.md).
 
+> **Related draft (not approved):** [NEW1.md](../NEW1.md) section 7 proposes a separate group-of-four pilot for the Teachability scope (tutor-tutee distance). It would share this protocol's ethics approval, consent and privacy rules, but it has its own design and is not part of this protocol.
+
 ## 1. Purpose and hypotheses
 
 Answer RQ4b with real learners: **does explanation that targets the learner's next Bloom level
