@@ -216,6 +216,17 @@ class C4Pipeline:
             progression=self._progression_report(decision, stagnation_before, claims),
         )
 
+    def factual_check(self, text: str) -> list[dict[str, Any]]:
+        """Factual labels for free text (no path, no learner), used to check a student's own
+        explanation in the teach-back exam. Same rule-based check as the verifier."""
+        rows = []
+        for index, sentence in enumerate(self._split(text), 1):
+            claim = self._build_claim(index, sentence)
+            status, evidence = self._check_factual(claim)
+            rows.append({"claim_id": claim.claim_id, "text": sentence, "concept_ids": list(claim.concept_ids),
+                         "factual_status": status, "evidence": evidence})
+        return rows
+
     # ------------------------------------------------------- structure and layout
 
     def _parse(self, explanation: str, path_line: str) -> list[_Line]:
