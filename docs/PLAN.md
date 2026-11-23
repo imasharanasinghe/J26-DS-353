@@ -645,22 +645,65 @@ progression across sessions). Design and status are in [PP1.md](./PP1.md).
 - [ ] Run the human pilot after ethics approval ([PILOT_STUDY.md](./PILOT_STUDY.md) checklist).
 - [ ] Re-run the progression evidence with the GPT-4o generator once it is available.
 
-## Proposed Teachability scope (draft, not approved) - added 2026-10-26
+## Proposed Teach-Back scope (draft, not approved) - replaces the Teachability section, 2026-10-29
 
-After the PP1 result the panel asked for a deeper scope. [NEW1.md](../NEW1.md) proposes keeping the verifier as a measurement instrument and adding a second axis, **teachability** (how much understanding transfers). Nothing in it is implemented, and it has not been approved by the supervisor, so the sections above still describe the committed C4 scope.
+After the PP1 result the panel asked for a deeper scope. [NEW1.md](../NEW1.md) now proposes a **teach-back assessment**: a knowledge-restricted AI novice learns only from a student's explanation and takes a hidden test whose answers come from the verified graph, scored per concept and Bloom level. A **Graph Auditor** checks the graph's prerequisite edges, Bloom labels and misconceptions against student data. [PROPOSAL.md](../PROPOSAL.md) is the plain-English version for the group. The earlier Teachability draft (survivability, tutor-tutee distance, groups of four) is no longer the plan; it stays in git history. Nothing here is implemented, no code has been written for it, and the supervisor has not approved it, so the sections above still describe the committed C4 scope.
 
-Recommended narrowing (reviewed 2026-10-26):
+### Parts of the proposal
 
-- Core: a knowledge-restricted AI novice and teachability score, validated for leakage, discrimination, agreement with real beginners, and difference from the correctness verifier.
-- One discovery: explanation survivability (A -> B -> C chains). Tutor-tutee distance stays a research pilot (simulation plus a small group-of-four pilot) or moves to future work.
-- Small application: curse-of-knowledge report for lecturers (the most deployable part).
-- Stretch experiments (stubborn AI, question depth) are not committed.
-- Deployable now: teachability score and lecturer report. Research pilots only: grouping and tutor distance.
+| Part | What | Depends on |
+|---|---|---|
+| A. Teach-back exam | Student explains per lecture; novice AI takes a hidden test; score per concept and Bloom level goes to C2 as evidence | C1 graph with facts and known-false statements |
+| B. Graph Auditor | Implication, order and lift tests on prerequisite edges; Bloom, cognitive-load and misconception audits; lecturer-approved proposals; feeds an edge-confidence block back into the verifier | Student data (ASSISTments first), C1 and C2 formats |
+| C. Help box | Existing verifier with attempt-first hints; help requests are a signal, never mastery evidence | Existing C4 |
+| D. Block plan | Per-student practice plan for each 7-week half, aiming at a mastery floor and a smaller spread | C3 (their decision) |
+| E. Dynamic graph | Base graph, lecturer overlay, audited confidence; versioned; proposals only | C1 (their decision) |
 
-### Outstanding for the Teachability scope
+Core for the thesis: A and B. C is existing work. D and E are shown as simulation and demo, and only if the owners agree.
 
-- [ ] Supervisor approval of the revised scope and title.
-- [ ] Literature search before any novelty claim (teachable agents, learning-by-teaching systems and peer-tutor matching already exist).
-- [ ] Decide the novice model (local Qwen3 4B vs a stronger hosted model) and its budget; measure its leak rate.
-- [ ] Decide the grouping signal (C2 mastery vs last semester's marks) and the group-of-four pilot design in [NEW1.md](../NEW1.md) section 7.
-- [ ] Ethics approval and lecturer agreement before any student is grouped for research (shared with [PILOT_STUDY.md](./PILOT_STUDY.md)).
+### Phases (one person, part time; guesses, not commitments)
+
+1. Novice, hidden test, leakage, discrimination and reliability tests on synthetic explanations (about 3 weeks).
+2. Teach-back pipeline: coverage, claim check, novice test, per-level evidence message (about 2 weeks).
+3. Graph Auditor: planted-error test, ASSISTments, loop into the verifier (about 4 weeks).
+4. Plan simulation and help-box demo (about 2 weeks). 5. Layered, versioned graph demo (about 2 weeks). 6. Human pilot (needs ethics approval).
+
+Smallest version that is still a thesis: phases 1 to 3.
+
+### Team leader's Enhancement Plan (received 2026-11-04) and how C4 fits
+
+The team leader shared an HTML plan (`CartoLEARN Enhancement Plan.html`, written after PP1, aiming at PP2 in February 2027). It adds a webcam-based behaviour layer and gives each component add-ons. For C4 it proposes: execution-verified visual explanations from real code runs (4.1, must), confusion-adaptive strategy switching (4.2, must), misconception diagnosis (4.3, must), an NLI verifier (4.4, should), an ask-why chat (4.5, should) and Sinhala/Tamil (4.6, could), plus the GPT-4o switch, a second Bloom annotator, a shared learner simulator with C3 and a probe API for C3.
+
+Assessment (2026-11-05): the leader's C4 list is wider, not deeper. Most of it is engineering, and only the trace check in 4.1 makes a research claim, so it does not answer the panel's request for a deeper scope. The revised page [CartoLEARN Enhancement Plan - C4 revised.html](../CartoLEARN%20Enhancement%20Plan%20-%20C4%20revised.html) keeps his layout and every other tab unchanged and replaces only the C4 tab (plus the C4 lines on the overview, priority table, roadmap row and checklist):
+
+| Leader's item | In the revised C4 tab |
+|---|---|
+| 4.1 code-trace visuals (must) | Add-on 4.4, should, reduced to 4 to 5 operations; the trace checker can also check a student's step-by-step claims |
+| 4.2 strategy switching (must) | Part of 4.6, should; trigger can be a failed check question so it does not depend on C2's camera |
+| 4.3 misconception diagnosis (must) | Add-on 4.5, should; the tagged items can be reused in the teach-back test |
+| 4.4 NLI verifier (should) | Part of 4.6, should |
+| 4.5 ask-why, 4.6 Sinhala/Tamil | Add-on 4.8, could |
+| (new) | 4.1 teach-back exam (must), 4.2 Graph Auditor (must), 4.3 mastery by concept and Bloom level (must), 4.7 plan and help-box demo (should) |
+
+Conflicts to settle with the group before building:
+- **Edge audit.** The leader's C1 Add-on 1.2 (test each prerequisite edge against learner data) is the same idea as the Graph Auditor. Proposed split: C1 owns the curation console and applies approved changes; C4 supplies the audit method, the Bloom audit and the loop back into verification.
+- **Mastery format.** The leader's `LearnerState` has one mastery value per concept; the teach-back evidence needs a matrix per concept and Bloom level and an evidence endpoint in C2.
+- **Planner overlap.** The semester plan (part D) overlaps C3's replanning and deadline work; show it as a simulation that calls C3 where possible.
+- **Camera.** The leader's C4 strategy switching assumed C2's webcam affect; the revised plan uses no camera signal.
+- **Scope.** The leader lists six C4 add-ons; the revised page keeps phases 1 to 3 (teach-back instrument, pipeline, auditor) as the committed core. The page is a proposal and the supervisor has not approved it.
+
+### Outstanding for the Teach-Back scope
+
+- [ ] Talk to the group: each member's own post-panel scope, overlaps with this proposal, and the [ASK] items in [PROPOSAL.md](../PROPOSAL.md) section 10.
+- [ ] Supervisor approval of the scope and title.
+- [ ] Send the revised page and the conflicts above to the team leader and the C1 and C2 owners; agree the edge-audit split and the per-level mastery format.
+- [ ] Find out why the earlier Teachability draft was dropped and whether that reason still applies.
+- [ ] Agree the interfaces with C1, C2 and C3: graph JSON with stable ids, `facts`, `known_false`, edge `source`, `status`, `confidence` and a `graph_version`; the evidence message; mastery per Bloom level.
+- [ ] Full literature search. Open and read each paper listed in [NEW1.md](../NEW1.md) section 10 (most were seen as search results only). Re-check the Waterloo group (Arun, Poupart, Grossmann) shortly before PP2 for published results on exam-as-assessment.
+- [ ] Do not write "validated" for the novice score before data exist (N1 is a question with a protocol).
+- [ ] Decide the novice model (local Qwen3 4B or a stronger hosted model), its budget, and measure its leak rate.
+- [ ] Decide whether the score may ever count for a grade (formative first).
+- [ ] SLIIT ethics approval and lecturer agreement before any student data (shared with [PILOT_STUDY.md](./PILOT_STUDY.md)); DSA performance data access.
+- [ ] After approval: update [C4.md](./C4.md), [PP1.md](../PP1.md) and [C4BEFORE.md](../C4BEFORE.md), which still describe the older scope.
+- [ ] Commit the documentation to the `c4` branch (NEW1.md, PROPOSAL.md, LOG.md, PLAN.md, WBS.md, PILOT_STUDY.md are uncommitted as of 2026-10-30).
+- [ ] The Graph Auditor draft that was overwritten is only in a temporary scratchpad copy; its content lives on in [NEW1.md](../NEW1.md) section 6.

@@ -101,16 +101,39 @@ over time; research contribution, not only a product), added 2026-10-20:
     it has not been run and needs ethics approval.
 64. Updated the proposal ([C4.md](./C4.md)), guidelines, plan, log, README, and
     the PP1 summaries for the new contribution, with its limitations.
+65. Removed the offline template generator (2026-10-20): drafts now come only
+    from the language model; the workbench and tests were updated.
+66. Reviewed the draft Teachability scope (2026-10-26) and narrowed it; added
+    it to the plan. It was later replaced (step 67).
+67. Replaced the draft with the Teach-Back proposal (2026-10-29,
+    [NEW1.md](../NEW1.md)): an AI novice that learns only from a student's
+    explanation and takes a graph-checked hidden test, plus a Graph Auditor
+    that checks the graph against student data. Documentation only; no code.
+68. Searched the literature and opened the closest papers (Waterloo project,
+    Chrysalis, Kucharavy et al., Jin et al.). Found that the idea of an exam on
+    what an AI learned is planned by Waterloo but not published. Details in
+    NEW1.md section 10.
+69. Checked the NotebookLM answer against the original papers and corrected
+    the claims in NEW1.md (it had merged two papers).
+70. Read the other three components' branches (read-only) and wrote
+    [PROPOSAL.md](../PROPOSAL.md), a plain-English proposal for the group with
+    suggested improvements for C1, C2 and C3 (each their decision).
+71. Decided not to implement anything until the supervisor and the group agree.
+72. Brought LOG.md, PLAN.md and WBS.md up to date (they had been skipped for
+    this period) and fixed a stale pointer in PILOT_STUDY.md.
+73. Read the team leader's Enhancement Plan HTML (2026-11-05) and compared its C4
+    add-ons with NEW1.md; found the Graph Auditor overlaps his C1 Add-on 1.2 and
+    that his `LearnerState` has no per-Bloom-level mastery.
+74. Wrote a revised copy of his page with only the C4 tab (and the C4 lines on the
+    overview, priority table, roadmap and checklist) changed to the Teach-Back
+    scope: `CartoLEARN Enhancement Plan - C4 revised.html`. His original file is
+    untouched. Recorded the mapping and conflicts in PLAN.md.
+75. Extended the revised HTML to all four components from NEW1.md and PROPOSAL.md
+    (C4 detail; suggested add-ons 1.5, 1.6, 2.5, 3.6, 3.7 for C1 to C3).
 
 ## Current demo commands
 
-Offline deterministic generator:
-
-```bash
-python3 scripts/run_c4_demo.py --generated --pretty
-```
-
-Optional local Qwen3 generator:
+Optional local Qwen3 generator (the only draft generator since 2026-10-20):
 
 ```bash
 ollama serve

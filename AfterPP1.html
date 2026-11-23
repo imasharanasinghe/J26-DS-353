@@ -1,0 +1,1824 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>CartoLEARN Enhancement Plan, C4 revised</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: sticky tab bar over a single reading column; each component view uses a meta rail plus content column, collapsing to one column on phones */
+:root {
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --sunk: #eaeef2;
+  --ink: #17212b;
+  --muted: #586473;
+  --line: #d8dee6;
+  --accent: #1d4ed8;
+  --c1: #6a4bd6; --c1-tint: #efebfc;
+  --c2: #0b8582; --c2-tint: #e3f4f3;
+  --c3: #c4620f; --c3-tint: #fbefe3;
+  --c4: #2b8a4a; --c4-tint: #e6f4ea;
+  --must: #17212b; --must-fg: #ffffff;
+  --warn: #9a5b00; --warn-tint: #fff4dc;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1318; --surface: #151c24; --sunk: #1b232d; --ink: #e5eaf0; --muted: #9ba7b5; --line: #2a3542; --accent: #7aa2ff;
+    --c1: #a48dff; --c1-tint: #231d3d; --c2: #3cc5c0; --c2-tint: #102a2a; --c3: #f39a4b; --c3-tint: #33220f; --c4: #62c486; --c4-tint: #13291b;
+    --must: #e5eaf0; --must-fg: #0e1318; --warn: #f2b84b; --warn-tint: #2e2410;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1318; --surface: #151c24; --sunk: #1b232d; --ink: #e5eaf0; --muted: #9ba7b5; --line: #2a3542; --accent: #7aa2ff;
+  --c1: #a48dff; --c1-tint: #231d3d; --c2: #3cc5c0; --c2-tint: #102a2a; --c3: #f39a4b; --c3-tint: #33220f; --c4: #62c486; --c4-tint: #13291b;
+  --must: #e5eaf0; --must-fg: #0e1318; --warn: #f2b84b; --warn-tint: #2e2410;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+a { color: var(--accent); }
+h1, h2, h3, h4 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.2; }
+h1 { font-size: clamp(1.9rem, 4.2vw, 2.8rem); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.45rem, 3vw, 1.9rem); font-weight: 700; }
+h3 { font-size: 1.2rem; font-weight: 700; }
+h4 { font-size: 1rem; font-weight: 700; font-family: var(--font-body); }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 1.2em; }
+li + li { margin-top: 0.3em; }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+code { background: var(--sunk); padding: 0.1em 0.35em; border-radius: 4px; }
+
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* Header and tabs */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+.top-inner { display: flex; align-items: center; gap: 18px; padding-block: 10px; }
+.brand { display: flex; flex-direction: column; flex-shrink: 0; }
+.brand b { font-family: var(--font-display); font-size: 1.05rem; }
+.brand span { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; min-width: 0; flex: 1; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex-shrink: 0; text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.9rem; padding: 7px 12px; border-radius: 999px; border: 1px solid transparent; white-space: nowrap; }
+.tab:hover { color: var(--ink); background: var(--sunk); }
+.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tab[aria-current="page"] { color: var(--ink); border-color: var(--line); background: var(--bg); }
+.tab .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+@media (max-width: 640px) { .brand span { display: none; } .top-inner { gap: 10px; } }
+
+main { padding-block: 32px 72px; }
+.view { display: grid; gap: 40px; }
+.view[hidden] { display: none !important; }
+
+/* Shared text pieces */
+.eyebrow { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.1rem; color: var(--muted); max-width: 68ch; }
+.prose { max-width: 70ch; display: grid; gap: 12px; }
+.section { display: grid; gap: 18px; }
+.section-head { display: grid; gap: 6px; }
+.muted { color: var(--muted); }
+
+/* Hero */
+.hero { display: grid; gap: 16px; padding-block: 8px 4px; }
+.feedback { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.quote { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; display: grid; gap: 8px; }
+.quote .eyebrow { color: var(--warn); }
+
+/* Loop strip */
+.loop { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.loop div { padding: 14px 16px; border-right: 1px solid var(--line); display: grid; gap: 4px; align-content: start; }
+.loop div:last-child { border-right: 0; }
+.loop b { font-family: var(--font-display); font-size: 1.05rem; }
+.loop span { font-size: 0.86rem; color: var(--muted); }
+.loop .k { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); }
+@media (max-width: 760px) { .loop { grid-template-columns: 1fr; } .loop div { border-right: 0; border-bottom: 1px solid var(--line); } .loop div:last-child { border-bottom: 0; } }
+
+/* Diagram */
+.diagram { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 760px; height: auto; }
+.d-box { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+.d-graph { fill: var(--sunk); stroke: var(--muted); stroke-width: 1.2; }
+.d-new { fill: var(--bg); stroke: var(--accent); stroke-width: 1.4; stroke-dasharray: 6 4; }
+.d-chip { fill: var(--surface); stroke: var(--line); }
+.d-c1 { fill: var(--c1-tint); stroke: var(--c1); stroke-width: 1.4; }
+.d-c2 { fill: var(--c2-tint); stroke: var(--c2); stroke-width: 1.4; }
+.d-c3 { fill: var(--c3-tint); stroke: var(--c3); stroke-width: 1.4; }
+.d-c4 { fill: var(--c4-tint); stroke: var(--c4); stroke-width: 1.4; }
+.d-t { fill: var(--ink); font-family: var(--font-body); font-size: 12px; }
+.d-tb { fill: var(--ink); font-family: var(--font-body); font-size: 13px; font-weight: 600; }
+.d-ts { fill: var(--muted); font-family: var(--font-body); font-size: 10.5px; }
+.d-new-t { fill: var(--accent); font-family: var(--font-body); font-size: 11px; }
+.d-k1 { fill: var(--c1); font-family: var(--font-mono); font-size: 12px; font-weight: 500; }
+.d-k2 { fill: var(--c2); font-family: var(--font-mono); font-size: 12px; font-weight: 500; }
+.d-k3 { fill: var(--c3); font-family: var(--font-mono); font-size: 12px; font-weight: 500; }
+.d-k4 { fill: var(--c4); font-family: var(--font-mono); font-size: 12px; font-weight: 500; }
+.d-line { stroke: var(--muted); stroke-width: 1.3; fill: none; }
+.d-line-new { stroke: var(--accent); stroke-width: 1.3; fill: none; stroke-dasharray: 4 3; }
+.arrowhead { fill: var(--muted); }
+.arrowhead-new { fill: var(--accent); }
+
+/* Component overview cards on overview */
+.comp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+.comp-card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 10px; align-content: start; text-decoration: none; color: inherit; }
+.comp-card:hover { border-color: var(--muted); }
+.comp-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.comp-card .tag { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500; }
+.comp-card h3 { font-size: 1.08rem; }
+.comp-card p { font-size: 0.9rem; color: var(--muted); }
+.comp-card ul { font-size: 0.88rem; padding-left: 1.05em; }
+.comp-card .owner { font-size: 0.8rem; color: var(--muted); font-family: var(--font-mono); }
+.mini-progress { height: 6px; border-radius: 3px; background: var(--sunk); overflow: hidden; }
+.mini-progress i { display: block; height: 100%; width: 0; transition: width 0.3s; }
+.k1 { color: var(--c1); } .k2 { color: var(--c2); } .k3 { color: var(--c3); } .k4 { color: var(--c4); }
+.bg1 { background: var(--c1); } .bg2 { background: var(--c2); } .bg3 { background: var(--c3); } .bg4 { background: var(--c4); } .bgt { background: var(--ink); }
+
+/* Component view header */
+.comp-head { display: grid; gap: 14px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.comp-head .code { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.04em; }
+.unique { border-left: 3px solid currentColor; padding: 4px 0 4px 16px; font-family: var(--font-display); font-size: 1.15rem; font-weight: 500; line-height: 1.4; max-width: 70ch; }
+.unique span { color: var(--ink); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; }
+.fact { font-size: 0.82rem; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; }
+.fact b { font-family: var(--font-mono); font-weight: 500; }
+
+/* Two-column status */
+.status { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.status > div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.status .gap h4 { color: var(--warn); }
+@media (max-width: 760px) { .status { grid-template-columns: 1fr; } }
+
+.fixfirst { background: var(--warn-tint); border-radius: 10px; padding: 16px 20px; display: grid; gap: 8px; }
+.fixfirst h4 { color: var(--warn); }
+
+/* Add-on blocks */
+.addons { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.addon { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 28px; padding-block: 26px; border-bottom: 1px solid var(--line); }
+.addon-meta { display: grid; gap: 10px; align-content: start; }
+.addon-meta .num { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); }
+.addon-meta h3 { font-size: 1.15rem; }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.badge { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); }
+.badge.must { background: var(--must); color: var(--must-fg); border-color: var(--must); }
+.badge.should { border-color: var(--ink); color: var(--ink); }
+.badge.could { border-style: dashed; }
+.badge.cv { border-color: var(--accent); color: var(--accent); }
+.addon-body { display: grid; gap: 16px; min-width: 0; }
+.addon-body .what { font-size: 1.02rem; max-width: 70ch; }
+.steps { counter-reset: s; list-style: none; padding: 0; display: grid; gap: 10px; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; margin: 0; }
+.steps li::before { content: counter(s); font-family: var(--font-mono); font-size: 0.78rem; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; color: var(--muted); margin-top: 1px; }
+.kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.kv > div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.kv .eyebrow { font-size: 0.68rem; }
+.kv p { font-size: 0.9rem; }
+@media (max-width: 760px) { .addon { grid-template-columns: 1fr; gap: 14px; } }
+
+/* Tables */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+th { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--sunk); }
+tr:last-child td { border-bottom: 0; }
+td.id { font-family: var(--font-mono); font-size: 0.82rem; white-space: nowrap; font-weight: 500; }
+table.wide { min-width: 720px; }
+
+/* Q and A */
+.qa { display: grid; gap: 12px; }
+.qa div { display: grid; gap: 4px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.qa b { font-weight: 600; }
+.qa p { color: var(--muted); font-size: 0.93rem; }
+
+/* Demo script */
+.demo { display: grid; gap: 10px; counter-reset: d; list-style: none; padding: 0; }
+.demo li { counter-increment: d; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px 12px 52px; position: relative; margin: 0; }
+.demo li::before { content: counter(d); position: absolute; left: 16px; top: 12px; font-family: var(--font-mono); font-weight: 500; }
+
+pre.code { font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.55; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; overflow-x: auto; margin: 0; }
+
+/* Brother focus callout for C3 */
+.focus { background: var(--c3-tint); border-radius: 10px; padding: 16px 20px; display: grid; gap: 6px; }
+.focus b { color: var(--c3); }
+
+/* Roadmap */
+.phases { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.phase { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+.phase .when { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); }
+.phase h4 { font-family: var(--font-display); font-size: 1.05rem; }
+.phase p { font-size: 0.88rem; color: var(--muted); }
+@media (max-width: 860px) { .phases { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .phases { grid-template-columns: 1fr; } }
+.grid-road td { font-size: 0.86rem; }
+.grid-road td ul { padding-left: 1em; }
+.grid-road td.who { font-family: var(--font-mono); font-weight: 500; white-space: nowrap; }
+
+/* Checklist */
+.sync { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.88rem; color: var(--muted); }
+.sync .pill { font-family: var(--font-mono); font-size: 0.74rem; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; background: var(--surface); }
+.sync .pill.on { border-color: var(--c4); color: var(--c4); }
+.check-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.check-group { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 12px; align-content: start; }
+.check-group header { display: grid; gap: 8px; }
+.check-group header div { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.check-group h4 { font-family: var(--font-display); font-size: 1.02rem; }
+.count { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.check { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: start; font-size: 0.9rem; cursor: pointer; }
+.check input { width: 17px; height: 17px; margin: 3px 0 0; accent-color: var(--ink); cursor: pointer; }
+.check input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.check .tier { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); margin-left: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+.check input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.84rem; color: var(--muted); align-items: center; }
+
+.sources { font-size: 0.88rem; display: grid; gap: 6px; }
+
+footer.foot { border-top: 1px solid var(--line); padding-block: 20px 8px; font-size: 0.82rem; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <div class="brand"><b>CartoLEARN</b><span>J26-DS-353 / ENHANCEMENT PLAN</span></div>
+    <nav class="tabs" aria-label="Sections">
+      <a class="tab" href="#overview" data-route="overview">Overview</a>
+      <a class="tab" href="#c1" data-route="c1"><i class="dot bg1"></i>C1 Graph</a>
+      <a class="tab" href="#c2" data-route="c2"><i class="dot bg2"></i>C2 Learner</a>
+      <a class="tab" href="#c3" data-route="c3"><i class="dot bg3"></i>C3 Planner</a>
+      <a class="tab" href="#c4" data-route="c4"><i class="dot bg4"></i>C4 Explainer</a>
+      <a class="tab" href="#team" data-route="team">Team and integration</a>
+      <a class="tab" href="#roadmap" data-route="roadmap">Roadmap to PP2</a>
+      <a class="tab" href="#checklist" data-route="checklist">Checklist</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ OVERVIEW ============ -->
+<section class="view" id="view-overview" data-view="overview">
+  <div class="hero">
+    <span class="eyebrow">Pedagogy-typed knowledge graphs for verified personalized learning paths</span>
+    <h1>From four checked pipelines to one system that watches, adapts and proves it</h1>
+    <p class="lede">After Progress Presentation 1, the panel said each component is not sufficient on its own and asked for add-ons, including learner behaviour analysis with computer vision and a better user experience. This guide gives each member a concrete plan: what to add, how to build it, how to evaluate it, and what to show at PP2 in February 2027.</p>
+  </div>
+
+  <div class="feedback">
+    <div class="quote">
+      <span class="eyebrow">What the panel said</span>
+      <p>The components are insufficient. Add add-ons to each component. Analyse user behaviour, for example with computer vision. Think about the technical side and a better user experience.</p>
+    </div>
+    <div class="quote">
+      <span class="eyebrow">What this means in practice</span>
+      <p>Today every component only sees correct or wrong answers and text. None of them notices how the student behaves. Each member also needs a larger, clearly owned research contribution that a topological sort or a rule script cannot match.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="eyebrow">The core idea</span>
+      <h2>Close the loop: sense, model, plan, explain, sense again</h2>
+      <p class="prose muted">Add one behaviour sensing layer that every component uses. Each member then owns one major research add-on, one or two supporting add-ons and one user-facing feature. The safety story of the project stays the same: nothing reaches the student without passing a rule check.</p>
+    </div>
+    <div class="loop">
+      <div><span class="k">SENSE</span><b>Behaviour layer</b><span>Webcam affect in the browser, clicks, timing, hints, video pauses, all logged as one event stream.</span></div>
+      <div><span class="k k1">C1</span><b>Graph learns</b><span>Edges gain evidence from slides and from learner data, and wrong edges get flagged.</span></div>
+      <div><span class="k k2">C2</span><b>Model feels</b><span>Mastery, honest uncertainty and the learner's current state: engaged, confused, bored or frustrated.</span></div>
+      <div><span class="k k3">C3</span><b>Path adapts</b><span>The path is re-planned during the session, fits a deadline and lets the learner skip after a probe.</span></div>
+      <div><span class="k k4">C4</span><b>Explanation shows</b><span>Graph-checked teach-back exam that measures what a student understands, and an audit of the graph against student data.</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="eyebrow">Updated architecture</span>
+      <h3>Where the new parts sit</h3>
+    </div>
+    <div class="diagram" role="img" aria-label="Architecture: content sources feed C1. A shared knowledge graph sits above the four components. C2 sends learner state to C3, C3 sends a verified path to C4, C4 sends explanations to the learner web app, teach-back evidence to C2 and audit proposals to C1. The learner app feeds a new behaviour sensing layer that sends signals back up to all four components.">
+      <svg viewBox="0 0 1040 470" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrowhead" d="M0,0 L10,5 L0,10 z"/></marker>
+          <marker id="ahn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrowhead-new" d="M0,0 L10,5 L0,10 z"/></marker>
+        </defs>
+        <!-- Graph bar -->
+        <rect class="d-graph" x="140" y="16" width="768" height="54" rx="8"/>
+        <text class="d-tb" x="524" y="38" text-anchor="middle">Shared pedagogy-typed knowledge graph (Neo4j)</text>
+        <text class="d-new-t" x="524" y="57" text-anchor="middle">New: edges carry text, slide, learner and audit evidence; nodes link to video segments</text>
+        <!-- Vertical graph links -->
+        <line class="d-line" x1="225" y1="72" x2="225" y2="118" marker-start="url(#ah)" marker-end="url(#ah)"/>
+        <line class="d-line" x1="421" y1="72" x2="421" y2="118" marker-start="url(#ah)" marker-end="url(#ah)"/>
+        <line class="d-line" x1="617" y1="72" x2="617" y2="118" marker-start="url(#ah)" marker-end="url(#ah)"/>
+        <line class="d-line" x1="813" y1="72" x2="813" y2="118" marker-start="url(#ah)" marker-end="url(#ah)"/>
+        <!-- Content source -->
+        <rect class="d-box" x="8" y="120" width="112" height="160" rx="8"/>
+        <text class="d-tb" x="20" y="144">Content</text>
+        <text class="d-ts" x="20" y="166">Lecture videos</text>
+        <text class="d-ts" x="20" y="182">Transcripts</text>
+        <text class="d-ts" x="20" y="198">Slides</text>
+        <text class="d-ts" x="20" y="214">MOOC concepts</text>
+        <line class="d-line" x1="120" y1="200" x2="138" y2="200" marker-end="url(#ah)"/>
+        <!-- C1 -->
+        <rect class="d-c1" x="140" y="120" width="170" height="160" rx="8"/>
+        <text class="d-k1" x="152" y="142">C1</text>
+        <text class="d-tb" x="152" y="162">Knowledge graph</text>
+        <text class="d-new-t" x="152" y="196">+ Lecture video vision</text>
+        <text class="d-new-t" x="152" y="214">+ Self-correcting edges</text>
+        <text class="d-new-t" x="152" y="232">+ Curation console</text>
+        <!-- C2 -->
+        <rect class="d-c2" x="336" y="120" width="170" height="160" rx="8"/>
+        <text class="d-k2" x="348" y="142">C2</text>
+        <text class="d-tb" x="348" y="162">Learner model</text>
+        <text class="d-new-t" x="348" y="196">+ On-device webcam affect</text>
+        <text class="d-new-t" x="348" y="214">+ Behaviour-aware tracing</text>
+        <text class="d-new-t" x="348" y="232">+ Honest uncertainty</text>
+        <text class="d-new-t" x="348" y="250">+ Knowledge map</text>
+        <!-- C3 -->
+        <rect class="d-c3" x="532" y="120" width="170" height="160" rx="8"/>
+        <text class="d-k3" x="544" y="142">C3</text>
+        <text class="d-tb" x="544" y="162">Path planner</text>
+        <text class="d-new-t" x="544" y="196">+ Runtime replanning</text>
+        <text class="d-new-t" x="544" y="214">+ Deadline and review</text>
+        <text class="d-new-t" x="544" y="232">+ Verified skip</text>
+        <text class="d-new-t" x="544" y="250">+ Bandit selector</text>
+        <!-- C4 -->
+        <rect class="d-c4" x="728" y="120" width="170" height="160" rx="8"/>
+        <text class="d-k4" x="740" y="142">C4</text>
+        <text class="d-tb" x="740" y="162">Explainer</text>
+        <text class="d-new-t" x="740" y="196">+ Teach-back exam</text>
+        <text class="d-new-t" x="740" y="214">+ Graph Auditor</text>
+        <text class="d-new-t" x="740" y="232">+ Mastery by Bloom level</text>
+        <text class="d-new-t" x="740" y="250">+ Verified code traces</text>
+        <!-- Horizontal flows -->
+        <line class="d-line" x1="506" y1="200" x2="530" y2="200" marker-end="url(#ah)"/>
+        <line class="d-line" x1="702" y1="200" x2="726" y2="200" marker-end="url(#ah)"/>
+        <line class="d-line" x1="898" y1="200" x2="926" y2="200" marker-end="url(#ah)"/>
+        <!-- Learner app -->
+        <rect class="d-box" x="928" y="120" width="104" height="282" rx="8"/>
+        <text class="d-tb" x="940" y="144">Learner</text>
+        <text class="d-tb" x="940" y="161">web app</text>
+        <text class="d-ts" x="940" y="190">Roadmap</text>
+        <text class="d-ts" x="940" y="206">Lessons</text>
+        <text class="d-ts" x="940" y="222">Visual traces</text>
+        <text class="d-ts" x="940" y="238">Check questions</text>
+        <text class="d-ts" x="940" y="254">Knowledge map</text>
+        <text class="d-ts" x="940" y="270">Camera opt-in</text>
+        <!-- Sensing layer -->
+        <rect class="d-new" x="140" y="330" width="758" height="72" rx="8"/>
+        <text class="d-tb" x="156" y="352">Behaviour sensing layer</text>
+        <text class="d-new-t" x="330" y="352">New</text>
+        <rect class="d-chip" x="156" y="364" width="196" height="26" rx="13"/>
+        <text class="d-t" x="254" y="381" text-anchor="middle">Webcam affect (on device)</text>
+        <rect class="d-chip" x="364" y="364" width="236" height="26" rx="13"/>
+        <text class="d-t" x="482" y="381" text-anchor="middle">Timing, hints, tab switches, video</text>
+        <rect class="d-chip" x="612" y="364" width="270" height="26" rx="13"/>
+        <text class="d-t" x="747" y="381" text-anchor="middle">One xAPI-style event log</text>
+        <line class="d-line-new" x1="928" y1="366" x2="900" y2="366" marker-end="url(#ahn)"/>
+        <!-- Up arrows from sensing -->
+        <line class="d-line-new" x1="225" y1="328" x2="225" y2="284" marker-end="url(#ahn)"/>
+        <text class="d-ts" x="231" y="310">learner evidence</text>
+        <line class="d-line-new" x1="421" y1="328" x2="421" y2="284" marker-end="url(#ahn)"/>
+        <text class="d-ts" x="427" y="310">affect + behaviour</text>
+        <line class="d-line-new" x1="617" y1="328" x2="617" y2="284" marker-end="url(#ahn)"/>
+        <text class="d-ts" x="623" y="310">replan triggers</text>
+        <line class="d-line-new" x1="813" y1="328" x2="813" y2="284" marker-end="url(#ahn)"/>
+        <text class="d-ts" x="819" y="310">confusion signal</text>
+        <!-- Legend -->
+        <rect class="d-box" x="140" y="432" width="28" height="16" rx="3"/>
+        <text class="d-ts" x="176" y="444">Existing</text>
+        <rect class="d-new" x="250" y="432" width="28" height="16" rx="3"/>
+        <text class="d-ts" x="286" y="444">New in this plan (blue text and dashed lines)</text>
+        <text class="d-ts" x="640" y="444">C2 sends mastery, uncertainty and affect to C3; C3 sends a verified path to C4</text>
+        <text class="d-ts" x="640" y="460">C4 sends teach-back evidence to C2 and audit proposals to C1</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="eyebrow">Per component</span>
+      <h2>What each member adds</h2>
+    </div>
+    <div class="comp-grid">
+      <a class="comp-card" href="#c1">
+        <span class="tag k1">C1 / Ranasinghe R A I K</span>
+        <h3>Multimodal, self-correcting knowledge graph</h3>
+        <ul>
+          <li>Computer vision on lecture videos: slides, code and diagrams</li>
+          <li>Edges checked against real learner data</li>
+          <li>Instructor curation console with active learning</li>
+        </ul>
+        <div class="mini-progress"><i class="bg1" data-progress="c1"></i></div>
+      </a>
+      <a class="comp-card" href="#c2">
+        <span class="tag k2">C2 / Sawandi D E P</span>
+        <h3>Behaviour-aware learner model</h3>
+        <ul>
+          <li>Webcam engagement and affect detection, fully in the browser</li>
+          <li>Timing, hints and video behaviour fused into the GNN</li>
+          <li>Uncertainty that actually tracks missing evidence</li>
+        </ul>
+        <div class="mini-progress"><i class="bg2" data-progress="c2"></i></div>
+      </a>
+      <a class="comp-card" href="#c3">
+        <span class="tag k3">C3 / Chamuditha H V C</span>
+        <h3>Adaptive, negotiable path planner</h3>
+        <ul>
+          <li>Event-driven replanning during the session</li>
+          <li>Deadline-aware schedule with spaced review</li>
+          <li>Verified skip and a contextual bandit selector</li>
+        </ul>
+        <div class="mini-progress"><i class="bg3" data-progress="c3"></i></div>
+      </a>
+      <a class="comp-card" href="#c4">
+        <span class="tag k4">C4 / Amarasinghe S A R U</span>
+        <h3>Graph-checked teach-back assessment and graph audit</h3>
+        <ul>
+          <li>Teach-back exam: a restricted AI novice learns from the student's explanation and takes a hidden test</li>
+          <li>Graph Auditor: prerequisite and Bloom labels checked against student data</li>
+          <li>Verified explanations, now with code-trace checks</li>
+        </ul>
+        <div class="mini-progress"><i class="bg4" data-progress="c4"></i></div>
+      </a>
+    </div>
+    <div class="legend">
+      <span><span class="badge must">Must</span> needed for PP2</span>
+      <span><span class="badge should">Should</span> strong value, start after the musts</span>
+      <span><span class="badge could">Could</span> only if time allows</span>
+      <span><span class="badge cv">CV</span> computer vision part</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="eyebrow">Rules for the whole plan</span>
+      <h3>Three principles that keep the project defensible</h3>
+    </div>
+    <div class="kv">
+      <div><span class="eyebrow">Keep the safety invariant</span><p>Every new adaptive feature (replanning, bandits, strategy switching) only chooses among options that already passed the rule check. This is the project's strongest story; do not weaken it.</p></div>
+      <div><span class="eyebrow">Behaviour is optional input</span><p>Everything must still work with the camera off. Camera signals improve decisions; they never block them. This also makes the ethics case much easier.</p></div>
+      <div><span class="eyebrow">Each add-on has its own RQ</span><p>An add-on without a research question and a baseline is just a feature. Every add-on below lists the question, the metric and what it is compared against.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ C1 ============ -->
+<section class="view" id="view-c1" data-view="c1" hidden>
+  <div class="comp-head">
+    <span class="code k1">COMPONENT 1 / RANASINGHE R A I K</span>
+    <h1>Multimodal, self-correcting knowledge graph</h1>
+    <p class="unique k1"><span>Uniqueness: every edge carries evidence from three sources (lecture text, lecture visuals and real learner behaviour), and the graph flags its own wrong edges when learner data disagrees.</span></p>
+    <div class="facts">
+      <span class="fact">Now: <b>84</b> concepts</span>
+      <span class="fact"><b>101</b> verified edges</span>
+      <span class="fact">Gold accuracy <b>63%</b></span>
+      <span class="fact">Gold set <b>30</b> chunks</span>
+      <span class="fact">Kappa <b>0</b> (label mismatch)</span>
+    </div>
+  </div>
+
+  <div class="status">
+    <div>
+      <h4>Where it stands</h4>
+      <ul>
+        <li>Rule-based extraction from transcripts and the MOOC concept set, with a symbolic checker before saving.</li>
+        <li>Four typed edges in Neo4j AuraDB, used by C2, C3 and C4.</li>
+        <li>LLM extractor and fine-tuning are listed as next steps.</li>
+      </ul>
+    </div>
+    <div class="gap">
+      <h4>What the panel will see as thin</h4>
+      <ul>
+        <li>It reads as a data pipeline with phrase rules. The AI part is not built yet.</li>
+        <li>The graph is static once built, and nothing checks whether edges match how students actually learn.</li>
+        <li>Nodes hold no learning material, so C3 and C4 cannot point a student to the right part of a lecture.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="fixfirst">
+    <h4>Fix first (before any add-on)</h4>
+    <ul>
+      <li>Write a one-page annotation guideline with fixed label names and five worked examples per edge type. Re-label, then report Cohen's Kappa again.</li>
+      <li>Grow the gold set to at least 100 chunks, with at least 15 misconception cases.</li>
+      <li>Finish the LLM extractor and report it against the rule baseline per edge type. This becomes the text-only baseline for Add-on 1.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Add-ons</span><h2>What to build</h2></div>
+    <div class="addons">
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 1.1</span>
+          <h3>Lecture video vision pipeline</h3>
+          <div class="badges"><span class="badge must">Must</span><span class="badge cv">CV</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">Read the lecture videos, not only the transcripts. Detect each slide, read its text and code, recognise the diagram type, and line it all up with what the lecturer says at that moment. Slides become a second source of edge evidence, and every concept node links to the exact video segment that teaches it.</p>
+          <ol class="steps">
+            <li><span>Get the videos behind the 59 transcripts. If they are not available, use SLIIT DSA lecture recordings with the lecturer's permission. If transcripts have no timestamps, regenerate them with Whisper to get word-level times.</span></li>
+            <li><span>Detect slide changes with PySceneDetect (content detector) and keep one key frame per slide.</span></li>
+            <li><span>Split each key frame into title, bullet text, code and diagram regions with a layout detector (LayoutParser or a YOLO layout model). Fine-tune on about 200 hand-labelled frames if the default model misses code blocks.</span></li>
+            <li><span>Run OCR (PaddleOCR) on text and code regions. Train a small CNN to classify diagrams into array, linked list, tree, heap, graph, table or other, using about 300 labelled crops.</span></li>
+            <li><span>Align slide text with the transcript window of the same time span. Run the same concept spotting and relation extraction on slide text and merge with transcript evidence.</span></li>
+            <li><span>Store on each node a list of segments <code>{video_id, start_s, end_s, frame_id}</code>, and on each edge an evidence list with a <code>source</code> field: <code>text</code>, <code>slide</code> or <code>learner</code>.</span></li>
+          </ol>
+          <div class="kv">
+            <div><span class="eyebrow">Tools</span><p>PySceneDetect, LayoutParser or a YOLO layout model, PaddleOCR, PyTorch, Whisper</p></div>
+            <div><span class="eyebrow">Feeds</span><p>C3 uses segments as the resource for each path step. C4 shows the exact clip or frame inside an explanation.</p></div>
+            <div><span class="eyebrow">Measure</span><p>Edge F1 for text only versus text plus slides; slide-change detection accuracy; OCR character error rate; diagram classifier accuracy.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 1.2</span>
+          <h3>Self-correcting edges from learner evidence</h3>
+          <div class="badges"><span class="badge should">Should</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">Test each prerequisite edge against how students actually perform. If A is really a prerequisite of B, learners who have not mastered A should do clearly worse on B. Edges with no support get flagged, and strong dependencies with no edge become candidate edges. Nothing is changed automatically: suggestions go to the curation console, so the graph stays verified.</p>
+          <ol class="steps">
+            <li><span>Use exercise logs mapped to concepts: MOOCCubeX (already planned for C3) and later the pilot data from the team app.</span></li>
+            <li><span>For each edge A to B, compare success on B between learners with high and low mastery of A (mastery from C2). Compute a support score and a confidence interval with a bootstrap.</span></li>
+            <li><span>Flag edges whose interval includes zero. Propose new edges where the gap is large and no edge exists. Write the score into the edge evidence with <code>source: learner</code>.</span></li>
+          </ol>
+          <div class="kv">
+            <div><span class="eyebrow">Measure</span><p>Ask a lecturer to judge flagged and proposed edges blind. Report the precision of flags and proposals.</p></div>
+            <div><span class="eyebrow">Why it matters</span><p>It turns C1 from a one-time build into a graph that improves with use. That is a clear research contribution that a rule pipeline does not have.</p></div>
+            <div><span class="eyebrow">Link to C4</span><p>C4's Graph Auditor supplies the audit method (implication, order and lift tests, plus a Bloom audit) and tests it on planted errors. Its edge statuses arrive here as proposals for the curation console, and C1 applies what a lecturer approves.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 1.3</span>
+          <h3>Instructor curation console with active learning</h3>
+          <div class="badges"><span class="badge should">Should</span><span class="badge">UX</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">A screen where a lecturer reviews edges. The queue is ordered by uncertainty: low extractor confidence, disagreement between text and slide evidence, or conflict with learner evidence. Each item shows the source sentence, the slide frame and the learner statistics. Approve, reject or retype. Decisions go back into the extractor as new training labels.</p>
+          <div class="kv">
+            <div><span class="eyebrow">Research angle</span><p>Compare uncertainty-ordered review with random order. How many labels are needed to reach the target F1?</p></div>
+            <div><span class="eyebrow">UX extras</span><p>Graph view filtered by edge type, search by concept, and a click-through from any node to its video segments.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 1.4</span>
+          <h3>Misconception mining from student answers</h3>
+          <div class="badges"><span class="badge could">Could</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">The gold set has only 3 misconception cases. Mine new misconceptions by clustering wrong answers from the pilot (and from forum posts if available), then confirm each cluster with a lecturer before adding a <code>MISCONCEPTION_OF</code> edge.</p>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 1.5</span>
+          <h3>Graph export with facts and versioned edges</h3>
+          <div class="badges"><span class="badge should">Should</span><span class="badge">Integration</span><span class="badge">Suggested by C4</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">C4 and C2 need to read the graph without going through Neo4j, and the audit and lecturer approvals need somewhere to be stored. This is also the first step towards a layered, versioned graph.</p>
+          <ul>
+            <li><b>JSON export</b> with stable concept ids and the four edge types, next to the CSV and Neo4j outputs. Make the Neo4j write safe: the last stage should write a new version, not wipe the database first.</li>
+            <li><b><code>facts</code> and <code>known_false</code> statements per concept</b> (about 5 each, even for 7 concepts to start). They are used to check explanations and to build the teach-back test. Misconception pairs such as heap and stack cannot be used as statements.</li>
+            <li><b>Edge fields <code>source</code> (seed, caption, slide, learner, lecturer), <code>status</code>, <code>confidence</code> and a <code>graph_version</code></b>, so audit results and lecturer approvals have a place to live.</li>
+            <li><b>Cross-check fixes:</b> a general <code>tree</code> concept is missing, the direction of stack to recursion differs between components, and ids differ (<code>array</code> and <code>arrays</code>).</li>
+            <li><b>Report where edges come from:</b> how many are hand-written seeds, how many come from captions, slides or the LLM, and raise the share that comes from lectures. This answers the panel's likely question about what the LLM contributed.</li>
+          </ul>
+          <div class="kv">
+            <div><span class="eyebrow">Feeds</span><p>C4 builds test items and checks claims from the facts. C2 and C3 read the same ids and version. The Graph Auditor writes edge status and confidence back as proposals.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 1.6</span>
+          <h3>Layered graph and weekly update mode</h3>
+          <div class="badges"><span class="badge could">Could</span><span class="badge">Research</span><span class="badge">Suggested by C4</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">"Dynamic" should mean layers, versions and proposals, not a graph that rewrites itself.</p>
+          <ul>
+            <li><b>Layers:</b> a base graph at department level, a lecturer overlay per lecturer and offering (reorder, add local concepts, mark "not covered", change emphasis, add terms), and audited confidence per offering.</li>
+            <li><b>Weekly update:</b> re-run extraction on one new lecture and produce a diff, not a full rebuild. Every change is a proposal that a lecturer approves, with a version and a changelog. The graph is frozen for each 7-week block.</li>
+            <li><b>Stable ids:</b> if a concept is split, merged or renamed, learner mastery moves with it (a split keeps the parent's mastery with more uncertainty; a merge takes the lower mastery).</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Evaluation</span><h3>New research questions</h3></div>
+    <div class="table-wrap"><table class="wide">
+      <thead><tr><th>RQ</th><th>Question</th><th>Method and metric</th><th>Compared against</th></tr></thead>
+      <tbody>
+        <tr><td class="id">RQ1a</td><td>Does slide evidence improve edge extraction?</td><td>P, R, F1 per edge type on the 100-chunk gold set</td><td>Transcript-only rules and LLM extractor</td></tr>
+        <tr><td class="id">RQ1b</td><td>Can learner evidence find wrong prerequisite edges?</td><td>Precision of flagged and proposed edges, judged blind by a lecturer</td><td>Random edge sampling</td></tr>
+        <tr><td class="id">RQ1d</td><td>Do extracted edges agree with the gold set and with student behaviour?</td><td>Subgraph gold check plus the audit report from C4</td><td>Rule baseline, LLM extractor without slides</td></tr>
+        <tr><td class="id">RQ1c</td><td>Does uncertainty-ordered review save annotation effort?</td><td>Labels needed to reach the target F1</td><td>Random review order</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Be ready for these</span><h3>Questions the panel will likely ask</h3></div>
+    <div class="qa">
+      <div><b>Isn't this just OCR on slides?</b><p>No. OCR is one step. The contribution is multimodal evidence per edge, with a measured gain in F1 over text only, plus linking each concept to the exact teaching segment.</p></div>
+      <div><b>What if learner evidence contradicts an expert edge?</b><p>The edge is flagged, not removed. A lecturer decides in the console. The graph stays verified, and the decision becomes training data.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">PP2 demo</span><h3>What to show in February</h3></div>
+    <ol class="demo">
+      <li>Play a lecture segment. Show the detected slide, OCR text, code region and diagram label.</li>
+      <li>Show a new edge whose evidence list contains both a transcript sentence and a slide frame.</li>
+      <li>Click a concept node and jump to its video segment.</li>
+      <li>Show the F1 table: rules, LLM, and LLM plus slides, on the 100-chunk gold set, with the new Kappa.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ C2 ============ -->
+<section class="view" id="view-c2" data-view="c2" hidden>
+  <div class="comp-head">
+    <span class="code k2">COMPONENT 2 / SAWANDI D E P</span>
+    <h1>Behaviour-aware learner model</h1>
+    <p class="unique k2"><span>Uniqueness: one model that reports what the learner knows, how sure it is, and how the learner is doing right now (engaged, confused, bored or frustrated), using a webcam model that runs entirely in the browser.</span></p>
+    <div class="facts">
+      <span class="fact">Matches DKT on AUC</span>
+      <span class="fact">Ahead with <b>1 to 3</b> past answers</span>
+      <span class="fact">Graph gain <b>+0.004</b> AUC</span>
+      <span class="fact">Error detection <b>0.56</b> vs <b>0.65</b></span>
+    </div>
+  </div>
+
+  <div class="status">
+    <div>
+      <h4>Where it stands</h4>
+      <ul>
+        <li>Relation-aware GNN over the prerequisite graph, trained on next-10-answer prediction.</li>
+        <li>MC Dropout gives mastery and uncertainty; calibration checked with ECE.</li>
+        <li>Good test harness: the C1 graph plugs in with one flag.</li>
+      </ul>
+    </div>
+    <div class="gap">
+      <h4>What the panel will see as thin</h4>
+      <ul>
+        <li>The only input is correct or wrong. A fast lucky guess and a slow real understanding look the same.</li>
+        <li>Uncertainty does not reflect missing evidence, which is its main purpose.</li>
+        <li>Trained on maths, while the project is about data structures and algorithms.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="fixfirst">
+    <h4>Fix first</h4>
+    <ul>
+      <li>Plug in the real C1 graph and run the planned comparison: no graph, plain graph, typed graph, on concepts the learner has not attempted.</li>
+      <li>Close the domain gap. Train or fine-tune on programming data, for example the CSEDM CodeWorkout dataset, and map its problems to C1 concepts.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Add-ons</span><h2>What to build</h2></div>
+    <div class="addons">
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 2.1</span>
+          <h3>In-browser engagement and affect detection</h3>
+          <div class="badges"><span class="badge must">Must</span><span class="badge cv">CV</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">This is the main computer vision add-on the panel asked for. A webcam model running in the student's browser estimates four states (engaged, confused, bored, frustrated) every few seconds. Video never leaves the device. Only the state label and a confidence value are sent to the server.</p>
+          <ol class="steps">
+            <li><span>Run MediaPipe Face Landmarker in the browser. Per frame it gives face landmarks (including iris points), 52 blendshape scores and a head pose matrix.</span></li>
+            <li><span>Build features over 2-second windows at about 10 frames per second: head yaw and pitch variance, gaze away-from-screen ratio, eye aspect ratio and blink rate, brow lowering and inner brow raise (confusion cues), jaw open (yawning), and the share of frames with no face.</span></li>
+            <li><span>Train on DAiSEE (9,068 clips from 112 people, each labelled for boredom, confusion, engagement and frustration at four levels). Extract the same features offline with MediaPipe in Python so training and browser features match exactly.</span></li>
+            <li><span>DAiSEE labels are imbalanced. Collapse each state to low versus high, and use class weights. Start with gradient boosting, then try a small GRU over windows.</span></li>
+            <li><span>Export the model to ONNX and run it with onnxruntime-web, or train it directly in TensorFlow.js. Check it runs above 10 frames per second on a normal student laptop.</span></li>
+            <li><span>Build the consent screen, a visible camera indicator and a pause button. If the camera is off, the system falls back to interaction signals only.</span></li>
+          </ol>
+          <div class="kv">
+            <div><span class="eyebrow">Tools</span><p>MediaPipe Tasks Vision (JS and Python), scikit-learn or LightGBM, PyTorch, onnxruntime-web</p></div>
+            <div><span class="eyebrow">Feeds</span><p>C3 uses the state as a replanning trigger. C4 uses confusion to switch explanation strategy. C2 uses it as a feature.</p></div>
+            <div><span class="eyebrow">Measure</span><p>Per-state F1 on the DAiSEE test split; frames per second in the browser; agreement with pilot students' own ratings ("How confused are you right now?", 1 to 5).</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 2.2</span>
+          <h3>Behaviour-informed knowledge tracing</h3>
+          <div class="badges"><span class="badge must">Must</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">Feed how the learner answered into the GNN, not only whether the answer was right. This lets the model separate a lucky guess from real knowledge and a careless slip from a real gap.</p>
+          <ol class="steps">
+            <li><span>Per attempt, add: response time normalised per item, hint count, answer changes, idle time, tab switches (Page Visibility API), video pauses and rewinds before the attempt, and the affect state during the attempt when available.</span></li>
+            <li><span>Concatenate these features with the interaction embedding in the GNN. Pre-train on public datasets that include timing and hints (ASSISTments 2012, Junyi Academy, EdNet), then fine-tune on programming data.</span></li>
+            <li><span>Add guess and slip flags: a very fast correct answer while disengaged lowers confidence; a slow wrong answer with confusion signals a real gap.</span></li>
+          </ol>
+          <div class="kv">
+            <div><span class="eyebrow">Measure</span><p>AUC and ECE with and without behaviour features, reported separately for 1 to 3 past answers (cold start).</p></div>
+            <div><span class="eyebrow">Ablation</span><p>Answers only, plus timing and hints, plus affect. This shows which signal helps.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 2.3</span>
+          <h3>Uncertainty that tracks missing evidence</h3>
+          <div class="badges"><span class="badge must">Must</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">Your own results show MC Dropout uncertainty rises with more answers and detects errors worse than the plain probability (0.56 versus 0.65). Fix this directly, because C3's "probe uncertain topics" rule depends on it.</p>
+          <ul>
+            <li>Compare a deep ensemble (5 models) and an evidential output head with MC Dropout.</li>
+            <li>Add split conformal prediction on top, so each mastery value comes with an interval that has a guaranteed coverage rate.</li>
+            <li>Add an evidence term: concepts with no direct attempts and weak graph support must get wider intervals.</li>
+            <li>Also test a simple evidence-count uncertainty (for example a Beta distribution per concept) against MC Dropout. Either result is useful and honest.</li>
+          </ul>
+          <div class="kv">
+            <div><span class="eyebrow">Target</span><p>Error detection AUROC above the plain probability (0.65), and uncertainty that falls as evidence grows.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 2.4</span>
+          <h3>Learner knowledge map</h3>
+          <div class="badges"><span class="badge should">Should</span><span class="badge">UX</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">A visual map of the concept graph for the student. Colour shows mastery; hatching shows uncertainty. A "Check me" button on an uncertain concept asks C4 for a short probe. Each question also gets an "I'm not sure" button, which becomes one more signal for the model. C4 teach-back exams add evidence per concept and Bloom level, so the map can show mastery by level.</p>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 2.5</span>
+          <h3>Mastery per Bloom level and teach-back evidence</h3>
+          <div class="badges"><span class="badge should">Should</span><span class="badge">Integration</span><span class="badge">Suggested by C4</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">The panel's comment is about cognitive level over time, so the learner state should say what the learner can do at each Bloom level, not only whether a concept is known.</p>
+          <ul>
+            <li><b>State:</b> for each learner, concept and Bloom level, a mastery probability and an uncertainty. Not one number per concept, because the Bloom question has to be testable. A concept is mastered at level L when probability is at least 0.70 and uncertainty is at most 0.25.</li>
+            <li><b>Accept the evidence message from C4's teach-back exam</b> (learner, concept, level, score, items, weight, graph version) through an evidence endpoint. It is a second kind of data besides right and wrong answers.</li>
+            <li><b>Evidence weights:</b> teach-back exam high once validated, checkpoint quiz high, practice attempts medium (lower if hints were used), help-box use none, last semester's marks a prior only that fades fast.</li>
+            <li><b>Forgetting:</b> uncertainty grows with time, which a 14-week semester needs.</li>
+            <li>Bloom levels are not assumed to be a strict ladder. Which levels depend on which is tested.</li>
+          </ul>
+          <div class="kv">
+            <div><span class="eyebrow">Feeds</span><p>C3 reads a Bloom-aware target per step. C4 uses the per-level record in its progression policy, which today keeps its own <code>bloom</code> block that C2 does not provide.</p></div>
+            <div><span class="eyebrow">Measure</span><p>Prediction and calibration with per-level mastery against concept-level mastery, using C1's real graph instead of a placeholder.</p></div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Evaluation</span><h3>New research questions</h3></div>
+    <div class="table-wrap"><table class="wide">
+      <thead><tr><th>RQ</th><th>Question</th><th>Method and metric</th><th>Compared against</th></tr></thead>
+      <tbody>
+        <tr><td class="id">RQ2a</td><td>Do behaviour and affect features improve prediction and calibration, especially at cold start?</td><td>AUC, ECE, by number of past answers</td><td>Answer-only GNN, DKT</td></tr>
+        <tr><td class="id">RQ2b</td><td>Does evidence-aware uncertainty detect wrong predictions better?</td><td>Error detection AUROC, coverage of conformal intervals</td><td>MC Dropout, plain probability</td></tr>
+        <tr><td class="id">RQ2d</td><td>Does per-Bloom-level mastery, with the real C1 graph, improve prediction over concept-level mastery?</td><td>AUC and ECE by level and by number of past answers</td><td>Concept-level mastery, placeholder graph</td></tr>
+        <tr><td class="id">RQ2c</td><td>How well can a browser-only model detect confusion and disengagement?</td><td>F1 per state on DAiSEE; agreement with pilot self-reports; frames per second</td><td>Majority class, published DAiSEE baselines</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Be ready for these</span><h3>Questions the panel will likely ask</h3></div>
+    <div class="qa">
+      <div><b>Is webcam monitoring ethical?</b><p>It is opt-in, runs on the device, stores no frames and sends only a label. The system works fully without it. See the ethics section under Team and integration.</p></div>
+      <div><b>DAiSEE accuracy is known to be modest. Is that a problem?</b><p>Report it honestly. The research claim is not a perfect affect detector; it is whether a noisy affect signal still improves the learner model and decisions downstream (RQ2a).</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">PP2 demo</span><h3>What to show in February</h3></div>
+    <ol class="demo">
+      <li>Turn the camera on. Look away, frown, yawn: the state chip changes live. Show that no video is sent (network tab).</li>
+      <li>Answer a few questions fast and slow. Show mastery and its interval change differently.</li>
+      <li>Show the ablation table and the new error-detection result next to the PP1 numbers.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ C3 ============ -->
+<section class="view" id="view-c3" data-view="c3" hidden>
+  <div class="comp-head">
+    <span class="code k3">COMPONENT 3 / CHAMUDITHA H V C</span>
+    <h1>Adaptive, behaviour-aware, negotiable path planner</h1>
+    <p class="unique k3"><span>Uniqueness: a learning path that stays verified while it changes in real time. It reacts to the learner's behaviour, fits their deadline and lets them skip what they know, and every change passes the symbolic critic first.</span></p>
+    <div class="facts">
+      <span class="fact">GPT-4o alone: <b>21/36</b> faulty</span>
+      <span class="fact">With critic and repair: <b>0/36</b></span>
+      <span class="fact">Repair rounds: <b>0.6</b> average</span>
+      <span class="fact">Graph: <b>14</b> concepts</span>
+    </div>
+  </div>
+
+  <div class="focus">
+    <b>Extra detail in this section</b>
+    <p>This component has a full build plan below: trigger rules, new critic rules, a code layout, data contracts, a week-by-week schedule to PP2 and a demo script.</p>
+  </div>
+
+  <div class="status">
+    <div>
+      <h4>Where it stands</h4>
+      <ul>
+        <li>GPT-4o drafts 3 paths; the critic checks 5 rules and returns typed violations such as <code>MissingPrerequisite(Heap, needs=Tree)</code>.</li>
+        <li>Only the broken step is repaired (up to 3 rounds), with a topological sort fallback.</li>
+        <li>Offline RL (IQL) is planned to rerank verified paths only.</li>
+      </ul>
+    </div>
+    <div class="gap">
+      <h4>What the panel will see as thin</h4>
+      <ul>
+        <li>A topological sort is also 0% faulty, so the value of the LLM is not shown yet. This is the first question they will ask.</li>
+        <li>The path is computed once and never changes, even if the student struggles or gets bored.</li>
+        <li>No deadline, no time budget, no forgetting, and no way for the learner to say "I already know this".</li>
+        <li>Offline IQL on MOOCCubeX is heavy and may not finish in time.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="fixfirst">
+    <h4>Fix first</h4>
+    <ul>
+      <li>Move to the real C1 graph (84 concepts) and real C2 mastery and uncertainty values.</li>
+      <li>Repeat every experiment at least 3 times (LLM output varies) and report mean and spread.</li>
+      <li>Add a stronger baseline, "smart topo": a topological sort that skips concepts the learner has already mastered. If C3 only beats the plain topological sort, the panel will not accept it.</li>
+      <li>Try a second, cheaper proposer (an open model through Ollama) to show the critic works with any LLM.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Add-ons</span><h2>What to build</h2></div>
+    <div class="addons">
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 3.1</span>
+          <h3>Event-driven runtime replanning</h3>
+          <div class="badges"><span class="badge must">Must</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">The path becomes live. C3 listens to learner state updates from C2 and the behaviour layer. When a trigger fires, it re-plans only the remaining part of the path, the critic checks it, and a change log records why. C4 can then tell the learner "your path changed because...".</p>
+          <div class="table-wrap"><table class="wide">
+            <thead><tr><th>Trigger</th><th>Condition (starting values, tune later)</th><th>Action on the remaining path</th></tr></thead>
+            <tbody>
+              <tr><td class="id">STRUGGLE</td><td>2 or more wrong answers on the current concept, and confusion for 3+ windows or response time above the 80th percentile</td><td>Insert a review of the weakest prerequisite, or switch to another resource for the same concept</td></tr>
+              <tr><td class="id">FAST_MASTERY</td><td>Mastery above 0.85 with a narrow interval after a probe</td><td>Remove later steps that re-teach what is now known</td></tr>
+              <tr><td class="id">DISENGAGED</td><td>Bored or away for 4+ windows, or 3+ tab switches in a step</td><td>Change modality (video to interactive exercise or visual trace); keep the order</td></tr>
+              <tr><td class="id">FRUSTRATED</td><td>Frustration high for 3+ windows</td><td>Next step must not be harder (new rule R8); offer an easier worked example</td></tr>
+              <tr><td class="id">REVIEW_DUE</td><td>Predicted recall of a needed concept falls below 0.6 (Add-on 3.2)</td><td>Insert a short review before the dependent concept</td></tr>
+            </tbody>
+          </table></div>
+          <ol class="steps">
+            <li><span>Re-plan only the suffix: keep completed steps, send the remaining target and new learner state to the proposer, then run the critic and typed repair as today.</span></li>
+            <li><span>Debounce: re-plan only at step boundaries and at most once per step. This avoids a path that changes every minute. Track a stability metric (changes per session).</span></li>
+            <li><span>Write every change to a change log: <code>{time, trigger, before, after, rule_ids}</code>. The UI and C4 read it.</span></li>
+          </ol>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 3.2</span>
+          <h3>Deadline-aware schedule with spaced review</h3>
+          <div class="badges"><span class="badge must">Must</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">Real students plan around exams. The learner gives a target, a deadline and minutes per day. C3 estimates time per concept, splits the path into sessions, and inserts short reviews before forgetting sets in. If the plan does not fit, the LLM explains the trade-off and offers options.</p>
+          <ol class="steps">
+            <li><span>Time model: base minutes from C1 cognitive load, scaled by the learner's own pace from C2 response times.</span></li>
+            <li><span>Forgetting model: half-life regression (Settles and Meeder, 2016) per concept, which predicts recall from time since last practice and practice history.</span></li>
+            <li><span>Mark which concepts are mandatory (prerequisites of the target) and which are optional. If time is short, drop optional ones first, then offer "extend the deadline" or "reduce the target".</span></li>
+            <li><span>Add three new critic rules, so the new behaviour is verified like the old one:</span></li>
+          </ol>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Rule</th><th>Check</th><th>Typed violation</th></tr></thead>
+            <tbody>
+              <tr><td class="id">R6</td><td>Total estimated time fits before the deadline</td><td><code>OverBudget(minutes_over)</code></td></tr>
+              <tr><td class="id">R7</td><td>Any due review comes before the concept that depends on it</td><td><code>ReviewMissing(concept, before)</code></td></tr>
+              <tr><td class="id">R8</td><td>No difficulty increase right after a frustration signal</td><td><code>PacingAfterFrustration(step)</code></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 3.3</span>
+          <h3>Verified skip and an explainable roadmap</h3>
+          <div class="badges"><span class="badge must">Must</span><span class="badge">UX</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">The learner sees the path as a visual roadmap with today's session highlighted. They can tap "I already know this" on any step. Before the step is removed, C3 asks C4 for a 2 to 3 question probe at that concept's Bloom level. Pass: the step is skipped and the critic re-checks the path. Fail: the step stays, and the learner sees what they missed. "Why this step?" shows the rule behind it, for example "Heap needs Tree first". The probe questions can reuse C4's teach-back test items, which are tagged by concept and Bloom level and have answers taken from the verified graph.</p>
+          <div class="kv">
+            <div><span class="eyebrow">Research angle</span><p>How often are learners' "I know this" claims wrong? How much time does verified skip save compared with a forced full path, without lowering post-test scores?</p></div>
+            <div><span class="eyebrow">Why it matters</span><p>It answers the classic objection to rule-based systems (rigid, no learner control) while keeping correctness.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 3.4</span>
+          <h3>Contextual bandit selector over verified options</h3>
+          <div class="badges"><span class="badge should">Should</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">Replace full offline IQL for PP2 with a contextual bandit. It is easier to train, easier to explain and fits the "choose among verified options" design. IQL can stay as a post-PP2 comparison or future work.</p>
+          <ul>
+            <li><b>Choices:</b> the verified candidate paths, and for each step the resource type (C1 video segment, C4 text explanation, C4 visual trace, coding exercise).</li>
+            <li><b>Context:</b> mastery and uncertainty summary, current affect, time left before the deadline, which resource types worked for this learner before.</li>
+            <li><b>Reward:</b> mastery gain per minute, minus a penalty for disengaged windows.</li>
+            <li><b>Method:</b> LinUCB or Thompson sampling (a small NumPy implementation is enough), trained in the learner simulator.</li>
+            <li><b>Safety:</b> the bandit can only pick options that passed the critic. The invariant from PP1 stays exactly the same.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 3.5</span>
+          <h3>Learner simulator (shared with C4)</h3>
+          <div class="badges"><span class="badge must">Must</span><span class="badge">Infrastructure</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">Every C3 result needs learners to test on, and C4 already uses a ZPD-based simulator. Build one shared simulator and own it with C4.</p>
+          <ul>
+            <li>Knowledge state per concept. Learning gain depends on prerequisite mastery (knowledge space theory, ZPD).</li>
+            <li>Forgetting with exponential decay between sessions.</li>
+            <li>Simple affect dynamics: frustration rises with repeated failure, boredom with items that are too easy.</li>
+            <li>Resource preference per simulated learner, so the bandit has something to learn.</li>
+            <li>Several learner profiles (fast, slow, overconfident, easily bored) to show where C3 helps and where it does not.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 3.6</span>
+          <h3>Block plan with a mastery floor</h3>
+          <div class="badges"><span class="badge should">Should</span><span class="badge">Research</span><span class="badge">Suggested by C4</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">Extend the deadline-aware schedule (3.2) from one path to one target into a plan for a whole 7-week block, so the goal is "nobody left under the floor", not "one valid path".</p>
+          <ul>
+            <li><b>Goal:</b> every student reaches a minimum mastery floor on every concept in the block, at the Bloom level the course sets, before the exam. This is mastery learning and does not promise equal outcomes.</li>
+            <li><b>Allocation:</b> gap = target minus current mastery. Spend practice in proportion to the gap, weighted by how many later concepts depend on the concept, in prerequisite order.</li>
+            <li><b>Projection:</b> estimate each student's learning rate and project to the exam date. If the projection ends under the floor, escalate (more practice, a nudge, a lecturer alert). Re-plan at checkpoints in weeks 3 and 10.</li>
+            <li><b>Fairness:</b> strong students get stretch tasks at higher Bloom levels, not less work. The student sees why they got their plan. Nobody gets less than the baseline.</li>
+          </ul>
+          <div class="kv">
+            <div><span class="eyebrow">Measure</span><p>Share of simulated students under the floor and the spread of exam scores, against a uniform plan and a performance-tiered plan.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 3.7</span>
+          <h3>Cohort simulation and audited-edge rules</h3>
+          <div class="badges"><span class="badge should">Should</span><span class="badge">Research</span><span class="badge">Suggested by C4</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">Make the comparison with the topological sort meaningful, and use what the graph audit finds.</p>
+          <ul>
+            <li><b>Cohort simulation:</b> C4's simulator already creates simulated learners. A simulated class of 300 with a floor makes the equalisation claim testable before any real student. Report time to reach the floor, practice spent on real gaps and the share of students under the floor, not only violations.</li>
+            <li><b>Audited edge confidence:</b> rule R1 on an edge the auditor calls Unsupported may force unnecessary work, and a Missing edge may leave a gap. Compare path validity before and after the audit.</li>
+            <li><b>Bloom-aware steps:</b> each step carries a target Bloom level from C4's progression policy.</li>
+            <li>The rule that learned selection chooses only among verified options stays unchanged.</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Evaluation</span><h3>New research questions and how to beat the baselines</h3></div>
+    <div class="table-wrap"><table class="wide">
+      <thead><tr><th>RQ</th><th>Question</th><th>Method and metric</th><th>Compared against</th></tr></thead>
+      <tbody>
+        <tr><td class="id">RQ3a</td><td>Does runtime replanning reduce time-to-mastery and redundant steps while keeping zero violations?</td><td>Simulator: minutes to reach the target, redundant steps, violations, changes per session</td><td>Topo sort, smart topo, GPT-4o alone, static C3 (PP1 version)</td></tr>
+        <tr><td class="id">RQ3b</td><td>Under a deadline, does scheduling with spaced review improve retention at the deadline?</td><td>Simulator: predicted recall of target prerequisites on deadline day; plan feasibility rate</td><td>Same plan without review nodes</td></tr>
+        <tr><td class="id">RQ3c</td><td>How often are learners' skip claims wrong, and how much time does verified skip save?</td><td>Pilot: wrong-claim rate, minutes saved, post-test score</td><td>Forced full path; unverified skip</td></tr>
+        <tr><td class="id">RQ3e</td><td>Does a block plan with a mastery floor reduce the share of students under the floor and the spread?</td><td>Simulated cohort of 300, then pilot: share under the floor, spread of exam scores, time to floor</td><td>Uniform plan, performance-tiered plan, smart topo</td></tr>
+        <tr><td class="id">RQ3d</td><td>Does the bandit improve mastery gain per minute?</td><td>Simulator: gain per minute, cumulative regret</td><td>Random choice among verified options</td></tr>
+      </tbody>
+    </table></div>
+    <p class="prose muted">Where C3 should beat smart topo: probing uncertain topics before building on them, fixing misconceptions first, choosing resources, reacting to struggle and boredom, and fitting a deadline. Smart topo can do none of these. Report a blind preference test (C3 path versus smart topo path) as already planned.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Build plan</span><h3>Suggested code layout</h3></div>
+    <pre class="code">planner/
+  proposer/llm_proposer.py        GPT-4o and open-model proposers, same interface
+  critic/rules.py                 R1 to R8, each returns typed violations
+  critic/violations.py            MissingPrerequisite, OverBudget, ReviewMissing, ...
+  repair/step_repair.py           single-step repair, max 3 rounds, topo fallback
+  replan/triggers.py              STRUGGLE, FAST_MASTERY, DISENGAGED, FRUSTRATED, REVIEW_DUE
+  replan/engine.py                suffix replanning, debounce, change log
+  schedule/time_model.py          minutes per concept from cognitive load and learner pace
+  schedule/hlr.py                 half-life regression recall prediction
+  schedule/sessions.py            split path into daily sessions under a deadline
+  skip/verified_skip.py           probe request to C4, accept or reject skip
+  selector/bandit.py              LinUCB or Thompson sampling over verified options
+  sim/learner_sim.py              shared simulator with C4
+  api/main.py                     FastAPI service
+experiments/
+  rq3a_replanning.py
+  rq3b_deadline.py
+  rq3d_bandit.py</pre>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Contracts</span><h3>API endpoints and plan format</h3></div>
+    <div class="table-wrap"><table class="wide">
+      <thead><tr><th>Endpoint</th><th>Input</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td class="id">POST /plan</td><td>learner_id, target concept, deadline, minutes per day</td><td>PathPlan</td></tr>
+        <tr><td class="id">POST /events</td><td>LearnerState update from C2, or a behaviour event</td><td>Updated PathPlan if a trigger fired, otherwise no change</td></tr>
+        <tr><td class="id">POST /skip</td><td>learner_id, step id</td><td>Probe questions (from C4), then accept or reject</td></tr>
+        <tr><td class="id">GET /plan/{id}/changes</td><td>plan id</td><td>Change log with trigger and rule ids</td></tr>
+      </tbody>
+    </table></div>
+    <pre class="code">PathPlan
+{
+  "plan_id": "p_0192",
+  "learner_id": "L_045",
+  "target": "heap",
+  "deadline": "2027-02-10",
+  "sessions": [
+    {"day": 1, "steps": [
+      {"step_id": "s1", "concept": "array", "type": "probe", "resource": "c4:probe", "est_min": 6, "rules": ["R4"]},
+      {"step_id": "s2", "concept": "binary_tree", "type": "learn", "resource": "c1:video:alg03:812-1104", "est_min": 22, "rules": ["R1", "R2"]}
+    ]}
+  ],
+  "verified": true,
+  "change_log": []
+}</pre>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Schedule</span><h3>Week by week to PP2</h3></div>
+    <div class="table-wrap"><table class="wide">
+      <thead><tr><th>Weeks</th><th>Work</th><th>Done when</th></tr></thead>
+      <tbody>
+        <tr><td class="id">Nov 4 to 17</td><td>Agree contracts with C2 and C4. Move to the real C1 graph. Add the smart topo baseline. Specify the simulator with C4.</td><td>Old experiment re-run on 84 concepts with 3 repeats</td></tr>
+        <tr><td class="id">Nov 18 to Dec 1</td><td>Build the simulator. Build trigger rules and suffix replanning with the change log.</td><td>Simulated learner triggers a replan; critic still reports 0 violations</td></tr>
+        <tr><td class="id">Dec 2 to 15</td><td>Verified skip flow (with a stub probe until C4 is ready). Roadmap UI in the team app.</td><td>Skip, probe, accept or reject works end to end</td></tr>
+        <tr><td class="id">Dec 16 to Jan 4</td><td>Time model, half-life regression, sessions, rules R6 to R8. Holiday buffer.</td><td>A plan fits a 5-day deadline or explains why it cannot</td></tr>
+        <tr><td class="id">Jan 5 to 19</td><td>Contextual bandit in the simulator. Connect live C2 states and C4 probes.</td><td>Bandit beats random choice in the simulator</td></tr>
+        <tr><td class="id">Jan 20 to PP2</td><td>Run RQ3a, RQ3b, RQ3d with repeats. Small usability test if ethics allows. Rehearse the demo.</td><td>Result tables and charts in the PP2 slides</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Be ready for these</span><h3>Questions the panel will likely ask</h3></div>
+    <div class="qa">
+      <div><b>A topological sort is also 0% faulty. Why do you need an LLM?</b><p>Validity is the floor, not the goal. C3 is compared with smart topo on time-to-mastery, redundant steps, retention under a deadline and learner preference. Smart topo cannot probe uncertainty, fix misconceptions first, react to behaviour or fit a deadline.</p></div>
+      <div><b>If the path keeps changing, won't students get confused?</b><p>Replanning happens only at step boundaries, is debounced, and every change is explained. Stability (changes per session) is measured and reported.</p></div>
+      <div><b>Can the bandit break correctness?</b><p>No. It only chooses among options that passed the critic, the same invariant as the planned RL layer.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">PP2 demo</span><h3>What to show in February</h3></div>
+    <ol class="demo">
+      <li>The learner sets target "Heap", deadline in 5 days, 45 minutes a day. A session-by-session roadmap appears.</li>
+      <li>The learner taps "I already know this" on Arrays, passes the probe, and the path gets shorter. The critic badge stays green.</li>
+      <li>The learner fails a tree question twice while the camera shows confusion. The path inserts a review step, and the change log explains why.</li>
+      <li>Show the simulator chart: time-to-mastery and redundant steps for topo, smart topo, GPT-4o alone, static C3 and adaptive C3.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ C4 ============ -->
+<section class="view" id="view-c4" data-view="c4" hidden>
+  <div class="comp-head">
+    <span class="code k4">COMPONENT 4 / AMARASINGHE S A R U</span>
+    <h1>Graph-checked teach-back assessment and graph audit</h1>
+    <p class="unique k4"><span>Uniqueness: C4 measures what a student understands by what a knowledge-restricted AI novice can learn from the student's own explanation, with every test answer taken from the verified graph. It also audits the graph against student data, so the project's ground truth is itself checked. Explanations stay verified, now against real code runs as well.</span></p>
+    <div class="facts">
+      <span class="fact">Target-level question <b>0% to 100%</b></span>
+      <span class="fact">Simulated gain <b>+0.36</b> levels</span>
+      <span class="fact">Verifier: word matching</span>
+      <span class="fact">Generator: Qwen (stand-in)</span>
+    </div>
+  </div>
+
+  <div class="status">
+    <div>
+      <h4>Where it stands</h4>
+      <ul>
+        <li>Explanations target the learner's next Bloom level, with a check question and fading support.</li>
+        <li>Claims are verified against the knowledge graph with word-matching rules (factual and cognitive labels, typed violations), and only the failing sentences are repaired, up to 3 rounds.</li>
+        <li>Stress test of 28 cases: hallucination 25.0% to 0.0%, cognitive mismatch 29.8% to 0.0%. Simulated Bloom progression gains +0.36 levels.</li>
+        <li>Workbench UI, 161 automated tests and mock C1, C2 and C3 fixtures already exist, so new work can start without waiting for the other components.</li>
+      </ul>
+    </div>
+    <div class="gap">
+      <h4>What the panel will see as thin</h4>
+      <ul>
+        <li>C4 only checks explanations. It is an engineering result, and every verdict is only as good as the graph and mastery estimates behind it, which nobody checks.</li>
+        <li>Word matching cannot tell a correct paraphrase from a subtle error.</li>
+        <li>The only learner signal used is the Bloom level, and all gains are simulated.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="fixfirst">
+    <h4>Fix first</h4>
+    <ul>
+      <li>Switch the generator to GPT-4o as planned, and re-run RQ4a so the numbers come from the real generator.</li>
+      <li>Add the second Bloom annotator and report agreement.</li>
+      <li>Agree with C2 that mastery is stored per concept and Bloom level (Add-on 4.3).</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Add-ons</span><h2>What to build</h2></div>
+    <div class="addons">
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 4.1</span>
+          <h3>Teach-back exam with a knowledge-restricted AI novice</h3>
+          <div class="badges"><span class="badge must">Must</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">In a supervised exam, the student explains a lecture's concepts in writing ("Explain X in your own words, and include Y and Z"). A novice AI that may answer only from the student's text then takes a fixed hidden test, tagged by concept and Bloom level, with answers taken from the verified graph. The novice's score, broken down by concept and level, is evidence of what the student understands. Any explanation the student gives is also checked by C4's existing claim verifier.</p>
+          <ol class="steps">
+            <li><span><b>Coverage:</b> check that the required graph concepts appear in the explanation.</span></li>
+            <li><span><b>Claim check:</b> run the existing C4 verifier on the student's claims. Contradictions of known-false statements are flagged.</span></li>
+            <li><span><b>Novice test:</b> the novice sees only the student's text, supplied as retrieved context, with an "I don't know" option. Test items are multiple choice or short answers matched against graph facts, so scoring has no LLM judge and no scoring variance. Only the novice's own answers vary, and those are measured with repeated runs.</span></li>
+            <li><span><b>Evidence:</b> a score per (concept, Bloom level) with an uncertainty, sent to C2.</span></li>
+            <li><span><b>Depth check:</b> trace each correct novice answer to a sentence in the student's text and discount answers the novice reasoned out on its own, so a short keyword answer cannot score well.</span></li>
+          </ol>
+          <p class="what"><b>Worked example (heaps).</b> Prompt: "Explain what a heap is in your own words. Your answer must include 'complete binary tree' and 'stored in an array'." The student writes 4 to 8 sentences. Coverage and the claim check run first ("a heap is always fully sorted" matches a known-false statement and is flagged). The novice then takes the hidden heap test and returns, for example, Remember 3 of 3, Apply 1 of 2, Analyze 0 of 1. A lab exam of 6 lectures at about 10 minutes each fits one hour. A second mode, where the student answers the novice's questions, comes later because it is richer but noisier.</p>
+          <div class="table-wrap"><table class="wide">
+            <thead><tr><th>Student task</th><th>Novice test item</th><th>Level evidenced</th></tr></thead>
+            <tbody>
+              <tr><td>Explain X</td><td>Define or recognise X</td><td>Remember, Understand</td></tr>
+              <tr><td>Include an example</td><td>Apply X to a new case</td><td>Apply</td></tr>
+              <tr><td>Compare X and Y</td><td>Choose and justify</td><td>Analyze</td></tr>
+              <tr><td>Answer the novice's "why?" (later mode)</td><td>Judge a flawed design</td><td>Evaluate</td></tr>
+            </tbody>
+          </table></div>
+          <p class="what">This task-to-level mapping is a hypothesis that RQ4i tests, not an assumption.</p>
+          <ul>
+            <li><b>Validity tests (first gate):</b> leakage (an empty explanation must score near chance), discrimination (complete, missing a step, shuffled, subtly wrong and empty explanations must rank in that order), reliability (repeated runs give nearly the same score). If the novice cannot pass these, stop and report the negative result.</li>
+            <li><b>Fairness:</b> test whether weaker English writers score lower at the same level of understanding. Compare prose with a structured option (concept list or labelled diagram).</li>
+            <li><b>Gaming:</b> pasted AI-written answers measure the AI. Use a supervised lab setting, unseen prompts, similarity checks and a short oral follow-up on a sample.</li>
+            <li><b>Test difficulty:</b> pilot the hidden items and keep only those that spread students out, because an easy quiz gives a ceiling effect.</li>
+            <li><b>Stakes:</b> formative first. Count towards a grade only after validity and fairness are shown.</li>
+          </ul>
+          <pre class="code">Evidence message  (C4 to C2, one per student, concept and Bloom level)
+{"student": "S001", "concept": "heap", "bloom": 3, "score": 0.5, "items": 2,
+ "source": "teachback_exam", "weight": "high", "graph_version": "2026-w07-v3"}</pre>
+          <div class="kv">
+            <div><span class="eyebrow">Tools</span><p>LLM as the novice with retrieval-only context, the existing C4 verifier and Bloom estimator, synthetic explanations from the existing simulated learners</p></div>
+            <div><span class="eyebrow">Feeds</span><p>C2 receives per-level evidence. C3 can use the test items as its probe questions for verified skip.</p></div>
+            <div><span class="eyebrow">Measure</span><p>Leakage score, ranking agreement on controlled explanations, run-to-run spread, correlation with a conventional exam and human marking on a sample, score gap between strong and weak writers.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 4.2</span>
+          <h3>Graph Auditor</h3>
+          <div class="badges"><span class="badge must">Must</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">The graph is treated as ground truth by C4, but nobody checks it against what students do. The auditor reads the graph (C1) and student evidence (C2) and gives the lecturer a report. It proposes; a lecturer decides, and nothing changes automatically.</p>
+          <ol class="steps">
+            <li><span><b>Edge audit.</b> For each "A is a prerequisite of B": an implication test (mastering B without A should be rare after allowing for guess and slip), an order test and a lift test. Each edge gets a status with an interval: Supported, Contested, Reversed, Unsupported or Missing (candidate).</span></li>
+            <li><span><b>Bloom audit.</b> Items labelled higher should be empirically harder, and success at higher levels should depend on success at lower ones. Disagreements are reported as findings about the label, not corrected. Bloom labels are tags on items and on a student's level within a concept, not prerequisite edges.</span></li>
+            <li><span><b>Misconception audit</b> (only if the data records which wrong option was chosen).</span></li>
+            <li><span><b>Loop back into C4.</b> A claim that relies on a contested prerequisite becomes <code>INCONCLUSIVE</code> instead of a hard violation, and an unsupported edge no longer sends a student to "review X first". The report gains an <code>edge_confidence</code> block.</span></li>
+          </ol>
+          <div class="table-wrap"><table class="wide">
+            <thead><tr><th>Edge type (from C1)</th><th>What the audit tests</th></tr></thead>
+            <tbody>
+              <tr><td>prerequisite-of</td><td>The edge audit above</td></tr>
+              <tr><td>bloom-level</td><td>Items labelled higher should be harder, and success at higher levels should depend on lower ones. A disagreement is reported as a finding about the label, because Bloom is not a strict ladder.</td></tr>
+              <tr><td>cognitive-load</td><td>Does the computed load (from prerequisite depth) predict how hard students find the concept?</td></tr>
+              <tr><td>common-misconception-of</td><td>If the data records which wrong option was chosen, is the misconception really common? Skipped otherwise.</td></tr>
+            </tbody>
+          </table></div>
+          <pre class="code">Audit proposal  (C4 to C1, for the curation console)
+{"edge": ["binary_tree", "heap"], "status": "Contested",
+ "evidence": "lift 1.1 (0.8 to 1.6), n=120",
+ "proposal": "keep, lower confidence", "needs_lecturer": true}</pre>
+          <div class="kv">
+            <div><span class="eyebrow">Measure</span><p>Plant known errors (delete, reverse, add a fraction of edges) and report precision, recall and F1 across data sizes. Then run on ASSISTments against co-occurrence and ordering baselines. Finally, count wrong "review first" instructions and missed prerequisites with and without audited edges.</p></div>
+            <div><span class="eyebrow">Link to C1</span><p>C1 Add-on 1.2 tests edges against learner data and C1 owns the curation console. C4 supplies the audit method, the Bloom audit and the loop back into verification, and C1 applies the changes a lecturer approves.</p></div>
+            <div><span class="eyebrow">Limits</span><p>Students meet prerequisites first because the course runs in that order, so the order and implication tests can look like dependencies when they are only the timetable. Mitigations: compare lecturers or offerings that teach in a different order, control for prior mastery, and rely on the planted-error test. ASSISTments is not Data Structures, so auditing the DSA graph needs DSA performance data. Small classes give wide intervals, so many edges will honestly be Contested. Statuses are evidence, not proof.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 4.3</span>
+          <h3>Mastery by concept and Bloom level</h3>
+          <div class="badges"><span class="badge must">Must</span><span class="badge">Integration</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">C4's evidence has to reach the learner model in a usable shape. Agree with C2 that mastery is a table per concept and Bloom level, each with a probability and an uncertainty that grows with time, and that C2 exposes an evidence endpoint. Teach-back scores count as high-weight evidence once validated, checkpoint quizzes as high, practice attempts as medium (lower if hints were used), last semester's marks as a prior only, and asking for help as no evidence at all.</p>
+          <div class="table-wrap"><table class="wide">
+            <thead><tr><th>Evidence</th><th>Weight</th></tr></thead>
+            <tbody>
+              <tr><td>Teach-back exam</td><td>High, once validated</td></tr>
+              <tr><td>Checkpoint quiz</td><td>High</td></tr>
+              <tr><td>Practice attempts</td><td>Medium, lower if hints were used</td></tr>
+              <tr><td>Help-box use</td><td>None (a signal for the lecturer only)</td></tr>
+              <tr><td>Last semester's marks</td><td>Prior only; fades fast; never a label on the student</td></tr>
+            </tbody>
+          </table></div>
+          <ul>
+            <li><b>Mastered at level L:</b> probability at least 0.70 and uncertainty at most 0.25, as in C4 today.</li>
+            <li><b>Bloom is not a strict ladder.</b> Which levels depend on which is tested (RQ4i), not hard-coded.</li>
+            <li><b>Contract change:</b> the shared <code>LearnerState</code> format has one mastery value per concept. It needs a per-level version, and the shared event log needs a teach-back verb.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 4.4</span>
+          <h3>Execution-grounded visual explanations</h3>
+          <div class="badges"><span class="badge should">Should</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">For a small set of operations, run real reference code, record the state after every step and turn it into a step-through picture. The LLM writes narration as claims tied to step numbers, and each claim is checked against the recorded state. "5 swaps with its parent 9" is either true in the trace or it is rejected and repaired.</p>
+          <ol class="steps">
+            <li><span>Instrumented reference implementations for 4 to 5 operations first (heap insert, BST insert, BFS, binary search, stack), growing to 10 to 12 if time allows. Each records a JSON snapshot after every step.</span></li>
+            <li><span>Ask the LLM for narration as <code>[{step: 3, claim: "5 swaps with parent 9"}, ...]</code>. Verify each claim against the trace and the graph. Type the errors (<code>WrongState</code>, <code>WrongOrder</code>, <code>UnsupportedFact</code>) and repair only the broken sentence.</span></li>
+            <li><span>Render the trace as SVG frames the learner can step through, and let the learner enter their own values.</span></li>
+          </ol>
+          <div class="kv">
+            <div><span class="eyebrow">Feeds</span><p>C3 can choose "visual trace" as a resource type. The same trace checker can check a student's claims in the teach-back exam when they describe a step-by-step process.</p></div>
+            <div><span class="eyebrow">Measure</span><p>Claim-level error rate before and after verification; share of explanations with zero unsupported claims.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 4.5</span>
+          <h3>Misconception diagnosis from wrong answers</h3>
+          <div class="badges"><span class="badge should">Should</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">Generate the wrong options of each check question from known misconceptions in the graph (<code>MISCONCEPTION_OF</code> edges). When a learner picks one, the system knows which misconception they hold and gives a targeted refutation. The diagnosis goes to C2 and C3 (C3 rule R5: fix misconceptions first). The same tagged items can be used in the teach-back hidden test.</p>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 4.6</span>
+          <h3>Strategy switching and the NLI verifier</h3>
+          <div class="badges"><span class="badge should">Should</span><span class="badge">Research</span></div>
+        </div>
+        <div class="addon-body">
+          <ul>
+            <li><b>Strategy switching:</b> when C2 reports confusion or the learner fails the check question, change strategy (worked example, analogy, visual trace, contrast with a misconception, one Bloom level lower) and verify the new explanation the same way. It starts rule-based. Use a failed check question as the trigger when the camera signal is not available, so this does not depend on C2's webcam work.</li>
+            <li><b>NLI verifier:</b> build a small labelled set of faithful paraphrases and subtle errors, then compare word matching, an NLI model (for example DeBERTa-v3 trained on MNLI) and a hybrid. Code-trace claims keep exact state checks. NLI also helps check conceptual sentences in student explanations.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 4.7</span>
+          <h3>Semester plan and help box (demo)</h3>
+          <div class="badges"><span class="badge should">Should</span><span class="badge">UX</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">Shown as a simulation and a small demo, not a built LMS.</p>
+          <ul>
+            <li><b>Goal:</b> for each 7-week half, every student reaches a minimum mastery floor on every concept before the exam, and the spread between students shrinks. This is mastery learning; it does not promise equal outcomes. Measured by the share of students under the floor and the spread of exam scores.</li>
+            <li><b>Allocation:</b> gap = target minus current mastery at the target Bloom level. Practice is spent in proportion to the gap, weighted by how many later concepts depend on the concept, in prerequisite order. Last semester's marks are only a fast-fading prior.</li>
+            <li><b>Projection:</b> estimate each student's learning rate and project mastery to the exam date. If it ends under the floor, escalate (more practice, a nudge, a lecturer alert). Re-plan at checkpoints in weeks 3 and 10.</li>
+            <li><b>Fairness:</b> strong students get stretch tasks, not less work. The student sees why they got their plan and can ask for more. Nobody gets less than the baseline.</li>
+            <li><b>"Need help with a concept?" box:</b> graph facts and lecture chunks, an LLM draft, then the existing C4 verification and repair. The student attempts first, then gets tiered hints, then the explanation. Help requests give the lecturer a confusion map per concept. Asking for help is never mastery evidence.</li>
+            <li><b>Fit with C3:</b> this uses C2 mastery and should call C3's planner where possible instead of duplicating it. A simulated class of 300 learners (the existing simulator) makes the floor-and-spread claim testable before any real student.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="addon">
+        <div class="addon-meta">
+          <span class="num">ADD-ON 4.8</span>
+          <h3>Layered, versioned graph (demo)</h3>
+          <div class="badges"><span class="badge could">Could</span><span class="badge">UX</span></div>
+        </div>
+        <div class="addon-body">
+          <p class="what">"Dynamic" means layers, versions and proposals, not a graph that rewrites itself.</p>
+          <ul>
+            <li><b>Layers:</b> a base graph at department level that changes rarely; a lecturer overlay per lecturer and offering (reorder, add local concepts, mark "not covered", change emphasis, add terms); audited edge confidence per offering from the Graph Auditor.</li>
+            <li><b>Governance:</b> changes come from weekly re-reading of lecture transcripts, audit results and lecturer edits. Every change is a proposal that a lecturer approves, with a version and a changelog. The graph is frozen for each 7-week block so students are not tested against a moving target.</li>
+            <li><b>Mastery under change:</b> a split gives the children the parent's mastery with added uncertainty; a merge takes the lower mastery and combined uncertainty; a new edge triggers a re-check, not a demotion.</li>
+            <li><b>Needs C1's agreement,</b> so it is shown as a small demo only.</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Interfaces</span><h3>What C4 needs from the other components</h3></div>
+    <div class="table-wrap"><table class="wide">
+      <thead><tr><th>From</th><th>What C4 needs</th><th>What it gets back</th></tr></thead>
+      <tbody>
+        <tr><td class="id k1">C1</td><td>A JSON graph export with stable concept ids and the four edge types; about 5 <code>facts</code> and 5 <code>known_false</code> statements per concept (even 7 concepts to start); edge <code>source</code>, <code>status</code>, <code>confidence</code> fields and a <code>graph_version</code></td><td>A data-based check of every edge type, as evaluation evidence that needs no annotators</td></tr>
+        <tr><td class="id k2">C2</td><td>Mastery per concept and Bloom level, and an endpoint that accepts the teach-back evidence message</td><td>A richer evidence source than right or wrong answers, and per-level targets to model</td></tr>
+        <tr><td class="id k3">C3</td><td>The verified path, as today</td><td>Probe questions for verified skip, taken from the teach-back test items</td></tr>
+      </tbody>
+    </table></div>
+    <p>Everything can run on mock files first. If an upstream piece is late, C4 uses its own graph fixture to build the test items, runs the auditor on planted-error graphs, keeps the per-level mastery as its own extension, and shows the plan as a simulation. The core (novice instrument plus Graph Auditor) does not wait for anyone.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Build plan</span><h3>Phases (estimates for one person, part time)</h3></div>
+    <div class="table-wrap"><table class="wide">
+      <thead><tr><th>Phase</th><th>Deliverable</th><th>Real students?</th><th>Effort</th></tr></thead>
+      <tbody>
+        <tr><td class="id">1 (must)</td><td>Knowledge-restricted novice, hidden test, leakage, discrimination and reliability tests on synthetic explanations</td><td>No</td><td>3 weeks</td></tr>
+        <tr><td class="id">2 (must)</td><td>Teach-back pipeline: coverage, claim check, novice test, per-level evidence message to C2</td><td>No</td><td>2 weeks</td></tr>
+        <tr><td class="id">3 (must)</td><td>Graph Auditor: planted-error test, then ASSISTments, then the loop into the verifier</td><td>No</td><td>4 weeks</td></tr>
+        <tr><td class="id">4 (should)</td><td>Plan simulation and help-box demo</td><td>No</td><td>2 weeks</td></tr>
+        <tr><td class="id">5 (could)</td><td>Layered, versioned graph demo with proposals</td><td>No</td><td>2 weeks</td></tr>
+        <tr><td class="id">6 (pilot)</td><td>Validity, fairness and lecturer-agreement study (needs ethics approval)</td><td>Yes</td><td>After PP2</td></tr>
+      </tbody>
+    </table></div>
+    <p>Smallest version that is still a thesis: phases 1 to 3. Any real student marks or answers need SLIIT ethics approval first.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Evaluation</span><h3>New research questions</h3></div>
+    <div class="table-wrap"><table class="wide">
+      <thead><tr><th>RQ</th><th>Question</th><th>Method and metric</th><th>Compared against</th></tr></thead>
+      <tbody>
+        <tr><td class="id">RQ4f</td><td>Does the novice's score track the student's real understanding, and does it add information a plain quiz and the verifier do not?</td><td>Synthetic explanations with known gaps first, then pilot: correlation with a conventional exam and human grading</td><td>Conventional exam, verifier alone, plain quiz</td></tr>
+        <tr><td class="id">RQ4g</td><td>How stable is the score across runs, and how much does the novice know before reading anything?</td><td>Spread over repeated runs; score on an empty explanation</td><td>Chance level</td></tr>
+        <tr><td class="id">RQ4h</td><td>Is the score biased by writing ability or language, and how easily is it gamed?</td><td>Score gap between strong and weak writers at the same understanding; pasted AI answers</td><td>Human marking, structured input mode</td></tr>
+        <tr><td class="id">RQ4i</td><td>Do per-level scores behave like Bloom levels, or does the strict ladder fail?</td><td>Item difficulty by level; dependence between levels</td><td>Strict-ladder assumption</td></tr>
+        <tr><td class="id">RQ4j</td><td>How well does the auditor recover planted graph errors, and do audited edges reduce wrong "review first" advice?</td><td>Precision, recall and F1 by data size; wrong detours and missed prerequisites</td><td>Co-occurrence and ordering baselines; unaudited graph</td></tr>
+        <tr><td class="id">RQ4k</td><td>Does evidence-driven practice allocation reduce the share of students under the floor and the spread?</td><td>Simulated cohorts, then pilot</td><td>Uniform plan, performance-tiered plan</td></tr>
+        <tr><td class="id">RQ4c</td><td>Does trace verification catch state errors that graph-only verification misses?</td><td>Claim-level error rate on the chosen operations with random inputs</td><td>Graph-only verifier, no verifier</td></tr>
+      </tbody>
+    </table></div>
+    <p>Simulation is circular: planner and Bloom results in simulation reflect the simulator's assumptions, so only the pilot supports real claims. Any real student marks or answers need SLIIT ethics approval first.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Be ready for these</span><h3>Questions the panel will likely ask</h3></div>
+    <div class="qa">
+      <div><b>Isn't this just an LLM grading an essay?</b><p>No. The student is not graded by an LLM's opinion. A restricted novice takes a fixed test whose answers come from the verified graph, so the scoring step has no LLM judge. Whether that score is valid, reliable and fair is the research question, and a negative result is a valid finding.</p></div>
+      <div><b>Doesn't the LLM already know the answers?</b><p>That is the leakage test. With an empty explanation the novice must score near chance on the restricted concepts. Prompting alone is known to leave real knowledge intact, so retrieval-only context comes first and unlearning is the fallback.</p></div>
+      <div><b>Isn't this idea already done?</b><p>LLM teachable agents exist, and a Waterloo project plans an exam on what an LLM learned. We found no published result for using the novice's score as a validated, per-level assessment tied to a verified graph. We state the contribution as a validation protocol and the graph integration.</p></div>
+      <div><b>Isn't the graph audit C1's job?</b><p>C1 builds the graph and the curation console. C4 checks the graph against student data and feeds the result back into verification. The split is agreed with C1 and written down.</p></div>
+      <div><b>What exactly do you claim?</b><p>We evaluate whether the novice's score is a valid, reliable and fair indicator of a student's understanding, and we give a protocol for checking it. We do not call it validated before the data exist. We do not claim equal outcomes for every student, that Bloom levels form a strict ladder, or that the layered graph is a research result.</p></div>
+      <div><b>Your learning gains are simulated. Will you test with students?</b><p>Yes, after ethics approval: novice score versus conventional exam, a human grading sample, a fairness comparison, and lecturer agreement on audited edges.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">PP2 demo</span><h3>What to show in February</h3></div>
+    <ol class="demo">
+      <li>Give the novice a complete explanation, a missing-step one, a subtly wrong one and an empty one. Show the per-concept, per-level scores ranking in the expected order.</li>
+      <li>Show the leakage and reliability numbers (empty-explanation score, spread over repeated runs).</li>
+      <li>Open the audit report on a graph with planted errors. Show which edges are flagged and the recovery table.</li>
+      <li>Show a claim becoming <code>INCONCLUSIVE</code> because it depends on a contested edge, and a "review first" instruction that no longer appears.</li>
+      <li>Step through a verified heap insert trace, then inject a wrong claim and show the verifier name it and repair only that sentence.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ TEAM ============ -->
+<section class="view" id="view-team" data-view="team" hidden>
+  <div class="hero">
+    <span class="eyebrow">Shared work</span>
+    <h1>Team and integration</h1>
+    <p class="lede">These pieces belong to everyone. Without them, the add-ons stay four separate demos, which is the problem the panel pointed at.</p>
+  </div>
+
+  <div class="addons">
+    <article class="addon">
+      <div class="addon-meta">
+        <span class="num">TEAM 1</span>
+        <h3>One learner web app</h3>
+        <div class="badges"><span class="badge must">Must</span><span class="badge">UX</span></div>
+      </div>
+      <div class="addon-body">
+        <p class="what">Replace the four separate dashboards with one app. Each component stays its own service with its own API, so ownership is still clear.</p>
+        <div class="kv">
+          <div><span class="eyebrow">Student view</span><p>Roadmap (C3), lesson pane with video segment (C1), explanation and visual trace (C4), teach-back exam screen and help box (C4), check questions, knowledge map (C2), camera toggle.</p></div>
+          <div><span class="eyebrow">Instructor view</span><p>Curation console (C1), audit report (C4), class overview of struggling concepts and common misconceptions, ability to lock or override a path step.</p></div>
+          <div><span class="eyebrow">Stack</span><p>React or Next.js front end; one FastAPI service per component; shared Neo4j; Postgres or MongoDB for events and plans.</p></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="addon">
+      <div class="addon-meta">
+        <span class="num">TEAM 2</span>
+        <h3>Shared contracts</h3>
+        <div class="badges"><span class="badge must">Must</span><span class="badge">Integration</span></div>
+      </div>
+      <div class="addon-body">
+        <p class="what">Agree these three formats in the first two weeks and do not change them without telling everyone.</p>
+        <pre class="code">BehaviourEvent  (xAPI-style: actor, verb, object, result, context, timestamp)
+{
+  "actor": "L_045",
+  "verb": "answered",            answered | viewed | paused | rewound | hint_requested
+                                   | skipped | tab_hidden | affect_detected | taught_back
+  "object": "item:heap_q3",
+  "result": {"correct": false, "duration_ms": 41200, "hints": 1},
+  "context": {"concept": "heap", "plan_id": "p_0192", "step_id": "s4"},
+  "timestamp": "2026-12-03T10:14:22Z"
+}
+
+LearnerState  (written by C2)
+{
+  "learner_id": "L_045",
+  "concepts": {"heap": {"mastery": 0.42, "low": 0.30, "high": 0.55}},
+  "affect": {"state": "confused", "confidence": 0.71, "window_s": 6},
+  "flags": {"possible_guess": false, "struggle": true},
+  "bloom": {"heap": {"understand": {"mastery": 0.55, "low": 0.40, "high": 0.70}}},   optional, per concept and level
+  "misconceptions": ["heap_is_sorted_array"],
+  "updated": "2026-12-03T10:14:23Z"
+}
+
+PathPlan  (written by C3, see the C3 tab)</pre>
+        <p class="muted">The event log uses the xAPI statement shape (actor, verb, object). It is the standard learning platforms use, which supports the "LMS-agnostic" claim on the commercialisation slide. A full learning record store is optional; a table in the project database is enough.</p>
+      </div>
+    </article>
+
+    <article class="addon">
+      <div class="addon-meta">
+        <span class="num">TEAM 3</span>
+        <h3>Ethics and privacy for camera data</h3>
+        <div class="badges"><span class="badge must">Must</span><span class="badge">Ethics</span></div>
+      </div>
+      <div class="addon-body">
+        <p class="what">Face data is biometric data and needs extra care. Update the ethics application now, because the pilot and any camera test depend on it.</p>
+        <ul>
+          <li>Opt-in consent screen in plain language. The camera is off by default and can be paused at any time.</li>
+          <li>All face processing happens in the browser. No frames are stored or sent; only the state label, confidence and time.</li>
+          <li>Pseudonymous learner ids. Delete a learner's data on request. Keep data only for the study period.</li>
+          <li>Sri Lanka's Personal Data Protection Act, No. 9 of 2022: its core compliance provisions (impact assessments, data protection officers, breach notification) take effect on 1 January 2027, during this project. Include a short impact-assessment style risk table in the ethics application.</li>
+          <li>Everything works with the camera off, so a student who declines is not disadvantaged.</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="addon">
+      <div class="addon-meta">
+        <span class="num">TEAM 4</span>
+        <h3>User study with real students</h3>
+        <div class="badges"><span class="badge should">Should for PP2</span><span class="badge must">Must for final</span></div>
+      </div>
+      <div class="addon-body">
+        <p class="what">Every current learning result is simulated. Real students are the biggest credibility gain available.</p>
+        <ul>
+          <li><b>Before PP2:</b> a usability test with 5 to 8 students. Think-aloud plus the System Usability Scale (SUS).</li>
+          <li><b>After PP2:</b> a pilot with 20 to 40 SLIIT students taking DSA. Full system versus a baseline (smart topo path with static explanations). Pre-test and post-test, time spent, SUS, and affect self-reports to validate RQ2c.</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="addon">
+      <div class="addon-meta">
+        <span class="num">TEAM 5</span>
+        <h3>Update the commercialisation story</h3>
+        <div class="badges"><span class="badge could">Could</span></div>
+      </div>
+      <div class="addon-body">
+        <p class="what">Add an institution tier: a class analytics dashboard (struggling concepts, common misconceptions, engagement trends) on top of the API. Behaviour analytics with privacy by design is a selling point for universities.</p>
+      </div>
+    </article>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">At a glance</span><h3>Priority by component</h3></div>
+    <div class="table-wrap"><table class="wide">
+      <thead><tr><th>Component</th><th>Must for PP2</th><th>Should</th><th>Could</th></tr></thead>
+      <tbody>
+        <tr><td class="id k1">C1</td><td>Fix gold set and Kappa; LLM extractor; lecture video vision</td><td>Learner-evidence edges; curation console; graph export with facts and versioned edges</td><td>Misconception mining</td></tr>
+        <tr><td class="id k2">C2</td><td>Programming data and real graph; webcam affect; behaviour features; better uncertainty</td><td>Knowledge map; mastery per Bloom level with teach-back evidence</td><td>Learned fusion over long sessions</td></tr>
+        <tr><td class="id k3">C3</td><td>Real graph and smart topo baseline; simulator; replanning; deadline and review; verified skip</td><td>Contextual bandit; block plan with a mastery floor; cohort simulation and audited-edge rules</td><td>Offline IQL comparison</td></tr>
+        <tr><td class="id k4">C4</td><td>GPT-4o and second annotator; teach-back novice with validity tests; Graph Auditor; mastery by Bloom level</td><td>Code-trace visuals; misconception diagnosis; strategy switching; NLI verifier; plan and help-box demo</td><td>Layered, versioned graph demo</td></tr>
+        <tr><td class="id">Team</td><td>One app; contracts; ethics update</td><td>Usability test before PP2</td><td>Institution tier</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">References</span><h3>Sources</h3></div>
+    <ul class="sources">
+      <li><a href="https://people.iith.ac.in/vineethnb/resources/daisee/index.html" target="_blank" rel="noopener">DAiSEE dataset (IIT Hyderabad)</a></li>
+      <li><a href="https://arxiv.org/abs/1609.01885" target="_blank" rel="noopener">DAiSEE: Towards User Engagement Recognition in the Wild</a></li>
+      <li><a href="https://developers.google.com/edge/mediapipe/solutions/vision/face_landmarker/web_js" target="_blank" rel="noopener">MediaPipe Face Landmarker guide for Web</a></li>
+      <li><a href="https://preview.aclanthology.org/landing_page/P16-1174" target="_blank" rel="noopener">Settles and Meeder (2016), A Trainable Spaced Repetition Model for Language Learning</a></li>
+      <li><a href="https://www.github.com/duolingo/halflife-regression" target="_blank" rel="noopener">Half-life regression reference code (Duolingo)</a></li>
+      <li><a href="https://sites.google.com/ncsu.edu/csedm-dc-2021/dataset" target="_blank" rel="noopener">CSEDM Data Challenge dataset (CodeWorkout)</a></li>
+      <li><a href="https://xapi.com/tech-overview/" target="_blank" rel="noopener">Experience API (xAPI) technical overview</a></li>
+      <li><a href="https://www.ft.lk/front-page/Data-protection-compliance-regime-takes-effect-on-1-Jan-2027/44-795776" target="_blank" rel="noopener">Daily FT: Data protection compliance regime takes effect on 1 Jan 2027</a></li>
+      <li><a href="https://dpa.gov.lk/est.php" target="_blank" rel="noopener">Data Protection Authority of Sri Lanka</a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ ROADMAP ============ -->
+<section class="view" id="view-roadmap" data-view="roadmap" hidden>
+  <div class="hero">
+    <span class="eyebrow">November 2026 to February 2027</span>
+    <h1>Roadmap to PP2</h1>
+    <p class="lede">About 14 weeks, including the holiday break. Musts first, in this order. If a phase slips, cut the Shoulds, not the evaluation.</p>
+  </div>
+
+  <div class="phases">
+    <div class="phase"><span class="when">Nov 4 to Nov 17</span><h4>0. Agree and fix</h4><p>Contracts, app skeleton, ethics update, and each component's "fix first" list.</p></div>
+    <div class="phase"><span class="when">Nov 18 to Dec 22</span><h4>1. Build the major add-ons</h4><p>Each member builds their main research add-on and tests it alone.</p></div>
+    <div class="phase"><span class="when">Jan 5 to Jan 26</span><h4>2. Integrate</h4><p>End-to-end flow in the one app, plus the second add-ons. Dec 23 to Jan 4 is buffer.</p></div>
+    <div class="phase"><span class="when">Jan 27 to PP2</span><h4>3. Evaluate and rehearse</h4><p>All RQ experiments with repeats, usability test, slides, and a demo rehearsed twice.</p></div>
+  </div>
+
+  <div class="table-wrap"><table class="wide grid-road">
+    <thead><tr><th>Who</th><th>0. Agree and fix</th><th>1. Build</th><th>2. Integrate</th><th>3. Evaluate</th></tr></thead>
+    <tbody>
+      <tr><td class="who k1">C1</td>
+        <td><ul><li>Annotation guide and re-label</li><li>Gold set to 100</li></ul></td>
+        <td><ul><li>LLM extractor</li><li>Key frames, layout, OCR, diagram classifier</li><li>Slide and transcript alignment</li></ul></td>
+        <td><ul><li>Video segments on nodes</li><li>Learner-evidence scores</li><li>Console first version</li></ul></td>
+        <td><ul><li>RQ1a, RQ1b</li></ul></td></tr>
+      <tr><td class="who k2">C2</td>
+        <td><ul><li>Real C1 graph</li><li>Programming dataset</li></ul></td>
+        <td><ul><li>MediaPipe features in browser and Python</li><li>DAiSEE classifier</li><li>Behaviour features in GNN</li></ul></td>
+        <td><ul><li>Browser model with consent UI</li><li>Ensembles and conformal</li><li>LearnerState API live</li></ul></td>
+        <td><ul><li>RQ2a, RQ2b, RQ2c</li></ul></td></tr>
+      <tr><td class="who k3">C3</td>
+        <td><ul><li>84-concept graph, 3 repeats</li><li>Smart topo baseline</li><li>Simulator spec with C4</li></ul></td>
+        <td><ul><li>Simulator</li><li>Triggers and suffix replanning</li><li>Verified skip and roadmap UI</li></ul></td>
+        <td><ul><li>Time model, HLR, R6 to R8</li><li>Bandit</li><li>Live C2 and C4 links</li></ul></td>
+        <td><ul><li>RQ3a, RQ3b, RQ3d</li></ul></td></tr>
+      <tr><td class="who k4">C4</td>
+        <td><ul><li>GPT-4o generator</li><li>Second annotator</li><li>Agree matrix mastery with C2 and audit split with C1</li></ul></td>
+        <td><ul><li>Knowledge-restricted novice</li><li>Leakage, discrimination and reliability tests</li><li>Planted-error audit harness</li></ul></td>
+        <td><ul><li>Teach-back pipeline into C2 format</li><li>Audit on ASSISTments</li><li>Probe API for C3</li></ul></td>
+        <td><ul><li>RQ4f to RQ4j, RQ4a re-run</li><li>Small trace-visual demo if time allows</li></ul></td></tr>
+      <tr><td class="who">Team</td>
+        <td><ul><li>Contracts</li><li>App skeleton</li><li>Ethics amendment</li></ul></td>
+        <td><ul><li>Weekly integration check</li></ul></td>
+        <td><ul><li>End-to-end flow</li></ul></td>
+        <td><ul><li>Usability test</li><li>PP2 slides and demo</li></ul></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">After PP2</span><h3>Toward the final submission</h3></div>
+    <ul class="prose">
+      <li>Pilot study with 20 to 40 students (Team 4).</li>
+      <li>Shoulds and Coulds that were cut, starting with the ones that feed the pilot.</li>
+      <li>A team paper built around the closed loop and the safety invariant, plus one short paper per component if results are strong.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ CHECKLIST ============ -->
+<section class="view" id="view-checklist" data-view="checklist" hidden>
+  <div class="hero">
+    <span class="eyebrow">Progress</span>
+    <h1>Team checklist</h1>
+    <p class="lede">Tick items as they are done. Musts are marked. The progress bars on the overview read from this list.</p>
+    <div class="sync"><span class="pill" id="sync-pill">Connecting</span><span id="sync-note">Loading saved progress.</span></div>
+  </div>
+
+  <div class="check-groups" id="check-groups">
+    <div class="check-group" data-group="team">
+      <header><div><h4>Team</h4><span class="count" data-count="team"></span></div><div class="mini-progress"><i class="bgt" data-progress="team"></i></div></header>
+      <label class="check"><input type="checkbox" id="chk-t-contracts" data-id="t-contracts"><span>Agree BehaviourEvent, LearnerState and PathPlan formats<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-t-app" data-id="t-app"><span>One web app skeleton with student and instructor views<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-t-ethics" data-id="t-ethics"><span>Ethics application updated for camera use and the pilot<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-t-sim" data-id="t-sim"><span>Shared learner simulator agreed between C3 and C4<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-t-e2e" data-id="t-e2e"><span>End-to-end flow works in the one app<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-t-usability" data-id="t-usability"><span>Usability test with 5 to 8 students<span class="tier">should</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-t-demo" data-id="t-demo"><span>PP2 demo script rehearsed twice<span class="tier">must</span></span></label>
+    </div>
+    <div class="check-group" data-group="c1">
+      <header><div><h4 class="k1">C1 Graph</h4><span class="count" data-count="c1"></span></div><div class="mini-progress"><i class="bg1" data-progress="c1"></i></div></header>
+      <label class="check"><input type="checkbox" id="chk-c1-gold" data-id="c1-gold"><span>Annotation guide, 100+ gold chunks, Kappa reported<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c1-llm" data-id="c1-llm"><span>LLM extractor compared with the rule baseline<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c1-frames" data-id="c1-frames"><span>Key-frame detection and OCR on lecture videos<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c1-layout" data-id="c1-layout"><span>Slide layout detection and diagram classifier<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c1-align" data-id="c1-align"><span>Slide text aligned with transcript; slide evidence on edges<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c1-segments" data-id="c1-segments"><span>Video segments stored on concept nodes<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c1-evidence" data-id="c1-evidence"><span>Learner-evidence edge scores<span class="tier">should</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c1-console" data-id="c1-console"><span>Curation console with uncertainty queue<span class="tier">should</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c1-export" data-id="c1-export"><span>Graph JSON export with facts, known-false statements and versioned edge fields<span class="tier">should</span></span></label>
+    </div>
+    <div class="check-group" data-group="c2">
+      <header><div><h4 class="k2">C2 Learner</h4><span class="count" data-count="c2"></span></div><div class="mini-progress"><i class="bg2" data-progress="c2"></i></div></header>
+      <label class="check"><input type="checkbox" id="chk-c2-domain" data-id="c2-domain"><span>Real C1 graph and programming data<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c2-features" data-id="c2-features"><span>MediaPipe features in browser and Python, matching<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c2-daisee" data-id="c2-daisee"><span>Affect classifier trained on DAiSEE<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c2-browser" data-id="c2-browser"><span>Classifier running in the browser with consent controls<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c2-behaviour" data-id="c2-behaviour"><span>Timing, hints and video features in the GNN<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c2-uncert" data-id="c2-uncert"><span>Ensembles or conformal prediction for uncertainty<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c2-api" data-id="c2-api"><span>LearnerState API live for C3 and C4<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c2-map" data-id="c2-map"><span>Learner knowledge map UI<span class="tier">should</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c2-bloom" data-id="c2-bloom"><span>Mastery per Bloom level and evidence endpoint for teach-back scores<span class="tier">should</span></span></label>
+    </div>
+    <div class="check-group" data-group="c3">
+      <header><div><h4 class="k3">C3 Planner</h4><span class="count" data-count="c3"></span></div><div class="mini-progress"><i class="bg3" data-progress="c3"></i></div></header>
+      <label class="check"><input type="checkbox" id="chk-c3-scale" data-id="c3-scale"><span>84-concept graph, C2 states, 3 repeats, smart topo baseline<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c3-sim" data-id="c3-sim"><span>Learner simulator with forgetting and affect<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c3-triggers" data-id="c3-triggers"><span>Trigger rules and suffix replanning with change log<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c3-skip" data-id="c3-skip"><span>Verified skip with probe questions<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c3-roadmap" data-id="c3-roadmap"><span>Roadmap UI with "why this step"<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c3-deadline" data-id="c3-deadline"><span>Time model, sessions and rules R6 to R8<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c3-hlr" data-id="c3-hlr"><span>Spaced review with half-life regression<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c3-bandit" data-id="c3-bandit"><span>Contextual bandit over verified options<span class="tier">should</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c3-block" data-id="c3-block"><span>Block plan with a mastery floor and cohort simulation<span class="tier">should</span></span></label>
+    </div>
+    <div class="check-group" data-group="c4">
+      <header><div><h4 class="k4">C4 Explainer</h4><span class="count" data-count="c4"></span></div><div class="mini-progress"><i class="bg4" data-progress="c4"></i></div></header>
+<label class="check"><input type="checkbox" id="chk-c4-gpt" data-id="c4-gpt"><span>GPT-4o generator and second annotator<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c4-iface" data-id="c4-iface"><span>Matrix mastery format agreed with C2; audit ownership agreed with C1<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c4-novice" data-id="c4-novice"><span>Knowledge-restricted novice passes leakage, discrimination and reliability tests on synthetic explanations<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c4-exam" data-id="c4-exam"><span>Teach-back pipeline: coverage, claim check, novice test, per-level evidence into C2<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c4-audit" data-id="c4-audit"><span>Graph Auditor: planted-error test, ASSISTments run, loop back into verification<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c4-probe" data-id="c4-probe"><span>Probe question API for C3 verified skip (reusing teach-back test items)<span class="tier">must</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c4-trace" data-id="c4-trace"><span>Instrumented reference implementations and trace verifier (4 to 5 operations)<span class="tier">should</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c4-misc" data-id="c4-misc"><span>Misconception-tagged distractors and diagnosis<span class="tier">should</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c4-strategy" data-id="c4-strategy"><span>Strategy switching triggered by confusion or a failed check question<span class="tier">should</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c4-nli" data-id="c4-nli"><span>NLI verifier compared with word matching<span class="tier">should</span></span></label>
+      <label class="check"><input type="checkbox" id="chk-c4-plan" data-id="c4-plan"><span>Planner simulation and help-box demo<span class="tier">should</span></span></label>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">Prepared as guidance for project J26-DS-353 after Progress Presentation 1. Tools, thresholds and datasets are suggestions; confirm them with the supervisors before committing.</footer>
+</main>
+
+<script>
+(function () {
+  var ROUTES = ["overview", "c1", "c2", "c3", "c4", "team", "roadmap", "checklist"];
+
+  function showRoute() {
+    var name = (location.hash || "").replace("#", "");
+    if (ROUTES.indexOf(name) === -1) name = "overview";
+    document.querySelectorAll(".view").forEach(function (v) { v.hidden = v.getAttribute("data-view") !== name; });
+    document.querySelectorAll(".tab").forEach(function (t) {
+      if (t.getAttribute("data-route") === name) {
+        t.setAttribute("aria-current", "page");
+        if (t.scrollIntoView) { try { t.scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {} }
+      } else { t.removeAttribute("aria-current"); }
+    });
+  }
+  window.addEventListener("hashchange", function () { showRoute(); window.scrollTo(0, 0); });
+  showRoute();
+
+  /* Checklist state */
+  var LOCAL_KEY = "cartolearn-checklist-c4rev-v1";
+  var state = {};
+  var mode = "local";
+  var db = null;
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".check input[data-id]"));
+
+  function readLocal() {
+    try { var raw = localStorage.getItem(LOCAL_KEY); return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; }
+  }
+  function writeLocal() {
+    try { localStorage.setItem(LOCAL_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function render() {
+    inputs.forEach(function (inp) { inp.checked = !!state[inp.getAttribute("data-id")]; });
+    var groups = {};
+    inputs.forEach(function (inp) {
+      var g = inp.closest(".check-group").getAttribute("data-group");
+      groups[g] = groups[g] || { done: 0, total: 0 };
+      groups[g].total += 1;
+      if (inp.checked) groups[g].done += 1;
+    });
+    Object.keys(groups).forEach(function (g) {
+      var pct = Math.round(100 * groups[g].done / groups[g].total);
+      document.querySelectorAll('[data-progress="' + g + '"]').forEach(function (bar) { bar.style.width = pct + "%"; });
+      document.querySelectorAll('[data-count="' + g + '"]').forEach(function (c) { c.textContent = groups[g].done + " / " + groups[g].total; });
+    });
+  }
+
+  function setSync(kind) {
+    var pill = document.getElementById("sync-pill");
+    var note = document.getElementById("sync-note");
+    if (kind === "shared") {
+      pill.textContent = "Shared"; pill.className = "pill on";
+      note.textContent = "Ticks are saved for everyone who can edit this page.";
+    } else if (kind === "readonly") {
+      pill.textContent = "View only"; pill.className = "pill";
+      note.textContent = "You can see the team's progress. Your own ticks are saved only in this browser.";
+    } else if (kind === "slow") {
+      pill.textContent = "Waiting"; pill.className = "pill";
+      note.textContent = "Shared progress cannot be reached yet. Ticks are saved in this browser for now.";
+    } else {
+      pill.textContent = "This browser"; pill.className = "pill";
+      note.textContent = "Ticks are saved only in this browser.";
+    }
+  }
+
+  state = readLocal();
+  render();
+  setSync("local");
+
+  inputs.forEach(function (inp) {
+    inp.addEventListener("change", function () {
+      var id = inp.getAttribute("data-id");
+      var done = inp.checked;
+      state[id] = done;
+      render();
+      if (mode === "shared" && db) {
+        db.collection("progress").doc(id).set({ done: done, at: new Date().toISOString() }).catch(function (err) {
+          if (err && err.code === "invalid_argument") { mode = "readonly"; setSync("readonly"); }
+          writeLocal();
+        });
+      } else {
+        writeLocal();
+      }
+    });
+  });
+
+  var c = window.claude;
+  if (c && typeof c.use === "function") {
+    Promise.all([c.use("db"), c.use("user")]).then(function (res) {
+      db = res[0];
+      var user = res[1];
+      if (!db) return;
+      var timer = setTimeout(function () { if (mode !== "shared" && mode !== "readonly") setSync("slow"); }, 10000);
+      var canWrite = null;
+      try { canWrite = user && user.can ? user.can("data.write") : null; } catch (e) { canWrite = null; }
+      Promise.resolve(canWrite).then(function (cw) {
+        db.collection("progress").onSnapshot(function (snap) {
+          if (!snap.metadata.fromCache) clearTimeout(timer);
+          var shared = {};
+          snap.docs.forEach(function (d) { var v = d.data(); shared[d.id] = !!(v && v.done); });
+          if (cw === false) {
+            mode = "readonly"; setSync("readonly");
+            state = shared;
+          } else {
+            mode = "shared"; setSync("shared");
+            state = shared;
+          }
+          render();
+        }, function () {
+          clearTimeout(timer);
+          mode = "local"; setSync("local");
+          state = readLocal(); render();
+        });
+      });
+    }).catch(function () {});
+  }
+})();
+</script>
+
+</body></html>

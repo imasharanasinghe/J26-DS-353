@@ -7,7 +7,7 @@ Nothing in this document may be presented as a result. The simulated-learner exp
 study is the validation it cannot provide. It follows the learner-evaluation safeguards in
 [GUIDELINES.md](./GUIDELINES.md).
 
-> **Related draft (not approved):** [NEW1.md](../NEW1.md) section 7 proposes a separate group-of-four pilot for the Teachability scope (tutor-tutee distance). It would share this protocol's ethics approval, consent and privacy rules, but it has its own design and is not part of this protocol.
+> **Related draft (not approved):** [NEW1.md](../NEW1.md) proposes a teach-back assessment (a knowledge-restricted AI novice scored per concept and Bloom level) and a Graph Auditor. Its human validation study (novice score against a normal exam, writer-ability fairness, lecturer agreement) is a separate design that would share this protocol's ethics approval, consent and privacy rules, but it is not part of this protocol. The earlier group-of-four idea was dropped.
 
 ## 1. Purpose and hypotheses
 
