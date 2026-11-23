@@ -217,3 +217,21 @@ def observations_from_rows(rows: Iterable[dict[str, Any]], pass_mark: float = 0.
             mastered[c].append(int(ok))
             week[c].append(first.get((s, c)) if ok else None)
     return Observations(mastered, week)
+
+
+def demo_run(kg: dict[str, Any], students: int = 300, seed: int = 0, fraction: float = 0.15) -> dict[str, Any]:
+    """One planted-error run with every audited edge listed, for the workbench."""
+    truth = graph_edges(kg)
+    obs = simulate_cohort(kg, students, seed)
+    bad = corrupt(truth, list(kg["concepts"]), fraction, seed)
+    report = auditor.audit_graph(bad["edges"], obs, auditor.AuditConfig(seed=seed))
+    planted = {e: "reversed" for e in map(tuple, bad["reversed"])}
+    planted.update({e: "spurious" for e in map(tuple, bad["spurious"])})
+    deleted = set(map(tuple, bad["deleted"]))
+    rows = [{**row, "truth": planted.get(tuple(row["edge"]), "true edge")} for row in report["edges"]]
+    candidates = [{**row, "truth": "deleted true edge" if tuple(row["edge"]) in deleted else "not a true edge"}
+                  for row in report["missing_candidates"]]
+    return {"students": students, "seed": seed, "fraction": fraction,
+            "planted": {"deleted": len(deleted), "reversed": len(bad["reversed"]), "spurious": len(bad["spurious"])},
+            "counts": report["counts"], "edges": rows, "missing_candidates": candidates,
+            "proposals": report["proposals"], "caveat": report["caveat"]}

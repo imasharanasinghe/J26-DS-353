@@ -12,9 +12,12 @@ from dataclasses import fields, replace
 from pathlib import Path
 from typing import Any
 
+from . import audit_sim, helpbox, synthetic, teachback
 from .adapters import load_c2_learner, load_json, validate_c3_path
 from .evaluation import PROFILES, make_learner
 from .explainer import OllamaExplanationGenerator
+from .novice import LexicalNovice, OllamaNovice
+from .testbank import build_test
 from .paths import build_verified_path
 from .pipeline import C4Config, C4Pipeline
 from .progression import SCAFFOLDS, LearnerProgress
@@ -74,6 +77,7 @@ class Workbench:
         self.kg = load_json(self.data_dir / "knowledge_graph.json")
         self.fixture_learner = load_c2_learner(load_json(self.data_dir / "learner_state.json"))
         self.default_text = (self.data_dir / "explanation.txt").read_text(encoding="utf-8").strip()
+        self.audit_graph = load_json(self.data_dir / "c3_import" / "graph_30_concepts.json")
 
     # ------------------------------------------------------------------ meta
 
@@ -240,12 +244,65 @@ class Workbench:
             return requested
         return len(LearnerProgress.from_state(learner).get(target).attempts) + 1
 
+    # ------------------------------------------------- teach-back, audit, help box
+
+    def lecture(self, target: str) -> list[str]:
+        """Concepts examined for one lecture: the target and its direct prerequisites."""
+        concepts = self.kg["concepts"]
+        return [target] + [p for p in concepts[target].get("prerequisites", []) if p in concepts]
+
+    def teachback_prompt(self, payload: dict[str, Any]) -> dict[str, Any]:
+        target = self._target(payload)
+        ids = self.lecture(target)
+        return {"target": target, "concepts": ids, "prompt": teachback.make_prompt(self.kg, target),
+                "test_items": len(build_test(self.kg, ids)),
+                "examples": {name: synthetic.explain(self.kg, name, 0, ids)
+                             for name in ("complete", "missing_one", "half", "wrong", "garbled", "empty")}}
+
+    def teachback(self, payload: dict[str, Any]) -> dict[str, Any]:
+        target = self._target(payload)
+        text = payload.get("explanation")
+        if not isinstance(text, str) or len(text) > MAX_EXPLANATION_CHARS:
+            raise ValueError("explanation must be text of at most 20000 characters")
+        kind = payload.get("novice", "lexical")
+        if kind not in ("lexical", "ollama"):
+            raise ValueError("novice must be 'lexical' or 'ollama'")
+        novice = LexicalNovice(self.kg) if kind == "lexical" else OllamaNovice(timeout=60.0)
+        ids = self.lecture(target)
+        result = teachback.score_exam(self.kg, novice, str(payload.get("student", "student")), text, ids,
+                                      graph_version=str(payload.get("graph_version", "fixture")),
+                                      required=ids[1:] or ids)
+        result["prompt"] = teachback.make_prompt(self.kg, target)
+        return result
+
+    def audit_demo(self, payload: dict[str, Any]) -> dict[str, Any]:
+        students = payload.get("students", 300)
+        seed = payload.get("seed", 0)
+        fraction = payload.get("fraction", 0.15)
+        if isinstance(students, bool) or not isinstance(students, int) or not 20 <= students <= 1000:
+            raise ValueError("students must be an integer between 20 and 1000")
+        if isinstance(seed, bool) or not isinstance(seed, int) or not 0 <= seed <= 10000:
+            raise ValueError("seed must be an integer between 0 and 10000")
+        if isinstance(fraction, bool) or not isinstance(fraction, (int, float)) or not 0.05 <= fraction <= 0.3:
+            raise ValueError("fraction must be between 0.05 and 0.3")
+        return audit_sim.demo_run(self.audit_graph, students, seed, float(fraction))
+
+    def helpbox(self, payload: dict[str, Any]) -> dict[str, Any]:
+        target = self._target(payload)
+        learner = self._learner(payload.get("learner"))
+        hints = payload.get("hints_used", 0)
+        if isinstance(hints, bool) or not isinstance(hints, int) or not 0 <= hints <= 10:
+            raise ValueError("hints_used must be an integer between 0 and 10")
+        return helpbox.step(self.kg, learner, target, str(payload.get("stage", "start")),
+                            payload.get("attempt"), hints, bool(payload.get("attempted", False)))
+
     def results(self) -> dict[str, Any]:
         """Committed evaluation artefacts, if present."""
         output: dict[str, Any] = {}
         for key, name in (("stress", "stress_test.json"), ("natural", "natural.json"),
                           ("sensitivity", "sensitivity.json"), ("bloom", "bloom_classifier.json"),
-                          ("progression", "progression.json")):
+                          ("progression", "progression.json"), ("teachback", "teachback.json"),
+                          ("audit", "audit.json"), ("planner", "planner.json")):
             path = self.results_dir / name
             output[key] = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
         report = self.results_dir / "RESULTS.md"

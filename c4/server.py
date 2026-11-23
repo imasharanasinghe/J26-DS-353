@@ -112,7 +112,8 @@ def make_handler(bench: Workbench, web_dir: Path = WEB_DIR):
         def do_POST(self) -> None:  # noqa: N802
             try:
                 path = self.path.split("?", 1)[0]
-                if path not in ("/api/verify", "/api/generate", "/api/explain", "/api/session", "/api/answer"):
+                if path not in ("/api/verify", "/api/generate", "/api/explain", "/api/session", "/api/answer",
+                                "/api/teachback/prompt", "/api/teachback", "/api/audit", "/api/help"):
                     raise ApiError(404, "Unknown endpoint")
                 payload = self._read_json()
                 try:
@@ -124,6 +125,14 @@ def make_handler(bench: Workbench, web_dir: Path = WEB_DIR):
                         self._json(200, bench.session(payload))
                     elif path == "/api/answer":
                         self._json(200, bench.answer(payload))
+                    elif path == "/api/teachback/prompt":
+                        self._json(200, bench.teachback_prompt(payload))
+                    elif path == "/api/teachback":
+                        self._json(200, bench.teachback(payload))
+                    elif path == "/api/audit":
+                        self._json(200, bench.audit_demo(payload))
+                    elif path == "/api/help":
+                        self._json(200, bench.helpbox(payload))
                     else:
                         self._json(200, bench.generate(payload))
                 except ValueError as exc:
