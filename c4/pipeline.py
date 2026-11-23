@@ -87,14 +87,17 @@ class C4Result:
     config: dict[str, Any] = field(default_factory=dict)
     final_layout: list[dict[str, Any]] = field(default_factory=list)
     progression: dict[str, Any] | None = None
+    edge_confidence: dict[str, Any] | None = None
 
     @property
     def metrics(self) -> dict[str, Any]:
         return summarize(self)
 
     def to_dict(self) -> dict:
+        extra = {"edge_confidence": self.edge_confidence} if self.edge_confidence is not None else {}
         return {
-            "schema_version": "c4-report/1.2",
+            **extra,
+            "schema_version": "c4-report/1.3" if self.edge_confidence is not None else "c4-report/1.2",
             "learner_id": self.learner_id,
             "target": self.target,
             "verified_path": self.verified_path,
@@ -122,10 +125,13 @@ class C4Pipeline:
         knowledge_graph: dict[str, Any],
         config: C4Config | None = None,
         progression: ProgressionConfig | None = None,
+        edge_confidence: dict[str, dict[str, Any]] | None = None,
     ):
         self.kg = knowledge_graph
         self.config = config or C4Config()
         self.progression = progression or ProgressionConfig()
+        # Graph Auditor output ("a->b": {"status", "n"}). None keeps the verifier's old behaviour.
+        self.edge_confidence = edge_confidence
 
     @classmethod
     def from_files(
@@ -214,6 +220,7 @@ class C4Pipeline:
             config=asdict(self.config),
             final_layout=self._layout(lines),
             progression=self._progression_report(decision, stagnation_before, claims),
+            edge_confidence=self._edges_used(initial_claims, c3_path),
         )
 
     def factual_check(self, text: str) -> list[dict[str, Any]]:
@@ -498,11 +505,18 @@ class C4Pipeline:
         ceiling = self._bloom_ceiling(c3_path, learner_state)
         if claim.estimated_bloom_level and claim.estimated_bloom_level > ceiling:
             return "BLOOM_MISMATCH"
-        states = [
-            self._mastery_state(concept_id, learner_state)
-            for concept_id in claim.concept_ids
-            if concept_id != c3_path["target"]
-        ]
+        states = []
+        for concept_id in claim.concept_ids:
+            if concept_id == c3_path["target"]:
+                continue
+            state = self._mastery_state(concept_id, learner_state)
+            if state == "UNMASTERED":
+                audit = self._edge_status(concept_id, c3_path["target"])
+                if audit in ("Unsupported", "Reversed"):
+                    continue  # the audit does not support this dependency: no hard violation
+                if audit == "Contested":
+                    state = "UNKNOWN"  # contested dependency: inconclusive, not a violation
+            states.append(state)
         if "UNMASTERED" in states:
             return "UNMASTERED_PREREQUISITE"
         if "UNKNOWN" in states:
@@ -824,9 +838,29 @@ class C4Pipeline:
                 continue
             for concept_id in verified.claim.concept_ids:
                 if concept_id != c3_path["target"] and concept_id not in needed and \
-                        self._mastery_state(concept_id, learner_state) != "MASTERED":
+                        self._mastery_state(concept_id, learner_state) != "MASTERED" and \
+                        self._edge_status(concept_id, c3_path["target"]) not in ("Unsupported", "Reversed"):
                     needed.append(concept_id)
         return needed
+
+    def _edge_status(self, concept_id: str, target: str) -> str | None:
+        """Audit status of the direct edge concept -> target, or None (no audit, or not a direct edge)."""
+        if not self.edge_confidence:
+            return None
+        row = self.edge_confidence.get(f"{concept_id}->{target}")
+        return row["status"] if row else None
+
+    def _edges_used(self, claims: list[VerifiedClaim], c3_path: dict[str, Any]) -> dict[str, Any] | None:
+        """The ``edge_confidence`` block of the report: audit status of each edge the claims relied on."""
+        if self.edge_confidence is None:
+            return None
+        used: dict[str, Any] = {}
+        for verified in claims:
+            for concept_id in verified.claim.concept_ids:
+                key = f"{concept_id}->{c3_path['target']}"
+                if concept_id != c3_path["target"] and key in self.edge_confidence:
+                    used[key] = self.edge_confidence[key]
+        return used
 
     # ---------------------------------------------------------------- helpers
 
