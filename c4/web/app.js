@@ -979,11 +979,186 @@ function progressionEvidence(results) {
   return out;
 }
 
+/* ---------- teach-back, graph audit and help box tabs ---------- */
+const STATUS_TONE = { Supported: "ok", Contested: "warn", Reversed: "bad", Unsupported: "bad", Missing: "info" };
+const f2 = (value) => (value === null || value === undefined ? "n/a" : Number(value).toFixed(2));
+const range = (pair) => (pair ? `${f2(pair[0])} to ${f2(pair[1])}` : "n/a");
+
+const teach = { info: null, result: null, text: "", novice: "lexical", busy: false, error: "" };
+
+async function loadTeachPrompt() {
+  teach.info = await api("/api/teachback/prompt", { target: state.target });
+  teach.result = null;
+  teach.text = teach.info.examples.complete;
+}
+
+async function scoreTeachback() {
+  teach.busy = true; teach.error = "";
+  renderTeachback();
+  try {
+    teach.result = await api("/api/teachback", { target: state.target, explanation: teach.text, novice: teach.novice });
+  } catch (error) { teach.error = error.message; }
+  teach.busy = false;
+  renderTeachback();
+}
+
+function teachResult(result) {
+  const overall = result.novice_test.overall;
+  const rows = Object.entries(result.novice_test.by_bloom).map(([level, row]) =>
+    [`${level} ${BLOOM_NAMES[Number(level) - 1] || ""}`, row.items, f2(row.score), f2(row.abstained), f2(row.net)]);
+  return el("div", {},
+    el("div", { class: "tiles" },
+      tile("Novice score", f2(overall.score), `${overall.items} hidden-test items`, overall.score >= 0.8),
+      tile("Coverage", f2(result.coverage.coverage), result.coverage.missing.length
+        ? `missing: ${result.coverage.missing.join(", ")}` : "all required concepts present"),
+      tile("Contradicted", result.claim_check.counts.CONTRADICTED, "statements against the graph")),
+    result.flags.length ? block("Flags for the lecturer", null, el("ul", {}, result.flags.map((f) => el("li", {}, f)))) : null,
+    block("Score by Bloom level", "Per level the novice answered from the text alone. Fewer than 2 items is thin evidence.",
+      table(["Level", "Items", "Correct", "Didn't know", "Net"], rows)),
+    block("Claim check (existing C4 verifier)", "Each sentence of the student's explanation against the graph.",
+      table(["Sentence", "Label"], result.claim_check.claims.map((c) => [c.text, pretty(c.factual_status)]))),
+    block("Evidence message for C2", result.use,
+      el("pre", { class: "mono" }, JSON.stringify(result.evidence, null, 1))));
+}
+
+async function renderTeachback() {
+  const view = $("#view-teach");
+  if (!teach.info || teach.info.target !== state.target) {
+    view.replaceChildren(el("p", { class: "hint" }, "Loading…"));
+    try { await loadTeachPrompt(); } catch (error) { view.replaceChildren(el("p", { class: "error" }, error.message)); return; }
+  }
+  const examples = Object.keys(teach.info.examples).map((name) => el("button", { type: "button", class: "chipbtn",
+    onclick: () => { teach.text = teach.info.examples[name]; teach.result = null; renderTeachback(); } }, name.replace("_", " ")));
+  const area = el("textarea", { rows: 8, spellcheck: "false", maxlength: 20000, "aria-label": "Student explanation",
+    oninput: (event) => { teach.text = event.target.value; } });
+  area.value = teach.text;
+  const novice = el("select", { "aria-label": "Novice", onchange: (event) => { teach.novice = event.target.value; } },
+    el("option", { value: "lexical" }, "Lexical control (deterministic, no model)"),
+    el("option", { value: "ollama", disabled: !state.ollamaReady }, "Qwen novice (Ollama, slow)"));
+  novice.value = teach.novice;
+  view.replaceChildren(
+    block("Teach-back exam", "A knowledge-restricted AI novice reads only the student's text, then takes a hidden test whose answers come from the graph. Formative evidence only; it is not a grade until validity and fairness are shown.",
+      el("div", {},
+        el("p", { class: "lede" }, el("b", {}, "Prompt: "), teach.info.prompt.text),
+        el("p", { class: "hint" }, `Lecture concepts: ${teach.info.concepts.join(", ")}. Hidden test: ${teach.info.test_items} items.`),
+        area,
+        el("div", { class: "tools" }, el("span", { class: "tools-label" }, "Load example answer"), examples),
+        el("div", { class: "tools" }, el("span", { class: "tools-label" }, "Novice"), novice),
+        el("div", { class: "row" }, el("button", { type: "button", class: "primary", disabled: teach.busy, onclick: scoreTeachback },
+          teach.busy ? "Scoring…" : "Score with the novice")),
+        teach.error ? el("p", { class: "error", role: "alert" }, teach.error) : null)),
+    teach.result ? teachResult(teach.result) : null);
+}
+
+const audit = { data: null, results: null, busy: false, error: "", students: 300, seed: 0, fraction: 0.15 };
+
+async function runAudit() {
+  audit.busy = true; audit.error = "";
+  renderAudit();
+  try {
+    audit.data = await api("/api/audit", { students: audit.students, seed: audit.seed, fraction: audit.fraction });
+  } catch (error) { audit.error = error.message; }
+  audit.busy = false;
+  renderAudit();
+}
+
+function auditResult(data) {
+  const rows = data.edges.map((e) => [e.edge.join(" → "), e.truth, badge(STATUS_TONE[e.status], "", e.status, e.reason),
+    f2(e.implication_violation), range(e.odds_ratio_ci), e.n]);
+  const found = data.edges.filter((e) => e.truth !== "true edge" && ["Reversed", "Unsupported"].includes(e.status)).length;
+  const planted = data.planted.reversed + data.planted.spurious;
+  return el("div", {},
+    el("div", { class: "tiles" },
+      tile("Wrong edges flagged", `${found} / ${planted}`, "reversed or spurious edges called Reversed or Unsupported", found === planted),
+      tile("Edges Contested", data.counts.Contested || 0, "evidence mixed or intervals wide"),
+      tile("Deleted edges proposed", `${data.missing_candidates.filter((c) => c.truth === "deleted true edge").length} / ${data.planted.deleted}`,
+        `${data.missing_candidates.length} candidates in all`)),
+    block("Audited edges", `${data.students} simulated students. The graph was corrupted before the audit; "truth" shows what was planted. Implication violation = share of students who mastered B without A. Odds-ratio interval is adjusted for overall ability.`,
+      table(["Edge (A → B)", "Truth", "Status", "B without A", "Odds ratio 95%", "n"], rows)),
+    block("Missing candidates", "Unlinked pairs with a strong one-way dependency that no existing path implies. Proposals only; a lecturer decides.",
+      data.missing_candidates.length ? table(["Edge", "Truth", "Odds ratio 95%"],
+        data.missing_candidates.map((c) => [c.edge.join(" → "), c.truth, range(c.odds_ratio_ci)])) : el("p", { class: "hint" }, "None.")),
+    el("p", { class: "hint" }, data.caveat));
+}
+
+async function renderAudit() {
+  const view = $("#view-audit");
+  if (!audit.results) {
+    try { audit.results = (await api("/api/results")).audit; } catch (error) { audit.results = { error: error.message }; }
+  }
+  const controls = el("div", {},
+    el("div", { class: "tools" }, el("span", { class: "tools-label" }, "Students"),
+      el("select", { "aria-label": "Students", onchange: (e) => { audit.students = Number(e.target.value); } },
+        [60, 120, 300, 600].map((n) => el("option", { value: n, selected: n === audit.students }, n))),
+      el("span", { class: "tools-label" }, "Seed"),
+      el("select", { "aria-label": "Seed", onchange: (e) => { audit.seed = Number(e.target.value); } },
+        [0, 1, 2, 3, 4].map((n) => el("option", { value: n, selected: n === audit.seed }, n)))),
+    el("div", { class: "row" }, el("button", { type: "button", class: "primary", disabled: audit.busy, onclick: runAudit },
+      audit.busy ? "Auditing…" : "Plant errors and audit")),
+    audit.error ? el("p", { class: "error", role: "alert" }, audit.error) : null);
+  const sweep = audit.results && audit.results.planted_error;
+  view.replaceChildren(
+    block("Graph Auditor", "Checks each pedagogy edge of the 30-concept graph against simulated student behaviour. It proposes; it never edits the graph. Simulation only: real data is needed for real claims.", controls),
+    audit.data ? auditResult(audit.data) : null,
+    sweep ? block("Planted-error results across cohort sizes", "Mean over seeds; strict = Reversed or Unsupported.",
+      table(["Students", "Precision", "Recall", "F1", "Co-occurrence F1", "Order-only F1", "Missing-edge recall"],
+        sweep.rows.map((r) => [r.students, f2(r.ours_strict_precision.mean), f2(r.ours_strict_recall.mean), f2(r.ours_strict_f1.mean),
+          f2(r.baseline_cooccurrence_f1.mean), f2(r.baseline_order_f1.mean), f2(r.missing_recall.mean)]))) : null);
+}
+
+const help = { stage: "start", hintsUsed: 0, attempted: false, log: [], busy: false, error: "", text: "" };
+
+async function helpStep(stage, attempt) {
+  help.busy = true; help.error = "";
+  try {
+    const body = { target: state.target, learner: state.learner, stage, hints_used: help.hintsUsed, attempted: help.attempted };
+    if (attempt !== undefined) body.attempt = attempt;
+    const reply = await api("/api/help", body);
+    help.log.push(reply);
+    if (stage === "attempt") help.attempted = true;
+    if (stage === "hint" && reply.hint) help.hintsUsed += 1;
+    help.stage = reply.next;
+  } catch (error) { help.error = error.message; }
+  help.busy = false;
+  renderHelp();
+}
+
+function renderHelp() {
+  const view = $("#view-help");
+  const area = el("textarea", { rows: 4, spellcheck: "false", "aria-label": "Your attempt",
+    oninput: (e) => { help.text = e.target.value; } });
+  area.value = help.text;
+  const entries = help.log.map((r) => el("article", { class: "claim" },
+    el("div", { class: "badges" }, badge("info", "stage", r.stage),
+      r.mastery_evidence ? badge("ok", "evidence", `${r.mastery_evidence.source} · ${r.mastery_evidence.weight}`) : badge("", "evidence", "none")),
+    r.prompt ? el("p", { class: "claim-text" }, r.prompt) : null,
+    r.feedback ? el("p", { class: "claim-text" }, r.feedback) : null,
+    r.hint ? el("p", { class: "claim-text" }, r.hint) : null,
+    r.explanation ? el("pre", { class: "mono" }, r.explanation) : null,
+    r.review_first && r.review_first.length ? el("p", { class: "why" }, `Review first: ${r.review_first.join(", ")}`) : null));
+  view.replaceChildren(
+    block("Do you need help with this concept?", "Attempt first, then hints, then a verified explanation. Asking for help is never mastery evidence; only an attempt is, and hints lower its weight.",
+      el("div", {},
+        el("div", { class: "row" },
+          el("button", { type: "button", class: "primary", disabled: help.busy, onclick: () => helpStep("start") }, "I need help"),
+          el("button", { type: "button", class: "ghost", onclick: () => { Object.assign(help, { stage: "start", hintsUsed: 0, attempted: false, log: [], text: "" }); renderHelp(); } }, "Reset")),
+        area,
+        el("div", { class: "row" },
+          el("button", { type: "button", disabled: help.busy || !help.text.trim(), onclick: () => helpStep("attempt", help.text) }, "Submit my attempt"),
+          el("button", { type: "button", disabled: help.busy, onclick: () => helpStep("hint") }, "Give me a hint"),
+          el("button", { type: "button", disabled: help.busy, onclick: () => helpStep("explain") }, "Show the explanation")),
+        help.error ? el("p", { class: "error", role: "alert" }, help.error) : null)),
+    entries);
+}
+
 /* ---------- tabs and boot ---------- */
 function selectTab(name) {
   if (name === "inputs") renderInputs();
   if (name === "progress") renderProgression();
-  for (const id of ["verify", "progress", "inputs", "eval"]) {
+  if (name === "teach") renderTeachback();
+  if (name === "audit") renderAudit();
+  if (name === "help") renderHelp();
+  for (const id of ["verify", "progress", "teach", "audit", "help", "inputs", "eval"]) {
     $(`#tab-${id}`).setAttribute("aria-selected", String(id === name));
     $(`#view-${id}`).hidden = id !== name;
   }
@@ -993,6 +1168,9 @@ function selectTab(name) {
 async function boot() {
   $("#tab-verify").addEventListener("click", () => selectTab("verify"));
   $("#tab-progress").addEventListener("click", () => selectTab("progress"));
+  $("#tab-teach").addEventListener("click", () => selectTab("teach"));
+  $("#tab-audit").addEventListener("click", () => selectTab("audit"));
+  $("#tab-help").addEventListener("click", () => selectTab("help"));
   $("#tab-inputs").addEventListener("click", () => selectTab("inputs"));
   $("#tab-eval").addEventListener("click", () => selectTab("eval"));
   $("#target").addEventListener("change", applyTarget);
@@ -1028,6 +1206,9 @@ async function boot() {
   if (location.hash === "#run") run();
   if (location.hash === "#eval") selectTab("eval");  // deep link used for demos and screenshots
   if (location.hash === "#progress") selectTab("progress");
+  if (location.hash === "#teach") selectTab("teach");
+  if (location.hash === "#audit") selectTab("audit");
+  if (location.hash === "#help") selectTab("help");
   api("/api/health").then((health) => {
     const { online, model_installed: installed, model } = health.ollama;
     state.ollamaReady = online && installed;

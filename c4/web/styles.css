@@ -318,3 +318,7 @@ ul.plain li.false { color: var(--bad); }
 .legend i.a { background: var(--series-a); } .legend i.b { background: var(--series-b); } .legend i.c { background: var(--series-c); }
 .legend i.d { background: var(--ok); } .legend i.t { background: var(--series-c); opacity: .55; }
 @media (max-width: 920px) { .journey { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* teach-back, audit and help tabs */
+.block pre.mono { margin: 8px 0 0; padding: 12px 14px; background: var(--panel-2); border: 1px solid var(--line-soft); border-radius: 6px; font: 13.5px/1.5 ui-monospace, Menlo, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.tabs { flex-wrap: wrap; }

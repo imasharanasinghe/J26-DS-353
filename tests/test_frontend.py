@@ -13,7 +13,8 @@ def test_every_element_id_used_by_the_script_exists_in_the_page() -> None:
     script = (WEB / "app.js").read_text(encoding="utf-8")
     page_ids = set(re.findall(r'\bid="([^"]+)"', html))
     used = set(re.findall(r'\$\("#([\w-]+)"\)', script))
-    used |= {"tab-verify", "tab-eval", "tab-progress", "view-verify", "view-eval", "view-progress"}  # built from a template string
+    used |= {f"{kind}-{name}" for kind in ("tab", "view")
+             for name in ("verify", "eval", "progress", "teach", "audit", "help", "inputs")}  # built from a template string
     assert used - page_ids == set(), f"ids missing from index.html: {used - page_ids}"
 
 
@@ -40,3 +41,12 @@ def test_progression_tab_is_wired_to_the_session_and_answer_endpoints() -> None:
     assert 'id="tab-progress"' in html and 'id="view-progress"' in html
     assert '"/api/session"' in script and '"/api/answer"' in script
     assert "progressionEvidence" in script and "lineChart" in script
+
+
+def test_new_tabs_are_wired_to_their_endpoints() -> None:
+    html = (WEB / "index.html").read_text(encoding="utf-8")
+    script = (WEB / "app.js").read_text(encoding="utf-8")
+    for name in ("teach", "audit", "help"):
+        assert f'id="tab-{name}"' in html and f'id="view-{name}"' in html
+    for endpoint in ("/api/teachback", "/api/teachback/prompt", "/api/audit", "/api/help"):
+        assert f'"{endpoint}"' in script
