@@ -1,0 +1,120 @@
+{
+  "_note": "Hand-written Apply (3) and Analyze (4) items for the teach-back hidden test. Recognition items (Bloom 1-2) are generated from the graph facts by c4/testbank.py. 'requires' and 'supports' strings are graph facts (or 'NOT: <known-false statement>'), so every answer key comes from the graph, not from an LLM. Pilot items: not yet calibrated for difficulty.",
+  "items": [
+    {
+      "id": "stack-apply-1", "concept": "stack", "bloom": 3,
+      "stem": "A text editor must undo the most recent edit first. Which structure fits this behaviour?",
+      "options": [
+        {"text": "A stack", "supports": ["A stack follows the last-in-first-out rule."]},
+        {"text": "A queue", "supports": ["A queue follows the last-in-first-out rule."]},
+        {"text": "A heap", "supports": []},
+        {"text": "A tree", "supports": []}
+      ],
+      "answer": 0
+    },
+    {
+      "id": "queue-apply-1", "concept": "queue", "bloom": 3,
+      "stem": "Print jobs must be handled in the order they arrive. Which structure fits this behaviour?",
+      "options": [
+        {"text": "A stack", "supports": ["A stack follows the first-in-first-out rule."]},
+        {"text": "A queue", "supports": ["A queue follows the first-in-first-out rule."]},
+        {"text": "A heap", "supports": []},
+        {"text": "A tree", "supports": []}
+      ],
+      "answer": 1
+    },
+    {
+      "id": "recursion-apply-1", "concept": "recursion", "bloom": 3,
+      "stem": "A recursive function keeps calling itself forever and crashes. What is missing?",
+      "options": [
+        {"text": "A base case that stops the calls", "supports": ["Recursion needs a base case to stop."]},
+        {"text": "Nothing is missing, recursion never needs a stopping rule", "supports": ["Recursion never needs a base case."]},
+        {"text": "A bigger array", "supports": []},
+        {"text": "A second loop variable", "supports": []}
+      ],
+      "answer": 0
+    },
+    {
+      "id": "heap-apply-1", "concept": "heap", "bloom": 3,
+      "stem": "Someone reads a heap array from left to right and expects ascending order. What will they find?",
+      "options": [
+        {"text": "The values are not necessarily in sorted order", "supports": ["NOT: A heap is always fully sorted."]},
+        {"text": "The values are always in ascending order", "supports": ["A heap is always fully sorted."]},
+        {"text": "The values are always in descending order", "supports": []},
+        {"text": "The array is empty", "supports": []}
+      ],
+      "answer": 0
+    },
+    {
+      "id": "binary_tree-apply-1", "concept": "binary_tree", "bloom": 3,
+      "stem": "A node has three children. Can this structure be a binary tree?",
+      "options": [
+        {"text": "No, a binary tree node has at most two children", "supports": ["A binary tree has at most two children per node."]},
+        {"text": "Yes, a binary tree node can have any number of children", "supports": ["A binary tree node can have any number of children."]},
+        {"text": "Yes, but only if the node is the root", "supports": []},
+        {"text": "No, because binary trees have no children", "supports": []}
+      ],
+      "answer": 0
+    },
+    {
+      "id": "arrays-apply-1", "concept": "arrays", "bloom": 3,
+      "stem": "A program needs the fifth stored value immediately, without visiting the first four. How does an array help?",
+      "options": [
+        {"text": "Elements are accessed by index", "supports": ["Array elements are accessed by index."]},
+        {"text": "Elements sit in random places so the program must search for them", "supports": ["An array stores elements in random unrelated memory locations."]},
+        {"text": "Arrays are always sorted", "supports": []},
+        {"text": "Arrays cannot be read directly", "supports": []}
+      ],
+      "answer": 0
+    },
+    {
+      "id": "tree-analyze-1", "concept": "tree", "bloom": 4,
+      "stem": "Which of these structures is hierarchical rather than linear?",
+      "options": [
+        {"text": "A tree", "supports": ["Trees are hierarchical data structures."]},
+        {"text": "An array", "supports": ["A tree is a linear data structure."]},
+        {"text": "A stack", "supports": []},
+        {"text": "A queue", "supports": []}
+      ],
+      "answer": 0
+    },
+    {
+      "id": "stack-queue-analyze-1", "concept": "stack", "bloom": 4,
+      "stem": "How do a stack and a queue differ in the order they give items back?",
+      "options": [
+        {"text": "A stack is last-in-first-out and a queue is first-in-first-out",
+         "supports": ["A stack follows the last-in-first-out rule.", "A queue follows the first-in-first-out rule."]},
+        {"text": "A stack is first-in-first-out and a queue is last-in-first-out",
+         "supports": ["A stack follows the first-in-first-out rule.", "A queue follows the last-in-first-out rule."]},
+        {"text": "They give items back in exactly the same order", "supports": []},
+        {"text": "Neither gives items back in any order", "supports": []}
+      ],
+      "answer": 0
+    },
+    {
+      "id": "heap-analyze-1", "concept": "heap", "bloom": 4,
+      "stem": "Why can a heap be stored in a plain array without pointers?",
+      "options": [
+        {"text": "Because it is a complete binary tree, so positions fill level by level",
+         "supports": ["A heap is a complete binary tree.", "A heap can be stored in an array."]},
+        {"text": "Because a heap is fully sorted, so it is already a flat list",
+         "supports": ["A heap is a fully sorted array."]},
+        {"text": "Because a heap has no structure", "supports": []},
+        {"text": "Because arrays cannot hold trees", "supports": []}
+      ],
+      "answer": 0
+    },
+    {
+      "id": "recursion-tree-analyze-1", "concept": "tree", "bloom": 4,
+      "stem": "Why is recursion a natural fit for walking every node of a tree?",
+      "options": [
+        {"text": "A tree node's children are smaller trees, so the same function can be applied to each",
+         "supports": ["Tree nodes can be traversed using recursion.", "Recursion solves a problem by calling a function on smaller input."]},
+        {"text": "Because trees are linear, so one loop is enough", "supports": ["A tree is a linear data structure."]},
+        {"text": "Because recursion never needs a base case", "supports": ["Recursion never needs a base case."]},
+        {"text": "Recursion is unrelated to trees", "supports": []}
+      ],
+      "answer": 0
+    }
+  ]
+}
