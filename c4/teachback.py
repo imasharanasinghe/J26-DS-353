@@ -81,7 +81,7 @@ def evidence_messages(student: str, results: list[dict[str, Any]], graph_version
         messages.append({
             "schema": SCHEMA, "student": student, "concept": concept, "bloom": bloom,
             "score": round(row["score"], 4), "items": int(row["items"]),
-            "ci95": [round(interval[0], 4), round(interval[1], 4)] if interval else None,
+            "ci95": [round(interval[0] / 100, 4), round(interval[1] / 100, 4)] if interval else None,
             "thin": row["items"] < THIN_ITEMS,
             "source": EVIDENCE_SOURCE, "weight": "provisional", "graph_version": graph_version,
         })
