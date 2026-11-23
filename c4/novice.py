@@ -45,6 +45,12 @@ def split_statements(text: str) -> list[str]:
         line = re.sub(r"^\s*([-*•]|\d+[.)])\s*", "", line).strip()
         if not line:
             continue
+        # Concept-list input ("Heap: complete binary tree; stored in array"): each part is read
+        # with its term as subject, so a short list is not marked down for dropping full sentences.
+        listed = re.match(r"^([^:.;]{2,40}):\s*(.+)$", line)
+        if listed:
+            pieces.extend(f"{listed.group(1)} {part.strip()}" for part in listed.group(2).split(";") if part.strip())
+            continue
         pieces.extend(part.strip() for part in re.split(r"(?<=[.!?])\s+", line) if part.strip())
     return pieces
 
