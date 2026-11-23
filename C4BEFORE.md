@@ -2,7 +2,7 @@
 
 J26-DS-353, Component 4 (Amarasinghe S A R U, IT23216778). Branch `c4`.
 
-This file records what C4 does today, what it contributes, what evidence exists and what is missing. It describes the **implemented, committed scope**. The draft Teachability extension is described in [NEW1.md](NEW1.md) and is not approved or implemented. Related files: [PP1.md](PP1.md) (panel response and slides), [c4/README.md](c4/README.md) (technical readme), [docs/C4.md](docs/C4.md) (proposal).
+This file records what C4 does today, what it contributes, what evidence exists and what is missing. It describes the **implemented, committed scope**. The teach-back and Graph Auditor extension is described in [NEW.md](NEW.md) (branch `c4-addition`) and is not approved. Related files: [PP1.md](PP1.md) (panel response and slides), [c4/README.md](c4/README.md) (technical readme), [docs/C4.md](docs/C4.md) (proposal).
 
 Status checks made when this file was written: 161 tests pass (about 5 s); about 5,900 lines across `c4/`, `tests/`, `scripts/` and the web UI.
 
