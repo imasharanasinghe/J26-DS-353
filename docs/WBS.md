@@ -106,17 +106,17 @@ over time; research contribution, not only a product), added 2026-10-20:
 66. Reviewed the draft Teachability scope (2026-10-26) and narrowed it; added
     it to the plan. It was later replaced (step 67).
 67. Replaced the draft with the Teach-Back proposal (2026-10-29,
-    [NEW1.md](../NEW1.md)): an AI novice that learns only from a student's
+    `NEW1.md` (branch `c4`)): an AI novice that learns only from a student's
     explanation and takes a graph-checked hidden test, plus a Graph Auditor
     that checks the graph against student data. Documentation only; no code.
 68. Searched the literature and opened the closest papers (Waterloo project,
     Chrysalis, Kucharavy et al., Jin et al.). Found that the idea of an exam on
     what an AI learned is planned by Waterloo but not published. Details in
-    NEW1.md section 10.
+    NEW1.md section 10 (now NEW.md section 11 on `c4-addition`).
 69. Checked the NotebookLM answer against the original papers and corrected
     the claims in NEW1.md (it had merged two papers).
 70. Read the other three components' branches (read-only) and wrote
-    [PROPOSAL.md](../PROPOSAL.md), a plain-English proposal for the group with
+    `PROPOSAL.md` (branch `c4`), a plain-English proposal for the group with
     suggested improvements for C1, C2 and C3 (each their decision).
 71. Decided not to implement anything until the supervisor and the group agree.
 72. Brought LOG.md, PLAN.md and WBS.md up to date (they had been skipped for
@@ -130,6 +130,23 @@ over time; research contribution, not only a product), added 2026-10-20:
     untouched. Recorded the mapping and conflicts in PLAN.md.
 75. Extended the revised HTML to all four components from NEW1.md and PROPOSAL.md
     (C4 detail; suggested add-ons 1.5, 1.6, 2.5, 3.6, 3.7 for C1 to C3).
+
+76. Created branch `c4-addition` from `c4`, removed `NEW1.md` and `PROPOSAL.md` from it and merged
+    their content into [NEW.md](../NEW.md) with a second literature pass (2026-11-23).
+77. Built the hidden test bank keyed to the graph and the two novices (lexical control,
+    Ollama LLM): `c4/testbank.py`, `c4/novice.py`.
+78. Built the synthetic explanations and the instrument gate (leakage, discrimination,
+    reliability, fairness, depth): `c4/synthetic.py`, `c4/instrument.py`.
+79. Built the teach-back Mode 1 pipeline and the C2 evidence message: `c4/teachback.py`.
+80. Built the Graph Auditor and the planted-error harness: `c4/auditor.py`, `c4/audit_sim.py`.
+81. Fed audited edge confidence into the verifier (`c4-report/1.3`) and ran the downstream
+    study E3: `c4/pipeline.py`, `c4/audit_loop.py`.
+82. Built the block-plan simulation, the help box and the layered, versioned graph:
+    `c4/planner.py`, `c4/helpbox.py`, `c4/layers.py`.
+83. Added the API endpoints and the Teach-back, Graph audit and Help box tabs.
+84. Ran the experiments and recorded the results, including the negative results for the
+    prompted LLM novice and the evidence-driven plan: `c4/results/TEACHBACK.md`, `AUDIT.md`,
+    `PLANNER.md`. 223 tests pass.
 
 ## Current demo commands
 

@@ -164,7 +164,7 @@ Workbench tabs: **Inputs** (the C1/C2/C3 data behind a run), **Verification** (c
 
 - PP1 is over. The panel said the four components together amounted to roughly one normal final-year component and asked for something deeper in each. The next milestone is **PP2, the final presentation**.
 - The committed scope is what this file describes.
-- [NEW1.md](NEW1.md) is a draft, unapproved extension: a knowledge-restricted AI novice produces a **teachability score** (how much understanding transfers), with explanation survivability (A -> B -> C chains) as the recommended single discovery. Tutor-tutee distance and groups of four are a research pilot, and the stretch experiments are future work. The verifier would remain as the correctness instrument.
+- [NEW.md](NEW.md) (branch `c4-addition`) describes the draft, unapproved extension that is now built there: the teach-back assessment with a knowledge-restricted AI novice, and the Graph Auditor. The earlier Teachability draft was dropped. This file still describes the scope on `c4` before that work.
 - Outstanding work is listed in [docs/PLAN.md](docs/PLAN.md) and in section 6 above.
 
 ## 8. Other files

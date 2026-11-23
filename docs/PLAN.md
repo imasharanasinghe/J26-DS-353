@@ -647,7 +647,7 @@ progression across sessions). Design and status are in [PP1.md](./PP1.md).
 
 ## Proposed Teach-Back scope (draft, not approved) - replaces the Teachability section, 2026-10-29
 
-After the PP1 result the panel asked for a deeper scope. [NEW1.md](../NEW1.md) now proposes a **teach-back assessment**: a knowledge-restricted AI novice learns only from a student's explanation and takes a hidden test whose answers come from the verified graph, scored per concept and Bloom level. A **Graph Auditor** checks the graph's prerequisite edges, Bloom labels and misconceptions against student data. [PROPOSAL.md](../PROPOSAL.md) is the plain-English version for the group. The earlier Teachability draft (survivability, tutor-tutee distance, groups of four) is no longer the plan; it stays in git history. Nothing here is implemented, no code has been written for it, and the supervisor has not approved it, so the sections above still describe the committed C4 scope.
+After the PP1 result the panel asked for a deeper scope. The scope is described in [NEW.md](../NEW.md) on branch `c4-addition` (it merges the earlier `NEW1.md` and `PROPOSAL.md`, which stay on `c4`): a **teach-back assessment**, where a knowledge-restricted AI novice learns only from a student's explanation and takes a hidden test whose answers come from the verified graph, scored per concept and Bloom level, and a **Graph Auditor** that checks the graph's prerequisite edges, Bloom labels and misconceptions against student data. The earlier Teachability draft (survivability, tutor-tutee distance, groups of four) is no longer the plan; it stays in git history. **Phases 1 to 5 are now implemented on `c4-addition`** (offline, on fixtures and simulated cohorts) with 223 passing tests; the human pilot is not run and the supervisor has not approved the scope, so the sections above still describe the committed `c4` scope.
 
 ### Parts of the proposal
 
@@ -694,16 +694,17 @@ Conflicts to settle with the group before building:
 
 ### Outstanding for the Teach-Back scope
 
-- [ ] Talk to the group: each member's own post-panel scope, overlaps with this proposal, and the [ASK] items in [PROPOSAL.md](../PROPOSAL.md) section 10.
+- [ ] Talk to the group: each member's own post-panel scope, overlaps with this proposal, and the [ASK] items in [NEW.md](../NEW.md) section 12.
 - [ ] Supervisor approval of the scope and title.
 - [ ] Send the revised page and the conflicts above to the team leader and the C1 and C2 owners; agree the edge-audit split and the per-level mastery format.
 - [ ] Find out why the earlier Teachability draft was dropped and whether that reason still applies.
 - [ ] Agree the interfaces with C1, C2 and C3: graph JSON with stable ids, `facts`, `known_false`, edge `source`, `status`, `confidence` and a `graph_version`; the evidence message; mastery per Bloom level.
-- [ ] Full literature search. Open and read each paper listed in [NEW1.md](../NEW1.md) section 10 (most were seen as search results only). Re-check the Waterloo group (Arun, Poupart, Grossmann) shortly before PP2 for published results on exam-as-assessment.
+- [ ] Full literature search. Open and read each paper marked S (search snippet only) or B (blocked) in [NEW.md](../NEW.md) section 11; the second pass on 2026-11-23 opened the abstracts marked A. Re-check the Waterloo group (Arun, Poupart, Grossmann) shortly before PP2 for published results on exam-as-assessment.
 - [ ] Do not write "validated" for the novice score before data exist (N1 is a question with a protocol).
-- [ ] Decide the novice model (local Qwen3 4B or a stronger hosted model), its budget, and measure its leak rate.
+- [ ] Decide the novice model. First measurement (2026-11-23): prompted local `qwen3:4b` leaks (0.385 on untaught concepts) and resists wrong statements; next try retrieval-restricted answering, another model, or unlearning, at 10 or more seeds ([NEW.md](../NEW.md) section 9.1).
+- [ ] Calibrate and enlarge the 24-item pilot bank; rerun the gate.
+- [ ] Audit on ASSISTments for a sanity check on real behaviour (it has no prerequisite ground truth), then on SLIIT data after ethics approval.
 - [ ] Decide whether the score may ever count for a grade (formative first).
 - [ ] SLIIT ethics approval and lecturer agreement before any student data (shared with [PILOT_STUDY.md](./PILOT_STUDY.md)); DSA performance data access.
 - [ ] After approval: update [C4.md](./C4.md), [PP1.md](../PP1.md) and [C4BEFORE.md](../C4BEFORE.md), which still describe the older scope.
-- [ ] Commit the documentation to the `c4` branch (NEW1.md, PROPOSAL.md, LOG.md, PLAN.md, WBS.md, PILOT_STUDY.md are uncommitted as of 2026-10-30).
-- [ ] The Graph Auditor draft that was overwritten is only in a temporary scratchpad copy; its content lives on in [NEW1.md](../NEW1.md) section 6.
+- [x] Documentation committed (2026-11-05 on `c4`; `NEW.md` and the build on `c4-addition`, 2026-11-23).
