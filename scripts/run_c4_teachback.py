@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT))
 
 from c4 import instrument, synthetic, teachback
 from c4.adapters import load_json
-from c4.novice import LexicalNovice, OllamaNovice
+from c4.novice import LexicalNovice, OllamaNovice, take_test
 from c4.testbank import build_test
 
 DATA = ROOT / "c4" / "data"
@@ -59,6 +59,16 @@ def render(result: dict) -> str:
              "leakage by construction; the LLM novice is the candidate instrument.", ""]
     for gate in result["gates"]:
         lines += gate_rows(gate)
+    if result.get("llm_depth"):
+        lines += ["## Depth check on the LLM novice", "",
+                  "A correct answer only counts if every graph statement the item requires is stated in the student's text. "
+                  "Answers that are correct without that came from the novice's own knowledge or reasoning.", "",
+                  "| Variant | Correct | Traced to the text | Untraced | Raw score | Depth-adjusted score |",
+                  "|---|---|---|---|---|---|"]
+        for name, row in result["llm_depth"].items():
+            lines.append(f"| {name} | {row['correct']} | {row['traced']} | {row['untraced']} | "
+                         f"{row['raw_score']} | {row['depth_adjusted_score']} |")
+        lines.append("")
     demo = result["demo_exam"]
     lines += ["## Demo exam (lexical novice, heap lecture)", "",
               "| Student | Overall | Coverage | Contradicted statements | Flags |", "|---|---|---|---|---|"]
@@ -72,6 +82,17 @@ def render(result: dict) -> str:
     return "\n".join(lines)
 
 
+def llm_depth(kg: dict, items: list, model: str) -> dict:
+    """Raw versus depth-adjusted score of the LLM novice on four variants (one seed)."""
+    novice = OllamaNovice(model=model)
+    table = {}
+    for variant in ("complete", "half", "wrong", "empty"):
+        text = synthetic.explain(kg, variant, 0)
+        table[variant] = instrument.depth(text, kg, take_test(novice, text, items), items)
+        print(f"  depth {variant}: {table[variant]}", flush=True)
+    return table
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--llm", action="store_true")
@@ -79,10 +100,19 @@ def main() -> None:
     parser.add_argument("--seeds", type=int, default=10)
     parser.add_argument("--llm-seeds", type=int, default=2)
     parser.add_argument("--llm-runs", type=int, default=4)
+    parser.add_argument("--llm-depth-only", action="store_true",
+                        help="run only the depth-adjusted LLM table and merge it into the existing teachback.json")
     args = parser.parse_args()
 
     kg = load_json(DATA / "knowledge_graph.json")
     items = build_test(kg)
+    if args.llm_depth_only:
+        previous = json.loads((RESULTS / "teachback.json").read_text(encoding="utf-8"))
+        previous["llm_depth"] = llm_depth(kg, items, args.model)
+        (RESULTS / "teachback.json").write_text(json.dumps(previous, indent=2, default=str), encoding="utf-8")
+        (RESULTS / "TEACHBACK.md").write_text(render(previous), encoding="utf-8")
+        print("merged llm_depth into teachback.json")
+        return
     gates = [instrument.run_gate(LexicalNovice(kg), kg, items, seeds=args.seeds, runs=3)]
     if args.llm:
         started = time.time()
@@ -97,6 +127,8 @@ def main() -> None:
             for name, variant in (("complete", "complete"), ("one_step_missing", "missing_one"),
                                   ("half", "half"), ("misconception", "wrong"), ("empty", "empty"))}
     result = {"items": len(items), "gates": gates, "demo_exam": demo}
+    if args.llm:
+        result["llm_depth"] = llm_depth(kg, items, args.model)
     RESULTS.mkdir(exist_ok=True)
     (RESULTS / "teachback.json").write_text(json.dumps(result, indent=2, default=str), encoding="utf-8")
     (RESULTS / "TEACHBACK.md").write_text(render(result), encoding="utf-8")

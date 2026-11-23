@@ -1,0 +1,2344 @@
+{
+  "items": 24,
+  "gates": [
+    {
+      "novice": "lexical",
+      "items": 24,
+      "leakage": {
+        "chance_if_forced_to_guess": 0.25,
+        "empty_text": {
+          "items": 24,
+          "score": 0.0,
+          "wrong": 0.0,
+          "abstained": 1.0,
+          "net": 0.0
+        },
+        "unrelated_text_heldout_items": {
+          "items": 13,
+          "score": 0.0,
+          "wrong": 0.0,
+          "abstained": 1.0,
+          "net": 0.0
+        },
+        "leaks": false,
+        "note": "score counts 'I don't know' as wrong; a score above chance means the novice used knowledge not in the text"
+      },
+      "discrimination": {
+        "seeds": 10,
+        "means": {
+          "complete": {
+            "score": 1.0,
+            "net": 1.0
+          },
+          "missing_one": {
+            "score": 0.9417,
+            "net": 0.9417
+          },
+          "half": {
+            "score": 0.5417,
+            "net": 0.5417
+          },
+          "wrong": {
+            "score": 0.0,
+            "net": -0.1528
+          },
+          "garbled": {
+            "score": 1.0,
+            "net": 1.0
+          },
+          "paraphrased": {
+            "score": 0.625,
+            "net": 0.625
+          },
+          "empty": {
+            "score": 0.0,
+            "net": 0.0
+          }
+        },
+        "ordering_checks": [
+          {
+            "expect": "complete > missing_one (score)",
+            "mean_difference": 0.0583,
+            "ci95": [
+              0.0333,
+              0.0833
+            ],
+            "passes": true
+          },
+          {
+            "expect": "missing_one > half (score)",
+            "mean_difference": 0.4,
+            "ci95": [
+              0.375,
+              0.425
+            ],
+            "passes": true
+          },
+          {
+            "expect": "half > empty (score)",
+            "mean_difference": 0.5417,
+            "ci95": [
+              0.5417,
+              0.5417
+            ],
+            "passes": true
+          },
+          {
+            "expect": "complete > wrong (net)",
+            "mean_difference": 1.1528,
+            "ci95": [
+              1.1528,
+              1.1528
+            ],
+            "passes": true
+          },
+          {
+            "expect": "missing_one > wrong (net)",
+            "mean_difference": 1.0944,
+            "ci95": [
+              1.0694,
+              1.1194
+            ],
+            "passes": true
+          },
+          {
+            "expect": "complete > garbled (score)",
+            "mean_difference": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "passes": false
+          }
+        ],
+        "invariance_checks": [
+          {
+            "expect": "paraphrased ~ complete",
+            "mean_difference": 0.375,
+            "passes": false
+          }
+        ],
+        "all_pass": false
+      },
+      "reliability": {
+        "variant": "missing_one",
+        "runs": 3,
+        "temperature": null,
+        "mean_score": 0.9167,
+        "sd": 0.0,
+        "range": [
+          0.9167,
+          0.9167
+        ],
+        "item_agreement": 1.0
+      },
+      "fairness": {
+        "clean_prose_score": 1.0,
+        "gap_vs_clean_prose": {
+          "weaker_writer_0.3": {
+            "mean_gap": 0.1375,
+            "ci95": [
+              0.0833,
+              0.1958
+            ]
+          },
+          "weaker_writer_0.6": {
+            "mean_gap": 0.3167,
+            "ci95": [
+              0.2667,
+              0.3625
+            ]
+          }
+        },
+        "concept_list_score": 0.9583,
+        "concept_list_gap": 0.0417,
+        "note": "gap = score(clean prose) - score(altered text) for identical content; 0 means style-blind"
+      },
+      "gate_passed": false
+    },
+    {
+      "novice": "ollama:qwen3:4b",
+      "items": 24,
+      "leakage": {
+        "chance_if_forced_to_guess": 0.25,
+        "empty_text": {
+          "items": 24,
+          "score": 0.0,
+          "wrong": 0.0,
+          "abstained": 1.0,
+          "net": 0.0
+        },
+        "unrelated_text_heldout_items": {
+          "items": 13,
+          "score": 0.38461538461538464,
+          "wrong": 0.0,
+          "abstained": 0.6153846153846154,
+          "net": 0.38461538461538464
+        },
+        "leaks": true,
+        "note": "score counts 'I don't know' as wrong; a score above chance means the novice used knowledge not in the text"
+      },
+      "discrimination": {
+        "seeds": 2,
+        "means": {
+          "complete": {
+            "score": 1.0,
+            "net": 1.0
+          },
+          "missing_one": {
+            "score": 0.9583,
+            "net": 0.9583
+          },
+          "half": {
+            "score": 0.9583,
+            "net": 0.9444
+          },
+          "wrong": {
+            "score": 0.7083,
+            "net": 0.6389
+          },
+          "garbled": {
+            "score": 0.9792,
+            "net": 0.9792
+          },
+          "paraphrased": {
+            "score": 0.9167,
+            "net": 0.9028
+          },
+          "empty": {
+            "score": 0.0,
+            "net": 0.0
+          }
+        },
+        "ordering_checks": [
+          {
+            "expect": "complete > missing_one (score)",
+            "mean_difference": 0.0417,
+            "ci95": [
+              0.0417,
+              0.0417
+            ],
+            "passes": true
+          },
+          {
+            "expect": "missing_one > half (score)",
+            "mean_difference": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "passes": false
+          },
+          {
+            "expect": "half > empty (score)",
+            "mean_difference": 0.9583,
+            "ci95": [
+              0.9583,
+              0.9583
+            ],
+            "passes": true
+          },
+          {
+            "expect": "complete > wrong (net)",
+            "mean_difference": 0.3611,
+            "ci95": [
+              0.3611,
+              0.3611
+            ],
+            "passes": true
+          },
+          {
+            "expect": "missing_one > wrong (net)",
+            "mean_difference": 0.3194,
+            "ci95": [
+              0.3194,
+              0.3194
+            ],
+            "passes": true
+          },
+          {
+            "expect": "complete > garbled (score)",
+            "mean_difference": 0.0208,
+            "ci95": [
+              0.0,
+              0.0417
+            ],
+            "passes": false
+          }
+        ],
+        "invariance_checks": [
+          {
+            "expect": "paraphrased ~ complete",
+            "mean_difference": 0.0833,
+            "passes": false
+          }
+        ],
+        "all_pass": false
+      },
+      "reliability": {
+        "variant": "missing_one",
+        "runs": 4,
+        "temperature": 0.7,
+        "mean_score": 0.9583,
+        "sd": 0.0,
+        "range": [
+          0.9583,
+          0.9583
+        ],
+        "item_agreement": 1.0
+      },
+      "fairness": {
+        "clean_prose_score": 1.0,
+        "gap_vs_clean_prose": {
+          "weaker_writer_0.3": {
+            "mean_gap": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "weaker_writer_0.6": {
+            "mean_gap": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "concept_list_score": 1.0,
+        "concept_list_gap": 0.0,
+        "note": "gap = score(clean prose) - score(altered text) for identical content; 0 means style-blind"
+      },
+      "gate_passed": false
+    }
+  ],
+  "demo_exam": {
+    "complete": {
+      "student": "complete",
+      "novice": "lexical",
+      "concepts": [
+        "heap",
+        "binary_tree",
+        "arrays"
+      ],
+      "words": 106,
+      "statements": 10,
+      "coverage": {
+        "required": [
+          "heap",
+          "binary_tree",
+          "arrays"
+        ],
+        "present": [
+          "heap",
+          "binary_tree",
+          "arrays"
+        ],
+        "missing": [],
+        "coverage": 1.0
+      },
+      "claim_check": {
+        "claims": [
+          {
+            "claim_id": "claim-1",
+            "text": "A heap is a complete binary tree.",
+            "concept_ids": [
+              "binary_tree",
+              "heap"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "A heap is a complete binary tree."
+            ]
+          },
+          {
+            "claim_id": "claim-2",
+            "text": "A heap can be stored in an array.",
+            "concept_ids": [
+              "arrays",
+              "heap"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "A heap can be stored in an array."
+            ]
+          },
+          {
+            "claim_id": "claim-3",
+            "text": "It is not true that a heap is a fully sorted array.",
+            "concept_ids": [
+              "arrays",
+              "heap"
+            ],
+            "factual_status": "UNSUPPORTED",
+            "evidence": []
+          },
+          {
+            "claim_id": "claim-4",
+            "text": "It is not true that a heap is always fully sorted.",
+            "concept_ids": [
+              "heap"
+            ],
+            "factual_status": "UNSUPPORTED",
+            "evidence": []
+          },
+          {
+            "claim_id": "claim-5",
+            "text": "A binary tree has at most two children per node.",
+            "concept_ids": [
+              "binary_tree"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "A binary tree has at most two children per node."
+            ]
+          },
+          {
+            "claim_id": "claim-6",
+            "text": "A binary tree is a tree in which every node has at most two children.",
+            "concept_ids": [
+              "binary_tree",
+              "tree"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "A binary tree is a tree in which every node has at most two children."
+            ]
+          },
+          {
+            "claim_id": "claim-7",
+            "text": "It is not true that a binary tree node can have any number of children.",
+            "concept_ids": [
+              "binary_tree"
+            ],
+            "factual_status": "UNSUPPORTED",
+            "evidence": []
+          },
+          {
+            "claim_id": "claim-8",
+            "text": "An array stores elements in contiguous indexed positions.",
+            "concept_ids": [
+              "arrays"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "An array stores elements in contiguous indexed positions."
+            ]
+          },
+          {
+            "claim_id": "claim-9",
+            "text": "Array elements are accessed by index.",
+            "concept_ids": [
+              "arrays"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "Array elements are accessed by index."
+            ]
+          },
+          {
+            "claim_id": "claim-10",
+            "text": "It is not true that an array stores elements in random unrelated memory locations.",
+            "concept_ids": [
+              "arrays"
+            ],
+            "factual_status": "UNSUPPORTED",
+            "evidence": []
+          }
+        ],
+        "counts": {
+          "ENTAILED": 6,
+          "CONTRADICTED": 0,
+          "UNSUPPORTED": 4
+        },
+        "contradicted": []
+      },
+      "novice_test": {
+        "overall": {
+          "items": 10,
+          "score": 1.0,
+          "wrong": 0.0,
+          "abstained": 0.0,
+          "net": 1.0
+        },
+        "by_bloom": {
+          "1": {
+            "items": 3,
+            "score": 1.0,
+            "wrong": 0.0,
+            "abstained": 0.0,
+            "net": 1.0
+          },
+          "2": {
+            "items": 3,
+            "score": 1.0,
+            "wrong": 0.0,
+            "abstained": 0.0,
+            "net": 1.0
+          },
+          "3": {
+            "items": 3,
+            "score": 1.0,
+            "wrong": 0.0,
+            "abstained": 0.0,
+            "net": 1.0
+          },
+          "4": {
+            "items": 1,
+            "score": 1.0,
+            "wrong": 0.0,
+            "abstained": 0.0,
+            "net": 1.0
+          }
+        },
+        "items": [
+          {
+            "id": "binary_tree-recognise-1",
+            "concept": "binary_tree",
+            "bloom": 1,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "binary_tree-recognise-2",
+            "concept": "binary_tree",
+            "bloom": 2,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "heap-recognise-1",
+            "concept": "heap",
+            "bloom": 1,
+            "chosen": 2,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "heap-recognise-2",
+            "concept": "heap",
+            "bloom": 2,
+            "chosen": 3,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "arrays-recognise-1",
+            "concept": "arrays",
+            "bloom": 1,
+            "chosen": 1,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "arrays-recognise-2",
+            "concept": "arrays",
+            "bloom": 2,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "heap-apply-1",
+            "concept": "heap",
+            "bloom": 3,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "binary_tree-apply-1",
+            "concept": "binary_tree",
+            "bloom": 3,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "arrays-apply-1",
+            "concept": "arrays",
+            "bloom": 3,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "heap-analyze-1",
+            "concept": "heap",
+            "bloom": 4,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          }
+        ]
+      },
+      "depth": {
+        "correct": 10,
+        "traced": 10,
+        "untraced": 0,
+        "raw_score": 1.0,
+        "depth_adjusted_score": 1.0
+      },
+      "evidence": [
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "complete",
+          "concept": "arrays",
+          "bloom": 1,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "complete",
+          "concept": "arrays",
+          "bloom": 2,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "complete",
+          "concept": "arrays",
+          "bloom": 3,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "complete",
+          "concept": "binary_tree",
+          "bloom": 1,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "complete",
+          "concept": "binary_tree",
+          "bloom": 2,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "complete",
+          "concept": "binary_tree",
+          "bloom": 3,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "complete",
+          "concept": "heap",
+          "bloom": 1,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "complete",
+          "concept": "heap",
+          "bloom": 2,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "complete",
+          "concept": "heap",
+          "bloom": 3,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "complete",
+          "concept": "heap",
+          "bloom": 4,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        }
+      ],
+      "flags": [],
+      "use": "formative evidence only; not a grade until validity and fairness are shown"
+    },
+    "one_step_missing": {
+      "student": "one_step_missing",
+      "novice": "lexical",
+      "concepts": [
+        "heap",
+        "binary_tree",
+        "arrays"
+      ],
+      "words": 99,
+      "statements": 9,
+      "coverage": {
+        "required": [
+          "heap",
+          "binary_tree",
+          "arrays"
+        ],
+        "present": [
+          "heap",
+          "binary_tree",
+          "arrays"
+        ],
+        "missing": [],
+        "coverage": 1.0
+      },
+      "claim_check": {
+        "claims": [
+          {
+            "claim_id": "claim-1",
+            "text": "A heap can be stored in an array.",
+            "concept_ids": [
+              "arrays",
+              "heap"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "A heap can be stored in an array."
+            ]
+          },
+          {
+            "claim_id": "claim-2",
+            "text": "It is not true that a heap is a fully sorted array.",
+            "concept_ids": [
+              "arrays",
+              "heap"
+            ],
+            "factual_status": "UNSUPPORTED",
+            "evidence": []
+          },
+          {
+            "claim_id": "claim-3",
+            "text": "It is not true that a heap is always fully sorted.",
+            "concept_ids": [
+              "heap"
+            ],
+            "factual_status": "UNSUPPORTED",
+            "evidence": []
+          },
+          {
+            "claim_id": "claim-4",
+            "text": "A binary tree has at most two children per node.",
+            "concept_ids": [
+              "binary_tree"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "A binary tree has at most two children per node."
+            ]
+          },
+          {
+            "claim_id": "claim-5",
+            "text": "A binary tree is a tree in which every node has at most two children.",
+            "concept_ids": [
+              "binary_tree",
+              "tree"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "A binary tree is a tree in which every node has at most two children."
+            ]
+          },
+          {
+            "claim_id": "claim-6",
+            "text": "It is not true that a binary tree node can have any number of children.",
+            "concept_ids": [
+              "binary_tree"
+            ],
+            "factual_status": "UNSUPPORTED",
+            "evidence": []
+          },
+          {
+            "claim_id": "claim-7",
+            "text": "An array stores elements in contiguous indexed positions.",
+            "concept_ids": [
+              "arrays"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "An array stores elements in contiguous indexed positions."
+            ]
+          },
+          {
+            "claim_id": "claim-8",
+            "text": "Array elements are accessed by index.",
+            "concept_ids": [
+              "arrays"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "Array elements are accessed by index."
+            ]
+          },
+          {
+            "claim_id": "claim-9",
+            "text": "It is not true that an array stores elements in random unrelated memory locations.",
+            "concept_ids": [
+              "arrays"
+            ],
+            "factual_status": "UNSUPPORTED",
+            "evidence": []
+          }
+        ],
+        "counts": {
+          "ENTAILED": 5,
+          "CONTRADICTED": 0,
+          "UNSUPPORTED": 4
+        },
+        "contradicted": []
+      },
+      "novice_test": {
+        "overall": {
+          "items": 10,
+          "score": 0.8,
+          "wrong": 0.0,
+          "abstained": 0.2,
+          "net": 0.8
+        },
+        "by_bloom": {
+          "1": {
+            "items": 3,
+            "score": 0.6666666666666666,
+            "wrong": 0.0,
+            "abstained": 0.3333333333333333,
+            "net": 0.6666666666666666
+          },
+          "2": {
+            "items": 3,
+            "score": 1.0,
+            "wrong": 0.0,
+            "abstained": 0.0,
+            "net": 1.0
+          },
+          "3": {
+            "items": 3,
+            "score": 1.0,
+            "wrong": 0.0,
+            "abstained": 0.0,
+            "net": 1.0
+          },
+          "4": {
+            "items": 1,
+            "score": 0.0,
+            "wrong": 0.0,
+            "abstained": 1.0,
+            "net": 0.0
+          }
+        },
+        "items": [
+          {
+            "id": "binary_tree-recognise-1",
+            "concept": "binary_tree",
+            "bloom": 1,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "binary_tree-recognise-2",
+            "concept": "binary_tree",
+            "bloom": 2,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "heap-recognise-1",
+            "concept": "heap",
+            "bloom": 1,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "heap-recognise-2",
+            "concept": "heap",
+            "bloom": 2,
+            "chosen": 3,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "arrays-recognise-1",
+            "concept": "arrays",
+            "bloom": 1,
+            "chosen": 1,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "arrays-recognise-2",
+            "concept": "arrays",
+            "bloom": 2,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "heap-apply-1",
+            "concept": "heap",
+            "bloom": 3,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "binary_tree-apply-1",
+            "concept": "binary_tree",
+            "bloom": 3,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "arrays-apply-1",
+            "concept": "arrays",
+            "bloom": 3,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "heap-analyze-1",
+            "concept": "heap",
+            "bloom": 4,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          }
+        ]
+      },
+      "depth": {
+        "correct": 8,
+        "traced": 8,
+        "untraced": 0,
+        "raw_score": 0.8,
+        "depth_adjusted_score": 0.8
+      },
+      "evidence": [
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "one_step_missing",
+          "concept": "arrays",
+          "bloom": 1,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "one_step_missing",
+          "concept": "arrays",
+          "bloom": 2,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "one_step_missing",
+          "concept": "arrays",
+          "bloom": 3,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "one_step_missing",
+          "concept": "binary_tree",
+          "bloom": 1,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "one_step_missing",
+          "concept": "binary_tree",
+          "bloom": 2,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "one_step_missing",
+          "concept": "binary_tree",
+          "bloom": 3,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "one_step_missing",
+          "concept": "heap",
+          "bloom": 1,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "one_step_missing",
+          "concept": "heap",
+          "bloom": 2,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "one_step_missing",
+          "concept": "heap",
+          "bloom": 3,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "one_step_missing",
+          "concept": "heap",
+          "bloom": 4,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        }
+      ],
+      "flags": [],
+      "use": "formative evidence only; not a grade until validity and fairness are shown"
+    },
+    "half": {
+      "student": "half",
+      "novice": "lexical",
+      "concepts": [
+        "heap",
+        "binary_tree",
+        "arrays"
+      ],
+      "words": 25,
+      "statements": 3,
+      "coverage": {
+        "required": [
+          "heap",
+          "binary_tree",
+          "arrays"
+        ],
+        "present": [
+          "heap",
+          "binary_tree",
+          "arrays"
+        ],
+        "missing": [],
+        "coverage": 1.0
+      },
+      "claim_check": {
+        "claims": [
+          {
+            "claim_id": "claim-1",
+            "text": "A heap is a complete binary tree.",
+            "concept_ids": [
+              "binary_tree",
+              "heap"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "A heap is a complete binary tree."
+            ]
+          },
+          {
+            "claim_id": "claim-2",
+            "text": "A binary tree has at most two children per node.",
+            "concept_ids": [
+              "binary_tree"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "A binary tree has at most two children per node."
+            ]
+          },
+          {
+            "claim_id": "claim-3",
+            "text": "An array stores elements in contiguous indexed positions.",
+            "concept_ids": [
+              "arrays"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "An array stores elements in contiguous indexed positions."
+            ]
+          }
+        ],
+        "counts": {
+          "ENTAILED": 3,
+          "CONTRADICTED": 0,
+          "UNSUPPORTED": 0
+        },
+        "contradicted": []
+      },
+      "novice_test": {
+        "overall": {
+          "items": 10,
+          "score": 0.5,
+          "wrong": 0.0,
+          "abstained": 0.5,
+          "net": 0.5
+        },
+        "by_bloom": {
+          "1": {
+            "items": 3,
+            "score": 1.0,
+            "wrong": 0.0,
+            "abstained": 0.0,
+            "net": 1.0
+          },
+          "2": {
+            "items": 3,
+            "score": 0.3333333333333333,
+            "wrong": 0.0,
+            "abstained": 0.6666666666666666,
+            "net": 0.3333333333333333
+          },
+          "3": {
+            "items": 3,
+            "score": 0.3333333333333333,
+            "wrong": 0.0,
+            "abstained": 0.6666666666666666,
+            "net": 0.3333333333333333
+          },
+          "4": {
+            "items": 1,
+            "score": 0.0,
+            "wrong": 0.0,
+            "abstained": 1.0,
+            "net": 0.0
+          }
+        },
+        "items": [
+          {
+            "id": "binary_tree-recognise-1",
+            "concept": "binary_tree",
+            "bloom": 1,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "binary_tree-recognise-2",
+            "concept": "binary_tree",
+            "bloom": 2,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "heap-recognise-1",
+            "concept": "heap",
+            "bloom": 1,
+            "chosen": 2,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "heap-recognise-2",
+            "concept": "heap",
+            "bloom": 2,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "arrays-recognise-1",
+            "concept": "arrays",
+            "bloom": 1,
+            "chosen": 1,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "arrays-recognise-2",
+            "concept": "arrays",
+            "bloom": 2,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "heap-apply-1",
+            "concept": "heap",
+            "bloom": 3,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "binary_tree-apply-1",
+            "concept": "binary_tree",
+            "bloom": 3,
+            "chosen": 0,
+            "correct": true,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "arrays-apply-1",
+            "concept": "arrays",
+            "bloom": 3,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "heap-analyze-1",
+            "concept": "heap",
+            "bloom": 4,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          }
+        ]
+      },
+      "depth": {
+        "correct": 5,
+        "traced": 5,
+        "untraced": 0,
+        "raw_score": 0.5,
+        "depth_adjusted_score": 0.5
+      },
+      "evidence": [
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "half",
+          "concept": "arrays",
+          "bloom": 1,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "half",
+          "concept": "arrays",
+          "bloom": 2,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "half",
+          "concept": "arrays",
+          "bloom": 3,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "half",
+          "concept": "binary_tree",
+          "bloom": 1,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "half",
+          "concept": "binary_tree",
+          "bloom": 2,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "half",
+          "concept": "binary_tree",
+          "bloom": 3,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "half",
+          "concept": "heap",
+          "bloom": 1,
+          "score": 1.0,
+          "items": 1,
+          "ci95": [
+            0.207,
+            1.0
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "half",
+          "concept": "heap",
+          "bloom": 2,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "half",
+          "concept": "heap",
+          "bloom": 3,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "half",
+          "concept": "heap",
+          "bloom": 4,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        }
+      ],
+      "flags": [],
+      "use": "formative evidence only; not a grade until validity and fairness are shown"
+    },
+    "misconception": {
+      "student": "misconception",
+      "novice": "lexical",
+      "concepts": [
+        "heap",
+        "binary_tree",
+        "arrays"
+      ],
+      "words": 55,
+      "statements": 6,
+      "coverage": {
+        "required": [
+          "heap",
+          "binary_tree",
+          "arrays"
+        ],
+        "present": [
+          "heap",
+          "binary_tree",
+          "arrays"
+        ],
+        "missing": [],
+        "coverage": 1.0
+      },
+      "claim_check": {
+        "claims": [
+          {
+            "claim_id": "claim-1",
+            "text": "A heap is a fully sorted array.",
+            "concept_ids": [
+              "arrays",
+              "heap"
+            ],
+            "factual_status": "CONTRADICTED",
+            "evidence": [
+              "contradicts graph misconception: A heap is a fully sorted array."
+            ]
+          },
+          {
+            "claim_id": "claim-2",
+            "text": "A heap can be stored in an array.",
+            "concept_ids": [
+              "arrays",
+              "heap"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "A heap can be stored in an array."
+            ]
+          },
+          {
+            "claim_id": "claim-3",
+            "text": "A binary tree node can have any number of children.",
+            "concept_ids": [
+              "binary_tree"
+            ],
+            "factual_status": "CONTRADICTED",
+            "evidence": [
+              "contradicts graph misconception: A binary tree node can have any number of children."
+            ]
+          },
+          {
+            "claim_id": "claim-4",
+            "text": "A binary tree is a tree in which every node has at most two children.",
+            "concept_ids": [
+              "binary_tree",
+              "tree"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "A binary tree is a tree in which every node has at most two children."
+            ]
+          },
+          {
+            "claim_id": "claim-5",
+            "text": "An array stores elements in random unrelated memory locations.",
+            "concept_ids": [
+              "arrays"
+            ],
+            "factual_status": "CONTRADICTED",
+            "evidence": [
+              "contradicts graph misconception: An array stores elements in random unrelated memory locations."
+            ]
+          },
+          {
+            "claim_id": "claim-6",
+            "text": "Array elements are accessed by index.",
+            "concept_ids": [
+              "arrays"
+            ],
+            "factual_status": "ENTAILED",
+            "evidence": [
+              "Array elements are accessed by index."
+            ]
+          }
+        ],
+        "counts": {
+          "ENTAILED": 3,
+          "CONTRADICTED": 3,
+          "UNSUPPORTED": 0
+        },
+        "contradicted": [
+          "A heap is a fully sorted array.",
+          "A binary tree node can have any number of children.",
+          "An array stores elements in random unrelated memory locations."
+        ]
+      },
+      "novice_test": {
+        "overall": {
+          "items": 10,
+          "score": 0.0,
+          "wrong": 0.3,
+          "abstained": 0.7,
+          "net": -0.1
+        },
+        "by_bloom": {
+          "1": {
+            "items": 3,
+            "score": 0.0,
+            "wrong": 0.3333333333333333,
+            "abstained": 0.6666666666666666,
+            "net": -0.1111111111111111
+          },
+          "2": {
+            "items": 3,
+            "score": 0.0,
+            "wrong": 0.0,
+            "abstained": 1.0,
+            "net": 0.0
+          },
+          "3": {
+            "items": 3,
+            "score": 0.0,
+            "wrong": 0.3333333333333333,
+            "abstained": 0.6666666666666666,
+            "net": -0.1111111111111111
+          },
+          "4": {
+            "items": 1,
+            "score": 0.0,
+            "wrong": 1.0,
+            "abstained": 0.0,
+            "net": -0.3333333333333333
+          }
+        },
+        "items": [
+          {
+            "id": "binary_tree-recognise-1",
+            "concept": "binary_tree",
+            "bloom": 1,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "binary_tree-recognise-2",
+            "concept": "binary_tree",
+            "bloom": 2,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "heap-recognise-1",
+            "concept": "heap",
+            "bloom": 1,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "heap-recognise-2",
+            "concept": "heap",
+            "bloom": 2,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "arrays-recognise-1",
+            "concept": "arrays",
+            "bloom": 1,
+            "chosen": 0,
+            "correct": false,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "arrays-recognise-2",
+            "concept": "arrays",
+            "bloom": 2,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "heap-apply-1",
+            "concept": "heap",
+            "bloom": 3,
+            "chosen": 1,
+            "correct": false,
+            "abstained": false,
+            "options": 4
+          },
+          {
+            "id": "binary_tree-apply-1",
+            "concept": "binary_tree",
+            "bloom": 3,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "arrays-apply-1",
+            "concept": "arrays",
+            "bloom": 3,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "heap-analyze-1",
+            "concept": "heap",
+            "bloom": 4,
+            "chosen": 1,
+            "correct": false,
+            "abstained": false,
+            "options": 4
+          }
+        ]
+      },
+      "depth": {
+        "correct": 0,
+        "traced": 0,
+        "untraced": 0,
+        "raw_score": 0.0,
+        "depth_adjusted_score": 0.0
+      },
+      "evidence": [
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "misconception",
+          "concept": "arrays",
+          "bloom": 1,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "misconception",
+          "concept": "arrays",
+          "bloom": 2,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "misconception",
+          "concept": "arrays",
+          "bloom": 3,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "misconception",
+          "concept": "binary_tree",
+          "bloom": 1,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "misconception",
+          "concept": "binary_tree",
+          "bloom": 2,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "misconception",
+          "concept": "binary_tree",
+          "bloom": 3,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "misconception",
+          "concept": "heap",
+          "bloom": 1,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "misconception",
+          "concept": "heap",
+          "bloom": 2,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "misconception",
+          "concept": "heap",
+          "bloom": 3,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "misconception",
+          "concept": "heap",
+          "bloom": 4,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        }
+      ],
+      "flags": [
+        "3 statement(s) contradict a known-false statement in the graph",
+        "the novice could not answer most items from this text (thin explanation)"
+      ],
+      "use": "formative evidence only; not a grade until validity and fairness are shown"
+    },
+    "empty": {
+      "student": "empty",
+      "novice": "lexical",
+      "concepts": [
+        "heap",
+        "binary_tree",
+        "arrays"
+      ],
+      "words": 0,
+      "statements": 0,
+      "coverage": {
+        "required": [
+          "heap",
+          "binary_tree",
+          "arrays"
+        ],
+        "present": [],
+        "missing": [
+          "heap",
+          "binary_tree",
+          "arrays"
+        ],
+        "coverage": 0.0
+      },
+      "claim_check": {
+        "claims": [],
+        "counts": {
+          "ENTAILED": 0,
+          "CONTRADICTED": 0,
+          "UNSUPPORTED": 0
+        },
+        "contradicted": []
+      },
+      "novice_test": {
+        "overall": {
+          "items": 10,
+          "score": 0.0,
+          "wrong": 0.0,
+          "abstained": 1.0,
+          "net": 0.0
+        },
+        "by_bloom": {
+          "1": {
+            "items": 3,
+            "score": 0.0,
+            "wrong": 0.0,
+            "abstained": 1.0,
+            "net": 0.0
+          },
+          "2": {
+            "items": 3,
+            "score": 0.0,
+            "wrong": 0.0,
+            "abstained": 1.0,
+            "net": 0.0
+          },
+          "3": {
+            "items": 3,
+            "score": 0.0,
+            "wrong": 0.0,
+            "abstained": 1.0,
+            "net": 0.0
+          },
+          "4": {
+            "items": 1,
+            "score": 0.0,
+            "wrong": 0.0,
+            "abstained": 1.0,
+            "net": 0.0
+          }
+        },
+        "items": [
+          {
+            "id": "binary_tree-recognise-1",
+            "concept": "binary_tree",
+            "bloom": 1,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "binary_tree-recognise-2",
+            "concept": "binary_tree",
+            "bloom": 2,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "heap-recognise-1",
+            "concept": "heap",
+            "bloom": 1,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "heap-recognise-2",
+            "concept": "heap",
+            "bloom": 2,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "arrays-recognise-1",
+            "concept": "arrays",
+            "bloom": 1,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "arrays-recognise-2",
+            "concept": "arrays",
+            "bloom": 2,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "heap-apply-1",
+            "concept": "heap",
+            "bloom": 3,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "binary_tree-apply-1",
+            "concept": "binary_tree",
+            "bloom": 3,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "arrays-apply-1",
+            "concept": "arrays",
+            "bloom": 3,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          },
+          {
+            "id": "heap-analyze-1",
+            "concept": "heap",
+            "bloom": 4,
+            "chosen": null,
+            "correct": false,
+            "abstained": true,
+            "options": 4
+          }
+        ]
+      },
+      "depth": {
+        "correct": 0,
+        "traced": 0,
+        "untraced": 0,
+        "raw_score": 0.0,
+        "depth_adjusted_score": 0.0
+      },
+      "evidence": [
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "empty",
+          "concept": "arrays",
+          "bloom": 1,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "empty",
+          "concept": "arrays",
+          "bloom": 2,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "empty",
+          "concept": "arrays",
+          "bloom": 3,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "empty",
+          "concept": "binary_tree",
+          "bloom": 1,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "empty",
+          "concept": "binary_tree",
+          "bloom": 2,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "empty",
+          "concept": "binary_tree",
+          "bloom": 3,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "empty",
+          "concept": "heap",
+          "bloom": 1,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "empty",
+          "concept": "heap",
+          "bloom": 2,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "empty",
+          "concept": "heap",
+          "bloom": 3,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        },
+        {
+          "schema": "c4-evidence/1.0",
+          "student": "empty",
+          "concept": "heap",
+          "bloom": 4,
+          "score": 0.0,
+          "items": 1,
+          "ci95": [
+            0.0,
+            0.793
+          ],
+          "thin": true,
+          "source": "teachback_exam",
+          "weight": "provisional",
+          "graph_version": "unversioned"
+        }
+      ],
+      "flags": [
+        "missing required concepts: heap, binary_tree, arrays",
+        "the novice could not answer most items from this text (thin explanation)"
+      ],
+      "use": "formative evidence only; not a grade until validity and fairness are shown"
+    }
+  },
+  "llm_depth": {
+    "complete": {
+      "correct": 24,
+      "traced": 24,
+      "untraced": 0,
+      "raw_score": 1.0,
+      "depth_adjusted_score": 1.0
+    },
+    "half": {
+      "correct": 23,
+      "traced": 13,
+      "untraced": 10,
+      "raw_score": 0.9583,
+      "depth_adjusted_score": 0.5417
+    },
+    "wrong": {
+      "correct": 17,
+      "traced": 10,
+      "untraced": 7,
+      "raw_score": 0.7083,
+      "depth_adjusted_score": 0.4167
+    },
+    "empty": {
+      "correct": 0,
+      "traced": 0,
+      "untraced": 0,
+      "raw_score": 0.0,
+      "depth_adjusted_score": 0.0
+    }
+  }
+}
