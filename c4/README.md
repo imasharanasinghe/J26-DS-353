@@ -211,3 +211,37 @@ the progression evidence. PP1 demo run-sheet addition: start a session with the 
 prerequisites mastered" preset, answer well twice and show the target rise and the support fade,
 fail once to show the retry with full support, then lower a prerequisite below 0.7 in the left
 panel to show the policy consolidate instead of advancing.
+
+## Teach-back assessment and Graph Auditor (branch `c4-addition`)
+
+Scope extension after the PP1 panel asked for something deeper. The full design, the literature and
+the results are in [NEW.md](../NEW.md); this section is the code map. All of it runs offline on
+fixtures and simulated cohorts; nothing here has touched real students.
+
+| Part | Modules | Run |
+|---|---|---|
+| Hidden test keyed to the graph | `testbank.py`, `data/teachback_items.json` | built by `testbank.build_test(kg)` |
+| Knowledge-restricted novices (lexical control, Ollama LLM) | `novice.py` | `scripts/run_c4_teachback.py [--llm]` |
+| Instrument gate: leakage, discrimination, reliability, fairness, depth | `synthetic.py`, `instrument.py` | same script |
+| Teach-back exam, Mode 1 (coverage, claim check, novice test, C2 evidence) | `teachback.py` | `POST /api/teachback` |
+| Graph Auditor (edge, Bloom, load, misconception audits) | `auditor.py` | `scripts/run_c4_audit.py` |
+| Planted-error harness and observations loader | `audit_sim.py` | same script |
+| Audit fed back into the verifier (`edge_confidence`, report `c4-report/1.3`) | `pipeline.py`, `audit_loop.py` | same script |
+| Block-plan simulation (uniform, tiered, evidence-driven) | `planner.py` | `scripts/run_c4_planner.py` |
+| Help box (attempt first, hints, verified explanation, confusion log) | `helpbox.py` | `POST /api/help` |
+| Layered, versioned graph with lecturer-gated proposals | `layers.py` | tests only |
+
+Results are written to `c4/results/` (`TEACHBACK.md`, `AUDIT.md`, `PLANNER.md` and JSON). The
+workbench has three new tabs: **Teach-back**, **Graph audit** and **Help box**.
+
+Using the audit in the verifier: `C4Pipeline(kg, edge_confidence=report["edge_confidence"])`. An
+Unsupported or Reversed direct prerequisite edge no longer produces `UNMASTERED_PREREQUISITE` or a
+"review first" line; a Contested edge makes the claim `INCONCLUSIVE`; without the argument nothing
+changes (`c4-report/1.2`).
+
+API additions: `POST /api/teachback/prompt|teachback|audit|help`.
+
+Limits to say aloud: the lexical novice is a deterministic control (no leakage by construction, but
+blind to word order and paraphrase); the item bank is a 24-item pilot; auditor and planner numbers
+are simulations that encode the dependency they test; the human validity and fairness study needs
+SLIIT ethics approval and has not been run.

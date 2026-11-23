@@ -60,7 +60,7 @@ def render(sweep: dict, loop: dict) -> str:
                          f"{c['missed_prereqs_per_pair']:.3f} | {c['missed_share_of_true']:.3f} |")
     lines += ["", "## Reading these results honestly", "",
               "- **The order-only baseline is strong here because the generator makes learning order follow prerequisite depth.** "
-              "That is exactly the curriculum-order confound the proposal warns about, so a strong order baseline in simulation "
+              "That is exactly the curriculum-order confound NEW.md warns about, so a strong order baseline in simulation "
               "says nothing about whether order evidence survives a real timetable. The implication and ability-adjusted lift tests "
               "do not depend on order.",
               "- The raw co-occurrence baseline cannot flag spurious edges: strong students master everything, so any two concepts correlate.",

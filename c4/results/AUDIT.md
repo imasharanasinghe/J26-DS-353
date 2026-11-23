@@ -42,7 +42,7 @@ Per (student, target) pair. *audit* drops Unsupported and Reversed edges, as the
 
 ## Reading these results honestly
 
-- **The order-only baseline is strong here because the generator makes learning order follow prerequisite depth.** That is exactly the curriculum-order confound the proposal warns about, so a strong order baseline in simulation says nothing about whether order evidence survives a real timetable. The implication and ability-adjusted lift tests do not depend on order.
+- **The order-only baseline is strong here because the generator makes learning order follow prerequisite depth.** That is exactly the curriculum-order confound NEW.md warns about, so a strong order baseline in simulation says nothing about whether order evidence survives a real timetable. The implication and ability-adjusted lift tests do not depend on order.
 - The raw co-occurrence baseline cannot flag spurious edges: strong students master everything, so any two concepts correlate.
 - Precision is high and recall plateaus below 1: spurious edges between concepts that share prerequisites keep some association and end up Contested rather than Unsupported. That is the intended behaviour (evidence, not proof).
 - Small cohorts give wide intervals, so most edges are Contested below about 120 students.
